@@ -79,10 +79,14 @@ Adding games watched is a real pain right now... you just go one by one and add 
 
 Loading stats for players is low, we have to load boxscores from each game individually
 
+The API counts games as 0-0 when they are canceled. It would just be better to filter these out when adding games
+
 ## todo
 
 add a comparison from user watched games to career/season averages
 
 add filter for batters (minimum PA)
+
+the team filter... filters the game by the team. Meaning that it includes stats from all players that played in a game with a specific team. I instead just want stats from players that are on that team.
 
 it's only regular season games (no need for preseason but definitely want postseason
