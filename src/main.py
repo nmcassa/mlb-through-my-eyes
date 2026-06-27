@@ -29,12 +29,12 @@ def print_header(title: str):
 
 def game_label(game: dict) -> str:
     """Format a schedule game dict as a single readable line."""
-    away = game["away_name"]
-    home = game["home_name"]
-    date = game["game_date"]
+    away       = game["away_name"]
+    home       = game["home_name"]
+    date       = game["game_date"]
     away_score = game.get("away_score", "")
     home_score = game.get("home_score", "")
-    status = game.get("status", "")
+    status     = game.get("status", "")
 
     if away_score != "" and home_score != "":
         score = f"  ({away_score}–{home_score})"
@@ -98,8 +98,8 @@ def browse_season(watched: dict):
 
 def _game_select_loop(games: list, watched: dict, team_name: str, season: str):
     """Paginated game list with toggle-to-watch."""
-    page_size = 15
-    page = 0
+    page_size   = 15
+    page        = 0
     total_pages = (len(games) - 1) // page_size + 1
 
     while True:
@@ -111,7 +111,7 @@ def _game_select_loop(games: list, watched: dict, team_name: str, season: str):
 
         print(f"\n  Page {page+1}/{total_pages}   ({len(games)} games total)\n")
         for i, game in enumerate(chunk):
-            gid = str(game["game_id"])
+            gid  = str(game["game_id"])
             star = "★" if gid in watched else " "
             print(f"  [{i+1:>2}] {star}  {game_label(game)}")
 
@@ -131,19 +131,19 @@ def _game_select_loop(games: list, watched: dict, team_name: str, season: str):
             idx = int(cmd) - 1
             if 0 <= idx < len(chunk):
                 game = chunk[idx]
-                gid = str(game["game_id"])
+                gid  = str(game["game_id"])
                 if gid in watched:
                     del watched[gid]
                     print(f"\n  ✗ Removed: {game_label(game)}")
                 else:
                     watched[gid] = {
-                        "game_id": game["game_id"],
-                        "date": game["game_date"],
-                        "away": game["away_name"],
-                        "home": game["home_name"],
+                        "game_id":    game["game_id"],
+                        "date":       game["game_date"],
+                        "away":       game["away_name"],
+                        "home":       game["home_name"],
                         "away_score": game.get("away_score", ""),
                         "home_score": game.get("home_score", ""),
-                        "added_at": datetime.now().isoformat(),
+                        "added_at":   datetime.now().isoformat(),
                     }
                     print(f"\n  ★ Added:   {game_label(game)}")
                 json_store.save_watched(watched)
@@ -176,7 +176,7 @@ def view_watched(watched: dict):
         for g in games:
             away_s = g.get("away_score", "")
             home_s = g.get("home_score", "")
-            score = f"  {away_s}–{home_s}" if away_s != "" else ""
+            score  = f"  {away_s}–{home_s}" if away_s != "" else ""
             print(f"    {g['date']}  {g['away']} @ {g['home']}{score}")
         print()
 
@@ -199,7 +199,7 @@ def remove_watched(watched: dict):
     for i, g in enumerate(games):
         away_s = g.get("away_score", "")
         home_s = g.get("home_score", "")
-        score = f"  {away_s}–{home_s}" if away_s != "" else ""
+        score  = f"  {away_s}–{home_s}" if away_s != "" else ""
         print(f"  [{i+1:>2}]  {g['date']}  {g['away']} @ {g['home']}{score}")
 
     print("\n  Enter number to remove, or q to cancel.")
@@ -210,7 +210,7 @@ def remove_watched(watched: dict):
     if cmd.isdigit():
         idx = int(cmd) - 1
         if 0 <= idx < len(games):
-            g = games[idx]
+            g   = games[idx]
             gid = str(g["game_id"])
             del watched[gid]
             json_store.save_watched(watched)
@@ -218,22 +218,150 @@ def remove_watched(watched: dict):
     input("\nPress Enter to continue...")
 
 
-# ── Sort helper ──────────────────────────────────────────────────────────────
+# ── Filter helpers ────────────────────────────────────────────────────────────
+
+def _all_seasons(watched: dict) -> list[str]:
+    return sorted({g["date"][:4] for g in watched.values()})
+
+
+def _all_teams(watched: dict) -> list[str]:
+    teams = set()
+    for g in watched.values():
+        teams.add(g["away"])
+        teams.add(g["home"])
+    return sorted(teams)
+
+
+def _apply_watched_filters(
+    watched: dict,
+    season_filter: str | None,
+    team_filter: str | None,
+) -> dict:
+    """Return a subset of watched matching the active season and/or team filters."""
+    out = {}
+    for gid, g in watched.items():
+        if season_filter and g["date"][:4] != season_filter:
+            continue
+        if team_filter and team_filter not in (g["away"], g["home"]):
+            continue
+        out[gid] = g
+    return out
+
+
+def _filters_label(
+    season_filter: str | None,
+    team_filter: str | None,
+    ip_min: float | None,
+) -> str:
+    parts = []
+    if season_filter:
+        parts.append(f"season={season_filter}")
+    if team_filter:
+        parts.append(f"team={team_filter}")
+    if ip_min is not None:
+        parts.append(f"IP≥{ip_min:.1f}")
+    return "  |  filters: " + ", ".join(parts) if parts else ""
+
+
+def _filter_prompt(
+    watched: dict,
+    season_filter: str | None,
+    team_filter: str | None,
+    ip_min: float | None,
+    show_ip: bool = False,
+) -> tuple[str | None, str | None, float | None] | None:
+    """
+    Interactive filter menu.
+    Returns (season_filter, team_filter, ip_min) with updated values,
+    or None if the user pressed q (meaning go back without changes).
+    """
+    seasons = _all_seasons(watched)
+    teams   = _all_teams(watched)
+
+    while True:
+        print("\n  ── Active filters ──────────────────────────────")
+        print(f"    Season : {season_filter or 'all'}")
+        print(f"    Team   : {team_filter   or 'all'}")
+        if show_ip:
+            print(f"    Min IP : {ip_min:.1f}" if ip_min is not None else "    Min IP : none")
+
+        print("\n  ── Change filter ───────────────────────────────")
+        print("    [1] Season")
+        print("    [2] Team")
+        if show_ip:
+            print("    [3] Min IP (pitchers only)")
+        print("    [x] Clear all filters")
+        print("    [q] Done")
+        cmd = input("\n  > ").strip().lower()
+
+        if cmd == "q":
+            return season_filter, team_filter, ip_min
+
+        elif cmd == "x":
+            season_filter, team_filter, ip_min = None, None, None
+            print("  Filters cleared.")
+
+        elif cmd == "1":
+            if not seasons:
+                print("  No seasons available.")
+                continue
+            print("\n  Available seasons:")
+            print("    [0] All seasons")
+            for i, s in enumerate(seasons, 1):
+                marker = " ◀" if s == season_filter else ""
+                print(f"    [{i}] {s}{marker}")
+            pick = input("  > ").strip()
+            if pick == "0":
+                season_filter = None
+            elif pick.isdigit():
+                idx = int(pick) - 1
+                if 0 <= idx < len(seasons):
+                    season_filter = seasons[idx]
+
+        elif cmd == "2":
+            if not teams:
+                print("  No teams available.")
+                continue
+            print("\n  Available teams:")
+            print("    [0] All teams")
+            for i, t in enumerate(teams, 1):
+                marker = " ◀" if t == team_filter else ""
+                print(f"    [{i}] {t}{marker}")
+            pick = input("  > ").strip()
+            if pick == "0":
+                team_filter = None
+            elif pick.isdigit():
+                idx = int(pick) - 1
+                if 0 <= idx < len(teams):
+                    team_filter = teams[idx]
+
+        elif cmd == "3" and show_ip:
+            raw = input("  Minimum IP (e.g. 5.0), or 0 to clear: ").strip()
+            try:
+                val = float(raw)
+                ip_min = None if val == 0 else val
+            except ValueError:
+                print("  Invalid number.")
+
+
+# ── Sort / limit helpers ──────────────────────────────────────────────────────
 
 def _sort_prompt(cols: list[tuple[str, str, bool]]) -> tuple[str, bool] | None:
     """
     Display the action menu and return one of:
-      (sort_key, reverse)  — user picked a sort column
-      "csv"                — user wants a CSV export
-      "limit"              — user wants to change head/tail limit
-      None                 — user pressed q (go back)
-      False                — invalid input (caller re-prompts)
+      (sort_key, reverse)           — user picked a sort column
+      "csv"                         — export to CSV
+      ("limit", "h"|"t")           — change head/tail limit
+      "filter"                      — open filter menu
+      None                          — go back
+      False                         — invalid input (re-prompt)
     """
     print("\n  Sort by:")
     for i, (label, _, _) in enumerate(cols, 1):
         print(f"    [{i}] {label}")
     print("    [h] Show top N (head)")
     print("    [t] Show bottom N (tail)")
+    print("    [f] Filters")
     print("    [c] Export to CSV")
     print("    [q] Back")
     cmd = input("\n  > ").strip().lower()
@@ -241,6 +369,8 @@ def _sort_prompt(cols: list[tuple[str, str, bool]]) -> tuple[str, bool] | None:
         return None
     if cmd == "c":
         return "csv"
+    if cmd == "f":
+        return "filter"
     if cmd in ("h", "t"):
         return ("limit", cmd)
     if cmd.isdigit():
@@ -248,16 +378,12 @@ def _sort_prompt(cols: list[tuple[str, str, bool]]) -> tuple[str, bool] | None:
         if 0 <= idx < len(cols):
             _, key, rev = cols[idx]
             return key, rev
-    return False   # invalid — caller re-prompts
+    return False
 
 
 def _ask_limit(current_limit: int | None, current_tail: bool) -> tuple[int | None, bool]:
-    """
-    Ask the user for a row limit and head/tail direction.
-    Returns (limit, from_tail). limit=None means show all.
-    """
     direction = "tail" if current_tail else "head"
-    showing = f"{current_limit} ({direction})" if current_limit else "all"
+    showing   = f"{current_limit} ({direction})" if current_limit else "all"
     print(f"\n  Currently showing: {showing}")
     print("  Enter a number to limit rows, or 0 to show all.")
     raw = input("  Rows: ").strip()
@@ -270,7 +396,6 @@ def _ask_limit(current_limit: int | None, current_tail: bool) -> tuple[int | Non
 
 
 def _apply_limit(rows: list, limit: int | None, from_tail: bool) -> list:
-    """Slice rows to the requested head or tail."""
     if limit is None:
         return rows
     return rows[-limit:] if from_tail else rows[:limit]
@@ -282,17 +407,9 @@ def _limit_label(limit: int | None, from_tail: bool) -> str:
     return f"bottom {limit}" if from_tail else f"top {limit}"
 
 
-
 # ── CSV export helper ─────────────────────────────────────────────────────────
 
 def _dump_csv(filename: str, headers: list[str], rows: list[dict], display_keys: list[str]) -> None:
-    """
-    Write the currently-sorted rows to a CSV file.
-      filename     — output filename (no path, written to cwd)
-      headers      — human-readable column headers
-      rows         — already-sorted list of row dicts
-      display_keys — keys from each row dict matching headers order
-    """
     with open(filename, "w", newline="") as f:
         writer = csv.writer(f)
         writer.writerow(headers)
@@ -304,17 +421,15 @@ def _dump_csv(filename: str, headers: list[str], rows: list[dict], display_keys:
 
 # ── Screen: Game Summary ──────────────────────────────────────────────────────
 
-# Column definitions for game summary sort menu
-#   (label, sort_key_in_row, high_is_best)
 _GAME_SORT_COLS = [
-    ("Team name",       "name",  False),
-    ("Wins",            "W",     True),
-    ("Losses",          "L",     False),
-    ("Win %",           "pct",   True),
-    ("Runs scored",     "rs",    True),
-    ("Runs allowed",    "ra",    False),
-    ("Games",           "g",     True),
-    ("Runs/game",       "rpg",   True),
+    ("Team name",    "name", False),
+    ("Wins",         "W",    True),
+    ("Losses",       "L",    False),
+    ("Win %",        "pct",  True),
+    ("Runs scored",  "rs",   True),
+    ("Runs allowed", "ra",   False),
+    ("Games",        "g",    True),
+    ("Runs/game",    "rpg",  True),
 ]
 
 
@@ -327,92 +442,99 @@ def summary(watched: dict):
         input("\nPress Enter to continue...")
         return
 
-    scored = [
-        g for g in watched.values()
-        if g.get("away_score", "") != "" and g.get("home_score", "") != ""
-    ]
-    if not scored:
-        clear()
-        print_header("Game Summary")
-        print("\n  No completed games with scores found.")
-        input("\nPress Enter to continue...")
-        return
+    # Filter state (season + team only; no IP for game summary)
+    season_filter: str | None = None
+    team_filter:   str | None = None
 
-    # Build per-team rows (compute once, sort on demand)
-    teams: dict[str, dict] = {}
-    def get_team(name):
-        if name not in teams:
-            teams[name] = {"W": 0, "L": 0, "rs": 0, "ra": 0, "g": 0}
-        return teams[name]
+    sort_col, sort_rev  = "pct", True
+    limit, from_tail    = 25, False
 
-    for g in scored:
-        a = int(g["away_score"]); h = int(g["home_score"])
-        at = get_team(g["away"]); ht = get_team(g["home"])
-        at["g"] += 1; at["rs"] += a; at["ra"] += h
-        ht["g"] += 1; ht["rs"] += h; ht["ra"] += a
-        if a > h:   at["W"] += 1; ht["L"] += 1
-        elif h > a: ht["W"] += 1; at["L"] += 1
+    while True:
+        active = _apply_watched_filters(watched, season_filter, team_filter)
+        scored = [
+            g for g in active.values()
+            if g.get("away_score", "") != "" and g.get("home_score", "") != ""
+        ]
 
-    def build_rows(sort_col="pct", reverse=True):
+        # Build per-team rows
+        teams: dict[str, dict] = {}
+        def get_team(name):
+            if name not in teams:
+                teams[name] = {"W": 0, "L": 0, "rs": 0, "ra": 0, "g": 0}
+            return teams[name]
+
+        for g in scored:
+            a = int(g["away_score"]); h = int(g["home_score"])
+            at = get_team(g["away"]); ht = get_team(g["home"])
+            at["g"] += 1; at["rs"] += a; at["ra"] += h
+            ht["g"] += 1; ht["rs"] += h; ht["ra"] += a
+            if a > h:   at["W"] += 1; ht["L"] += 1
+            elif h > a: ht["W"] += 1; at["L"] += 1
+
         rows = []
         for name, t in teams.items():
             total = t["W"] + t["L"]
-            pct = t["W"] / total if total else 0
-            rpg = t["rs"] / t["g"] if t["g"] else 0
+            pct   = t["W"] / total if total else 0
+            rpg   = t["rs"] / t["g"] if t["g"] else 0
             rows.append({
                 "name": name, "W": t["W"], "L": t["L"],
                 "pct": pct, "rs": t["rs"], "ra": t["ra"],
                 "g": t["g"], "rpg": rpg,
             })
-        rows.sort(key=lambda r: (r[sort_col] if isinstance(r[sort_col], (int, float))
-                                 else r[sort_col].lower()),
-                  reverse=reverse)
-        return rows
 
-    total_runs = sum(int(g["away_score"]) + int(g["home_score"]) for g in scored)
-    avg_runs   = total_runs / len(scored)
-    highest = max(scored, key=lambda g: int(g["away_score"]) + int(g["home_score"]))
-    lowest  = min(scored, key=lambda g: int(g["away_score"]) + int(g["home_score"]))
-    blowout = max(scored, key=lambda g: abs(int(g["away_score"]) - int(g["home_score"])))
-    margin  = abs(int(blowout["away_score"]) - int(blowout["home_score"]))
+        rows.sort(
+            key=lambda r: r[sort_col] if isinstance(r[sort_col], (int, float)) else r[sort_col].lower(),
+            reverse=sort_rev,
+        )
+        visible = _apply_limit(rows, limit, from_tail)
 
-    sort_col, sort_rev = "pct", True   # default sort
-    limit, from_tail = 25, False           # default: top 25
-
-    while True:
-        rows = build_rows(sort_col, sort_rev)
         clear()
         print_header("Game Summary")
         sort_label = next(l for l, k, _ in _GAME_SORT_COLS if k == sort_col)
-        visible = _apply_limit(rows, limit, from_tail)
-        print(f"\n  {len(scored)} game(s)  |  {len(teams)} teams  |  sorted by {sort_label}  |  showing {_limit_label(limit, from_tail)}\n")
+        fl = _filters_label(season_filter, team_filter, None)
+        print(f"\n  {len(scored)} game(s)  |  {len(teams)} teams  |  sorted by {sort_label}  |  showing {_limit_label(limit, from_tail)}{fl}\n")
 
-        col = "{:<26}  {:>3}  {:>3}  {:>5}  {:>6}  {:>6}  {:>5}  {:>6}"
-        print(col.format("Team", "W", "L", "PCT", "RS", "RA", "G", "R/G"))
-        print("  " + "-" * 58)
-        for r in visible:
-            print("  " + col.format(
-                r["name"][:26], r["W"], r["L"],
-                f"{r['pct']:.3f}", r["rs"], r["ra"],
-                r["g"], f"{r['rpg']:.1f}",
-            ))
+        if not scored:
+            print("  No completed games match current filters.")
+        else:
+            total_runs = sum(int(g["away_score"]) + int(g["home_score"]) for g in scored)
+            avg_runs   = total_runs / len(scored)
+            highest = max(scored, key=lambda g: int(g["away_score"]) + int(g["home_score"]))
+            lowest  = min(scored, key=lambda g: int(g["away_score"]) + int(g["home_score"]))
+            blowout = max(scored, key=lambda g: abs(int(g["away_score"]) - int(g["home_score"])))
+            margin  = abs(int(blowout["away_score"]) - int(blowout["home_score"]))
 
-        print("\n" + "-" * 60)
-        print(f"  Avg runs/game: {avg_runs:.1f}")
-        print(f"  🔥 Highest-scoring: {highest['date']}  {highest['away']} @ {highest['home']}  ({highest['away_score']}–{highest['home_score']})")
-        print(f"  🥱 Lowest-scoring:  {lowest['date']}   {lowest['away']} @ {lowest['home']}  ({lowest['away_score']}–{lowest['home_score']})")
-        print(f"  💥 Biggest blowout: {blowout['date']}  {blowout['away']} @ {blowout['home']}  ({blowout['away_score']}–{blowout['home_score']}, margin: {margin})")
+            col = "{:<26}  {:>3}  {:>3}  {:>5}  {:>6}  {:>6}  {:>5}  {:>6}"
+            print(col.format("Team", "W", "L", "PCT", "RS", "RA", "G", "R/G"))
+            print("  " + "-" * 58)
+            for r in visible:
+                print("  " + col.format(
+                    r["name"][:26], r["W"], r["L"],
+                    f"{r['pct']:.3f}", r["rs"], r["ra"],
+                    r["g"], f"{r['rpg']:.1f}",
+                ))
+
+            print("\n" + "-" * 60)
+            print(f"  Avg runs/game: {avg_runs:.1f}")
+            print(f"  🔥 Highest-scoring: {highest['date']}  {highest['away']} @ {highest['home']}  ({highest['away_score']}–{highest['home_score']})")
+            print(f"  🥱 Lowest-scoring:  {lowest['date']}  {lowest['away']} @ {lowest['home']}  ({lowest['away_score']}–{lowest['home_score']})")
+            print(f"  💥 Biggest blowout: {blowout['date']}  {blowout['away']} @ {blowout['home']}  ({blowout['away_score']}–{blowout['home_score']}, margin: {margin})")
 
         result = _sort_prompt(_GAME_SORT_COLS)
         if result is None:
             return
         if result == "csv":
-            csv_rows = [{**r, "pct": f"{r['pct']:.3f}", "rpg": f"{r['rpg']:.1f}"} for r in _apply_limit(rows, limit, from_tail)]
+            csv_rows = [{**r, "pct": f"{r['pct']:.3f}", "rpg": f"{r['rpg']:.1f}"} for r in visible]
             _dump_csv(
                 "game_summary.csv",
                 ["Team", "W", "L", "PCT", "RS", "RA", "G", "R/G"],
                 csv_rows,
                 ["name", "W", "L", "pct", "rs", "ra", "g", "rpg"],
+            )
+            continue
+        if result == "filter":
+            season_filter, team_filter, _ = _filter_prompt(
+                watched, season_filter, team_filter, None, show_ip=False
             )
             continue
         if isinstance(result, tuple) and result[0] == "limit":
@@ -426,7 +548,7 @@ def summary(watched: dict):
 # ── Screen: Player Summary ────────────────────────────────────────────────────
 
 def screen_player_summary(watched: dict):
-    """Sub-menu: choose pitchers or batters, then fetch and display leaderboard."""
+    """Sub-menu: choose pitchers or batters."""
     if not watched:
         clear()
         print_header("Player Summary")
@@ -450,12 +572,11 @@ def screen_player_summary(watched: dict):
             _show_batting(watched)
 
 
-# Column definitions for pitcher sort menu
 _PITCH_SORT_COLS = [
     ("Name",        "name",  False),
     ("Team",        "team",  False),
     ("Appearances", "app",   True),
-    ("IP",          "_outs", True),   # sort numerically on raw outs
+    ("IP",          "_outs", True),
     ("ERA",         "_era",  False),
     ("WHIP",        "_whip", False),
     ("K/9",         "_k9",   True),
@@ -463,7 +584,6 @@ _PITCH_SORT_COLS = [
     ("HR/9",        "_hr9",  False),
 ]
 
-# Column definitions for batter sort menu
 _BAT_SORT_COLS = [
     ("Name",        "name",  False),
     ("Team",        "team",  False),
@@ -477,55 +597,73 @@ _BAT_SORT_COLS = [
 
 
 def _show_pitching(watched: dict):
+    season_filter: str | None = None
+    team_filter:   str | None = None
+    ip_min:        float | None = None
+
+    sort_col, sort_rev = "_era", False
+    limit, from_tail   = 25, False
+
+    # fetch once; re-filter in memory from here
     clear()
     print_header("Pitcher Summary")
     print(f"\n  Fetching boxscore data for {len(watched)} game(s)...\n")
-
     try:
-        pitchers, _ = player_summary.collect_player_game_stats(watched)
+        all_pitchers, _ = player_summary.collect_player_game_stats(watched)
     except Exception as e:
         print(f"\n  Error collecting stats: {e}")
         input("\nPress Enter to continue...")
         return
 
-    rows = player_summary.pitching_leaderboard(pitchers)
-    # attach raw outs for IP sort
     from player_summary import ip_to_outs
-    for r in rows:
-        r["_outs"] = ip_to_outs(r["ip"])
-
-    if not rows:
-        clear()
-        print_header("Pitcher Summary")
-        print(f"\n  Not enough data (need ≥{player_summary.MIN_PITCHER_OUTS} outs per pitcher).")
-        input("\nPress Enter to continue...")
-        return
-
-    sort_col, sort_rev = "_era", False   # default: ERA ascending
-    limit, from_tail = 25, False           # default: top 25
 
     while True:
+        # Apply season/team filter to the raw pitcher accumulations
+        # We need to re-run collection if watched subset changes — but since
+        # collect already keyed stats per player across all games, we filter
+        # by re-running on the filtered watched subset only when filters change.
+        # For simplicity and correctness, re-collect from filtered watched each loop.
+        filtered_watched = _apply_watched_filters(watched, season_filter, team_filter)
+
+        if (season_filter or team_filter) and filtered_watched != watched:
+            pitchers, _ = player_summary.collect_player_game_stats(filtered_watched)
+        else:
+            pitchers = all_pitchers
+
+        rows = player_summary.pitching_leaderboard(pitchers)
+        for r in rows:
+            r["_outs"] = ip_to_outs(r["ip"])
+
+        # Apply IP minimum filter
+        if ip_min is not None:
+            rows = [r for r in rows if r["_outs"] >= ip_min * 3]
+
         sorted_rows = sorted(
             rows,
             key=lambda r: (r[sort_col] if isinstance(r[sort_col], (int, float))
                            else r[sort_col].lower()),
             reverse=sort_rev,
         )
+        visible = _apply_limit(sorted_rows, limit, from_tail)
+
         clear()
         print_header("Pitcher Summary")
         sort_label = next(l for l, k, _ in _PITCH_SORT_COLS if k == sort_col)
-        visible = _apply_limit(sorted_rows, limit, from_tail)
-        print(f"\n  {len(rows)} pitchers  |  min {player_summary.MIN_PITCHER_OUTS} outs  |  sorted by {sort_label}  |  showing {_limit_label(limit, from_tail)}\n")
+        fl = _filters_label(season_filter, team_filter, ip_min)
+        print(f"\n  {len(rows)} pitchers  |  sorted by {sort_label}  |  showing {_limit_label(limit, from_tail)}{fl}\n")
 
-        col = "{:<22}  {:<22}  {:>4}  {:>6}  {:>5}  {:>5}  {:>5}  {:>5}  {:>5}"
-        print(col.format("Name", "Team", "App", "IP", "ERA", "WHIP", "K/9", "BB/9", "HR/9"))
-        print("  " + "-" * 80)
-        for r in visible:
-            print("  " + col.format(
-                r["name"][:22], r["team"][:22],
-                r["app"], r["ip"],
-                r["era"], r["whip"], r["k9"], r["bb9"], r["hr9"],
-            ))
+        if not rows:
+            print(f"  No pitchers match current filters (min {player_summary.MIN_PITCHER_OUTS} outs).")
+        else:
+            col = "{:<22}  {:<22}  {:>4}  {:>6}  {:>5}  {:>5}  {:>5}  {:>5}  {:>5}"
+            print(col.format("Name", "Team", "App", "IP", "ERA", "WHIP", "K/9", "BB/9", "HR/9"))
+            print("  " + "-" * 80)
+            for r in visible:
+                print("  " + col.format(
+                    r["name"][:22], r["team"][:22],
+                    r["app"], r["ip"],
+                    r["era"], r["whip"], r["k9"], r["bb9"], r["hr9"],
+                ))
 
         result = _sort_prompt(_PITCH_SORT_COLS)
         if result is None:
@@ -534,8 +672,13 @@ def _show_pitching(watched: dict):
             _dump_csv(
                 "pitcher_summary.csv",
                 ["Name", "Team", "App", "IP", "ERA", "WHIP", "K/9", "BB/9", "HR/9"],
-                _apply_limit(sorted_rows, limit, from_tail),
+                visible,
                 ["name", "team", "app", "ip", "era", "whip", "k9", "bb9", "hr9"],
+            )
+            continue
+        if result == "filter":
+            season_filter, team_filter, ip_min = _filter_prompt(
+                watched, season_filter, team_filter, ip_min, show_ip=True
             )
             continue
         if isinstance(result, tuple) and result[0] == "limit":
@@ -547,51 +690,58 @@ def _show_pitching(watched: dict):
 
 
 def _show_batting(watched: dict):
+    season_filter: str | None = None
+    team_filter:   str | None = None
+
+    sort_col, sort_rev = "_ops", True
+    limit, from_tail   = 25, False
+
     clear()
     print_header("Batter Summary")
     print(f"\n  Fetching boxscore data for {len(watched)} game(s)...\n")
-
     try:
-        _, batters = player_summary.collect_player_game_stats(watched)
+        _, all_batters = player_summary.collect_player_game_stats(watched)
     except Exception as e:
         print(f"\n  Error collecting stats: {e}")
         input("\nPress Enter to continue...")
         return
 
-    rows = player_summary.batting_leaderboard(batters)
-
-    if not rows:
-        clear()
-        print_header("Batter Summary")
-        print(f"\n  Not enough data (need ≥{player_summary.MIN_BATTER_AB} AB per batter).")
-        input("\nPress Enter to continue...")
-        return
-
-    sort_col, sort_rev = "_ops", True   # default: OPS descending
-    limit, from_tail = 25, False           # default: top 25
-
     while True:
+        filtered_watched = _apply_watched_filters(watched, season_filter, team_filter)
+
+        if (season_filter or team_filter) and filtered_watched != watched:
+            _, batters = player_summary.collect_player_game_stats(filtered_watched)
+        else:
+            batters = all_batters
+
+        rows = player_summary.batting_leaderboard(batters)
+
         sorted_rows = sorted(
             rows,
             key=lambda r: (r[sort_col] if isinstance(r[sort_col], (int, float))
                            else r[sort_col].lower()),
             reverse=sort_rev,
         )
+        visible = _apply_limit(sorted_rows, limit, from_tail)
+
         clear()
         print_header("Batter Summary")
         sort_label = next(l for l, k, _ in _BAT_SORT_COLS if k == sort_col)
-        visible = _apply_limit(sorted_rows, limit, from_tail)
-        print(f"\n  {len(rows)} batters  |  min {player_summary.MIN_BATTER_AB} AB  |  sorted by {sort_label}  |  showing {_limit_label(limit, from_tail)}\n")
+        fl = _filters_label(season_filter, team_filter, None)
+        print(f"\n  {len(rows)} batters  |  sorted by {sort_label}  |  showing {_limit_label(limit, from_tail)}{fl}\n")
 
-        col = "{:<22}  {:<22}  {:>4}  {:>5}  {:>5}  {:>6}  {:>5}  {:>5}  {:>5}"
-        print(col.format("Name", "Team", "App", "AB", "H", "AVG", "OBP", "SLG", "OPS"))
-        print("  " + "-" * 80)
-        for r in visible:
-            print("  " + col.format(
-                r["name"][:22], r["team"][:22],
-                r["app"], r["ab"], r["h"],
-                r["avg"], r["obp"], r["slg"], r["ops"],
-            ))
+        if not rows:
+            print(f"  No batters match current filters (min {player_summary.MIN_BATTER_AB} AB).")
+        else:
+            col = "{:<22}  {:<22}  {:>4}  {:>5}  {:>5}  {:>6}  {:>5}  {:>5}  {:>5}"
+            print(col.format("Name", "Team", "App", "AB", "H", "AVG", "OBP", "SLG", "OPS"))
+            print("  " + "-" * 80)
+            for r in visible:
+                print("  " + col.format(
+                    r["name"][:22], r["team"][:22],
+                    r["app"], r["ab"], r["h"],
+                    r["avg"], r["obp"], r["slg"], r["ops"],
+                ))
 
         result = _sort_prompt(_BAT_SORT_COLS)
         if result is None:
@@ -600,8 +750,13 @@ def _show_batting(watched: dict):
             _dump_csv(
                 "batter_summary.csv",
                 ["Name", "Team", "App", "AB", "H", "AVG", "OBP", "SLG", "OPS"],
-                _apply_limit(sorted_rows, limit, from_tail),
+                visible,
                 ["name", "team", "app", "ab", "h", "avg", "obp", "slg", "ops"],
+            )
+            continue
+        if result == "filter":
+            season_filter, team_filter, _ = _filter_prompt(
+                watched, season_filter, team_filter, None, show_ip=False
             )
             continue
         if isinstance(result, tuple) and result[0] == "limit":
@@ -610,7 +765,6 @@ def _show_batting(watched: dict):
         if result is False:
             continue
         sort_col, sort_rev = result
-
 
 
 # ── Main menu ─────────────────────────────────────────────────────────────────

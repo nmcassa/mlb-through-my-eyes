@@ -83,4 +83,6 @@ Loading stats for players is low, we have to load boxscores from each game indiv
 
 add a comparison from user watched games to career/season averages
 
-add option to filter summaries page (IP, Team, Season)
+add filter for batters (minimum PA)
+
+it's only regular season games (no need for preseason but definitely want postseason
