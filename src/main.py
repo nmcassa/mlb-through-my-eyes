@@ -9,6 +9,7 @@ import os
 from datetime import datetime
 
 import mlb
+import player_summary
 import json_store
 
 
@@ -313,6 +314,120 @@ def summary(watched: dict):
     input("Press Enter to continue...")
 
 
+# ── Screen: Player Summary ────────────────────────────────────────────────────
+
+def screen_player_summary(watched: dict):
+    """Sub-menu: choose pitchers or batters, then fetch and display leaderboard."""
+    if not watched:
+        clear()
+        print_header("Player Summary")
+        print("\n  No games watched yet. Browse a season to add some!")
+        input("\nPress Enter to continue...")
+        return
+
+    while True:
+        clear()
+        print_header("Player Summary")
+        print(f"\n  Stats aggregated across {len(watched)} watched game(s).\n")
+        print("  [1]  Pitchers")
+        print("  [2]  Batters")
+        print("  [q]  Back\n")
+        cmd = input("> ").strip().lower()
+
+        if cmd == "q":
+            return
+        elif cmd == "1":
+            _show_pitching(watched)
+        elif cmd == "2":
+            _show_batting(watched)
+
+
+def _show_pitching(watched: dict):
+    clear()
+    print_header("Pitcher Summary")
+    print(f"\n  Fetching boxscore data for {len(watched)} game(s)...\n")
+
+    try:
+        pitchers, _ = player_summary.collect_player_game_stats(watched)
+    except Exception as e:
+        print(f"\n  Error collecting stats: {e}")
+        input("\nPress Enter to continue...")
+        return
+
+    rows = player_summary.pitching_leaderboard(pitchers)
+
+    clear()
+    print_header("Pitcher Summary")
+
+    if not rows:
+        print(f"\n  Not enough data yet (need ≥{player_summary.MIN_PITCHER_OUTS} outs per pitcher).")
+        input("\nPress Enter to continue...")
+        return
+
+    print(f"\n  {len(rows)} pitchers  |  min {player_summary.MIN_PITCHER_OUTS} outs  |  sorted by ERA\n")
+
+    col = "{:<25}  {:>5}  {:>5}  {:>5}  {:>5}  {:>5}  {:>5}  {:>4}"
+    print(col.format("Name", "App", "IP", "ERA", "WHIP", "K/9", "BB/9", "HR/9"))
+    print("  " + "-" * 62)
+    for r in rows:
+        print("  " + col.format(
+            r["name"][:25],
+            r["app"],
+            r["ip"],
+            r["era"],
+            r["whip"],
+            r["k9"],
+            r["bb9"],
+            r["hr9"],
+        ))
+
+    print()
+    input("Press Enter to continue...")
+
+
+def _show_batting(watched: dict):
+    clear()
+    print_header("Batter Summary")
+    print(f"\n  Fetching boxscore data for {len(watched)} game(s)...\n")
+
+    try:
+        _, batters = player_summary.collect_player_game_stats(watched)
+    except Exception as e:
+        print(f"\n  Error collecting stats: {e}")
+        input("\nPress Enter to continue...")
+        return
+
+    rows = player_summary.batting_leaderboard(batters)
+
+    clear()
+    print_header("Batter Summary")
+
+    if not rows:
+        print(f"\n  Not enough data yet (need ≥{player_summary.MIN_BATTER_AB} AB per batter).")
+        input("\nPress Enter to continue...")
+        return
+
+    print(f"\n  {len(rows)} batters  |  min {player_summary.MIN_BATTER_AB} AB  |  sorted by OPS\n")
+
+    col = "{:<25}  {:>4}  {:>4}  {:>6}  {:>5}  {:>5}  {:>5}"
+    print(col.format("Name", "App", "AB", "AVG", "OBP", "SLG", "OPS"))
+    print("  " + "-" * 56)
+    for r in rows:
+        print("  " + col.format(
+            r["name"][:25],
+            r["app"],
+            r["ab"],
+            r["avg"],
+            r["obp"],
+            r["slg"],
+            r["ops"],
+        ))
+
+    print()
+    input("Press Enter to continue...")
+
+
+
 # ── Main menu ─────────────────────────────────────────────────────────────────
 
 def main():
@@ -325,7 +440,8 @@ def main():
         print("  [1]  Browse a season & mark games watched")
         print("  [2]  View all watched games")
         print("  [3]  Remove a watched game")
-        print("  [4]  Summary")
+        print("  [4]  Game Summary")
+        print("  [5]  Player Summary")
         print("  [q]  Quit\n")
 
         cmd = input("> ").strip().lower()
@@ -338,6 +454,8 @@ def main():
             remove_watched(watched)
         elif cmd == "4":
             summary(watched)
+        elif cmd == "5":
+            screen_player_summary(watched)
         elif cmd == "q":
             print("\nBye!\n")
             break

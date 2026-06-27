@@ -43,3 +43,21 @@ def fetch_season_schedule(team_id: int, season: str) -> list[dict]:
 def fetch_boxscore(game_id: int) -> str:
     """Return a formatted boxscore string for a single game."""
     return statsapi.boxscore(game_id)
+
+
+def fetch_boxscore_data(game_id: int) -> dict:
+    """
+    Return the raw boxscore data dict for a single game.
+    Contains per-player batting and pitching stats under:
+      result['away']['players']  and  result['home']['players']
+    Each player entry has:
+      p['seasonStats']['batting']  — avg, ops, obp, slg, ...
+      p['seasonStats']['pitching'] — era, inningsPitched, earnedRuns, ...
+      p['stats']['batting']        — game-level batting stats
+      p['stats']['pitching']       — game-level pitching stats (ip, h, r, er, bb, k, hr)
+    Raises RuntimeError on failure.
+    """
+    try:
+        return statsapi.boxscore_data(game_id)
+    except Exception as e:
+        raise RuntimeError(f"Failed to fetch boxscore data for game {game_id}: {e}") from e

@@ -21,3 +21,9 @@ MLB-StatsAPI: https://github.com/toddrob99/MLB-StatsAPI
 Therefore, if that goes down, so does this. 
 
 Adding games watched is a real pain right now... you just go one by one and add them. Would be better if you could import from a site like rategame.io. Or could add an option to add all games from a season/month and then the user could remove from there. Not sure the best way of doing this. 
+
+Loading stats for players is low, we have to load boxscores from each game individually
+
+## todo
+
+add sorting by column in the player summaries
