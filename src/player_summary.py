@@ -7,14 +7,14 @@ Pitching stats computed:
   (all derived from raw counting stats: IP, ER, H, BB, K, HR)
 
 Batting stats computed:
-  AVG, OPS (OBP + SLG)
+  AVG, OBP, SLG, OPS
   (derived from AB, H, BB, HBP, SF, TB)
 
 All stats are accumulated from game-level data so the numbers reflect
 only the games the user has watched, not full-season totals.
 """
+from __future__ import annotations
 
-from fractions import Fraction
 import mlb
 
 
@@ -44,10 +44,11 @@ def collect_player_game_stats(watched: dict) -> tuple[dict, dict]:
     stats per player.
 
     Returns:
-        pitchers: { player_name: { outs, er, h, bb, k, hr, appearances } }
-        batters:  { player_name: { ab, h, bb, hbp, sf, tb, appearances } }
+        pitchers: { player_name: { outs, er, h, bb, k, hr, appearances, teams } }
+        batters:  { player_name: { ab, h, bb, hbp, sf, tb, appearances, teams } }
 
-    Yields progress to stdout as it fetches each game.
+    'teams' is a dict of { team_name: appearance_count } used to pick the
+    most-seen team for display.
     """
     pitchers: dict[str, dict] = {}
     batters: dict[str, dict] = {}
@@ -65,7 +66,9 @@ def collect_player_game_stats(watched: dict) -> tuple[dict, dict]:
             continue
 
         for side in ("away", "home"):
+            team_name = game["away"] if side == "away" else game["home"]
             players = data.get(side, {}).get("players", {})
+
             for pid, p in players.items():
                 name = p.get("person", {}).get("fullName", pid)
                 game_batting  = p.get("stats", {}).get("batting", {})
@@ -74,69 +77,86 @@ def collect_player_game_stats(watched: dict) -> tuple[dict, dict]:
                 # ── Pitching ──────────────────────────────────────────────
                 if game_pitching.get("inningsPitched") not in (None, "", "0.0", 0):
                     if name not in pitchers:
-                        pitchers[name] = {"outs": 0, "er": 0, "h": 0, "bb": 0, "k": 0, "hr": 0, "appearances": 0}
-                    p_acc = pitchers[name]
-                    p_acc["outs"]        += ip_to_outs(game_pitching.get("inningsPitched", 0))
-                    p_acc["er"]          += int(game_pitching.get("earnedRuns", 0))
-                    p_acc["h"]           += int(game_pitching.get("hits", 0))
-                    p_acc["bb"]          += int(game_pitching.get("baseOnBalls", 0))
-                    p_acc["k"]           += int(game_pitching.get("strikeOuts", 0))
-                    p_acc["hr"]          += int(game_pitching.get("homeRuns", 0))
-                    p_acc["appearances"] += 1
+                        pitchers[name] = {"outs": 0, "er": 0, "h": 0, "bb": 0,
+                                          "k": 0, "hr": 0, "appearances": 0, "teams": {}}
+                    acc = pitchers[name]
+                    acc["outs"]        += ip_to_outs(game_pitching.get("inningsPitched", 0))
+                    acc["er"]          += int(game_pitching.get("earnedRuns", 0))
+                    acc["h"]           += int(game_pitching.get("hits", 0))
+                    acc["bb"]          += int(game_pitching.get("baseOnBalls", 0))
+                    acc["k"]           += int(game_pitching.get("strikeOuts", 0))
+                    acc["hr"]          += int(game_pitching.get("homeRuns", 0))
+                    acc["appearances"] += 1
+                    acc["teams"][team_name] = acc["teams"].get(team_name, 0) + 1
 
                 # ── Batting ───────────────────────────────────────────────
                 if game_batting.get("atBats") not in (None, "", 0):
                     if name not in batters:
-                        batters[name] = {"ab": 0, "h": 0, "bb": 0, "hbp": 0, "sf": 0, "tb": 0, "appearances": 0}
-                    b_acc = batters[name]
-                    b_acc["ab"]          += int(game_batting.get("atBats", 0))
-                    b_acc["h"]           += int(game_batting.get("hits", 0))
-                    b_acc["bb"]          += int(game_batting.get("baseOnBalls", 0))
-                    b_acc["hbp"]         += int(game_batting.get("hitByPitch", 0))
-                    b_acc["sf"]          += int(game_batting.get("sacFlies", 0))
-                    # Total bases = 1B + 2×2B + 3×3B + 4×HR
-                    singles   = int(game_batting.get("hits", 0)) \
-                              - int(game_batting.get("doubles", 0)) \
-                              - int(game_batting.get("triples", 0)) \
-                              - int(game_batting.get("homeRuns", 0))
+                        batters[name] = {"ab": 0, "h": 0, "bb": 0, "hbp": 0,
+                                         "sf": 0, "tb": 0, "appearances": 0, "teams": {}}
+                    acc = batters[name]
+                    acc["ab"]          += int(game_batting.get("atBats", 0))
+                    acc["h"]           += int(game_batting.get("hits", 0))
+                    acc["bb"]          += int(game_batting.get("baseOnBalls", 0))
+                    acc["hbp"]         += int(game_batting.get("hitByPitch", 0))
+                    acc["sf"]          += int(game_batting.get("sacFlies", 0))
+                    singles = (int(game_batting.get("hits", 0))
+                               - int(game_batting.get("doubles", 0))
+                               - int(game_batting.get("triples", 0))
+                               - int(game_batting.get("homeRuns", 0)))
                     tb = (singles
                           + 2 * int(game_batting.get("doubles", 0))
                           + 3 * int(game_batting.get("triples", 0))
                           + 4 * int(game_batting.get("homeRuns", 0)))
-                    b_acc["tb"]          += tb
-                    b_acc["appearances"] += 1
+                    acc["tb"]          += tb
+                    acc["appearances"] += 1
+                    acc["teams"][team_name] = acc["teams"].get(team_name, 0) + 1
 
     return pitchers, batters
 
 
+def _primary_team(teams_dict: dict) -> str:
+    """Return the team name a player appeared for most across watched games."""
+    if not teams_dict:
+        return "—"
+    return max(teams_dict, key=teams_dict.get)
+
+
 # ── Stat calculators ──────────────────────────────────────────────────────────
 
-def calc_pitching_stats(raw: dict) -> dict:
+def calc_pitching_stats(name: str, raw: dict) -> dict:
     """Derive ERA, WHIP, K/9, BB/9, HR/9 from raw counting stats."""
     outs = raw["outs"]
-    ip   = outs / 3  # fractional innings for rate calculations
+    ip   = outs / 3
+
+    base = {
+        "name": name,
+        "team": _primary_team(raw.get("teams", {})),
+        "app":  raw["appearances"],
+        "ip":   outs_to_ip(outs),
+        # numeric shadow values for sorting (never displayed)
+        "_era": 999.0, "_whip": 999.0, "_k9": 0.0, "_bb9": 999.0, "_hr9": 999.0,
+    }
 
     if ip == 0:
-        return {"ip": "0.0", "era": "—", "whip": "—", "k9": "—", "bb9": "—", "hr9": "—", "app": raw["appearances"]}
+        return {**base, "era": "—", "whip": "—", "k9": "—", "bb9": "—", "hr9": "—"}
 
     era  = (raw["er"] / ip) * 9
     whip = (raw["h"] + raw["bb"]) / ip
-    k9   = (raw["k"] / ip) * 9
+    k9   = (raw["k"]  / ip) * 9
     bb9  = (raw["bb"] / ip) * 9
     hr9  = (raw["hr"] / ip) * 9
 
-    return {
-        "ip":  outs_to_ip(outs),
-        "era": f"{era:.2f}",
-        "whip": f"{whip:.3f}",
-        "k9":  f"{k9:.1f}",
-        "bb9": f"{bb9:.1f}",
-        "hr9": f"{hr9:.2f}",
-        "app": raw["appearances"],
+    return {**base,
+        "era":  f"{era:.2f}",  "_era":  era,
+        "whip": f"{whip:.3f}", "_whip": whip,
+        "k9":   f"{k9:.1f}",   "_k9":   k9,
+        "bb9":  f"{bb9:.1f}",  "_bb9":  bb9,
+        "hr9":  f"{hr9:.2f}",  "_hr9":  hr9,
     }
 
 
-def calc_batting_stats(raw: dict) -> dict:
+def calc_batting_stats(name: str, raw: dict) -> dict:
     """Derive AVG, OBP, SLG, OPS from raw counting stats."""
     ab  = raw["ab"]
     h   = raw["h"]
@@ -152,51 +172,39 @@ def calc_batting_stats(raw: dict) -> dict:
     ops = obp + slg
 
     return {
-        "ab":  ab,
-        "h":   h,
-        "avg": f"{avg:.3f}",
-        "obp": f"{obp:.3f}",
-        "slg": f"{slg:.3f}",
-        "ops": f"{ops:.3f}",
-        "app": raw["appearances"],
+        "name": name,
+        "team": _primary_team(raw.get("teams", {})),
+        "app":  raw["appearances"],
+        "ab":   ab,
+        "h":    h,
+        "avg":  f"{avg:.3f}", "_avg": avg,
+        "obp":  f"{obp:.3f}", "_obp": obp,
+        "slg":  f"{slg:.3f}", "_slg": slg,
+        "ops":  f"{ops:.3f}", "_ops": ops,
     }
 
 
-# ── Formatted leaderboards ────────────────────────────────────────────────────
+# ── Leaderboard builders (unsorted — caller decides order) ────────────────────
 
 MIN_PITCHER_OUTS = 3   # at least 1 IP to appear in pitching summary
 MIN_BATTER_AB    = 5   # at least 5 AB to appear in batting summary
 
 
 def pitching_leaderboard(pitchers: dict) -> list[dict]:
-    """
-    Return a sorted list of pitchers with computed stats.
-    Sorted by ERA ascending (best first). Excludes very small samples.
-    """
+    """Return all qualifying pitchers with computed stats. No sort applied."""
     rows = []
     for name, raw in pitchers.items():
         if raw["outs"] < MIN_PITCHER_OUTS:
             continue
-        stats = calc_pitching_stats(raw)
-        stats["name"] = name
-        rows.append(stats)
-
-    rows.sort(key=lambda r: float(r["era"]) if r["era"] != "—" else 999)
+        rows.append(calc_pitching_stats(name, raw))
     return rows
 
 
 def batting_leaderboard(batters: dict) -> list[dict]:
-    """
-    Return a sorted list of batters with computed stats.
-    Sorted by OPS descending (best first). Excludes very small samples.
-    """
+    """Return all qualifying batters with computed stats. No sort applied."""
     rows = []
     for name, raw in batters.items():
         if raw["ab"] < MIN_BATTER_AB:
             continue
-        stats = calc_batting_stats(raw)
-        stats["name"] = name
-        rows.append(stats)
-
-    rows.sort(key=lambda r: float(r["ops"]), reverse=True)
+        rows.append(calc_batting_stats(name, raw))
     return rows

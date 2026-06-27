@@ -26,4 +26,6 @@ Loading stats for players is low, we have to load boxscores from each game indiv
 
 ## todo
 
-add sorting by column in the player summaries
+add a comparison from user watched games to career/season averages
+
+add option to filter summaries page (IP, Team, Season)

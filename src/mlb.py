@@ -3,6 +3,7 @@ mlb.py
 Thin wrappers around the MLB-StatsAPI library.
 All calls to statsapi live here — nothing else in the project imports statsapi directly.
 """
+from __future__ import annotations
 
 import sys
 

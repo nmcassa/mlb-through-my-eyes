@@ -2,6 +2,7 @@
 json_store.py
 Handles reading and writing the watched games JSON file.
 """
+from __future__ import annotations
 
 import json
 import os
