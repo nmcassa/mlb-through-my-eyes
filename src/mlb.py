@@ -62,3 +62,35 @@ def fetch_boxscore_data(game_id: int) -> dict:
         return statsapi.boxscore_data(game_id)
     except Exception as e:
         raise RuntimeError(f"Failed to fetch boxscore data for game {game_id}: {e}") from e
+
+
+def fetch_player_stat_data(person_id: int, group: str, stat_type: str, season: str | None = None) -> dict:
+    """
+    Return raw stat data for a single player.
+      group:     'hitting' or 'pitching'
+      stat_type: 'career' or 'season'
+      season:    e.g. '2014' — required when stat_type='season'
+
+    Returns the dict from statsapi.player_stat_data(), which has:
+      result['stats'][0]['splits'][0]['stat']  — the stat dict
+    Raises RuntimeError on failure or if no data found.
+    """
+    try:
+        kwargs = dict(group=group, type=stat_type, sportId=1)
+        if season:
+            kwargs["season"] = season
+        data = statsapi.player_stat_data(person_id, **kwargs)
+        return data
+    except Exception as e:
+        raise RuntimeError(f"Failed to fetch stats for player {person_id}: {e}") from e
+
+
+def lookup_player_id(full_name: str) -> int | None:
+    """
+    Look up a player's MLB person ID by full name.
+    Returns the first match's ID, or None if not found.
+    """
+    results = statsapi.lookup_player(full_name)
+    if results:
+        return results[0]["id"]
+    return None

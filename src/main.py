@@ -12,6 +12,7 @@ from datetime import datetime
 
 import mlb
 import player_summary
+import comparison
 import json_store
 
 
@@ -251,7 +252,8 @@ def _apply_watched_filters(
 def _filters_label(
     season_filter: str | None,
     team_filter: str | None,
-    ip_min: float | None,
+    ip_min: float | None = None,
+    pa_min: int | None = None,
 ) -> str:
     parts = []
     if season_filter:
@@ -260,6 +262,8 @@ def _filters_label(
         parts.append(f"team={team_filter}")
     if ip_min is not None:
         parts.append(f"IP≥{ip_min:.1f}")
+    if pa_min is not None:
+        parts.append(f"PA≥{pa_min}")
     return "  |  filters: " + ", ".join(parts) if parts else ""
 
 
@@ -267,13 +271,15 @@ def _filter_prompt(
     watched: dict,
     season_filter: str | None,
     team_filter: str | None,
-    ip_min: float | None,
+    ip_min: float | None = None,
+    pa_min: int | None = None,
     show_ip: bool = False,
-) -> tuple[str | None, str | None, float | None] | None:
+    show_pa: bool = False,
+) -> tuple[str | None, str | None, float | None, int | None]:
     """
-    Interactive filter menu.
-    Returns (season_filter, team_filter, ip_min) with updated values,
-    or None if the user pressed q (meaning go back without changes).
+    Interactive filter menu. Returns (season_filter, team_filter, ip_min, pa_min).
+    season/team filters are applied per-game-record in memory (no re-fetch).
+    team_filter matches only players who were on that team in that game.
     """
     seasons = _all_seasons(watched)
     teams   = _all_teams(watched)
@@ -284,21 +290,25 @@ def _filter_prompt(
         print(f"    Team   : {team_filter   or 'all'}")
         if show_ip:
             print(f"    Min IP : {ip_min:.1f}" if ip_min is not None else "    Min IP : none")
+        if show_pa:
+            print(f"    Min PA : {pa_min}" if pa_min is not None else "    Min PA : none")
 
         print("\n  ── Change filter ───────────────────────────────")
         print("    [1] Season")
-        print("    [2] Team")
+        print("    [2] Team  (players on that team only)")
         if show_ip:
-            print("    [3] Min IP (pitchers only)")
+            print("    [3] Min IP")
+        if show_pa:
+            print("    [3] Min PA")
         print("    [x] Clear all filters")
         print("    [q] Done")
         cmd = input("\n  > ").strip().lower()
 
         if cmd == "q":
-            return season_filter, team_filter, ip_min
+            return season_filter, team_filter, ip_min, pa_min
 
         elif cmd == "x":
-            season_filter, team_filter, ip_min = None, None, None
+            season_filter, team_filter, ip_min, pa_min = None, None, None, None
             print("  Filters cleared.")
 
         elif cmd == "1":
@@ -340,6 +350,14 @@ def _filter_prompt(
             try:
                 val = float(raw)
                 ip_min = None if val == 0 else val
+            except ValueError:
+                print("  Invalid number.")
+
+        elif cmd == "3" and show_pa:
+            raw = input("  Minimum PA (e.g. 10), or 0 to clear: ").strip()
+            try:
+                val = int(raw)
+                pa_min = None if val == 0 else val
             except ValueError:
                 print("  Invalid number.")
 
@@ -588,6 +606,7 @@ _BAT_SORT_COLS = [
     ("Name",        "name",  False),
     ("Team",        "team",  False),
     ("Appearances", "app",   True),
+    ("PA",          "pa",    True),
     ("AB",          "ab",    True),
     ("AVG",         "_avg",  True),
     ("OBP",         "_obp",  True),
@@ -597,46 +616,31 @@ _BAT_SORT_COLS = [
 
 
 def _show_pitching(watched: dict):
-    season_filter: str | None = None
-    team_filter:   str | None = None
+    season_filter: str | None  = None
+    team_filter:   str | None  = None
     ip_min:        float | None = None
 
     sort_col, sort_rev = "_era", False
     limit, from_tail   = 25, False
 
-    # fetch once; re-filter in memory from here
+    # Fetch once — all filtering happens in memory via filter_and_aggregate
     clear()
     print_header("Pitcher Summary")
     print(f"\n  Fetching boxscore data for {len(watched)} game(s)...\n")
     try:
-        all_pitchers, _ = player_summary.collect_player_game_stats(watched)
+        all_pitchers, all_batters = player_summary.collect_player_game_stats(watched)
     except Exception as e:
         print(f"\n  Error collecting stats: {e}")
         input("\nPress Enter to continue...")
         return
 
-    from player_summary import ip_to_outs
-
     while True:
-        # Apply season/team filter to the raw pitcher accumulations
-        # We need to re-run collection if watched subset changes — but since
-        # collect already keyed stats per player across all games, we filter
-        # by re-running on the filtered watched subset only when filters change.
-        # For simplicity and correctness, re-collect from filtered watched each loop.
-        filtered_watched = _apply_watched_filters(watched, season_filter, team_filter)
-
-        if (season_filter or team_filter) and filtered_watched != watched:
-            pitchers, _ = player_summary.collect_player_game_stats(filtered_watched)
-        else:
-            pitchers = all_pitchers
-
-        rows = player_summary.pitching_leaderboard(pitchers)
-        for r in rows:
-            r["_outs"] = ip_to_outs(r["ip"])
-
-        # Apply IP minimum filter
-        if ip_min is not None:
-            rows = [r for r in rows if r["_outs"] >= ip_min * 3]
+        pitchers_raw, _ = player_summary.filter_and_aggregate(
+            all_pitchers, all_batters,
+            season_filter=season_filter,
+            team_filter=team_filter,
+        )
+        rows = player_summary.pitching_leaderboard(pitchers_raw, ip_min=ip_min)
 
         sorted_rows = sorted(
             rows,
@@ -649,11 +653,11 @@ def _show_pitching(watched: dict):
         clear()
         print_header("Pitcher Summary")
         sort_label = next(l for l, k, _ in _PITCH_SORT_COLS if k == sort_col)
-        fl = _filters_label(season_filter, team_filter, ip_min)
+        fl = _filters_label(season_filter, team_filter, ip_min=ip_min)
         print(f"\n  {len(rows)} pitchers  |  sorted by {sort_label}  |  showing {_limit_label(limit, from_tail)}{fl}\n")
 
         if not rows:
-            print(f"  No pitchers match current filters (min {player_summary.MIN_PITCHER_OUTS} outs).")
+            print("  No pitchers match current filters.")
         else:
             col = "{:<22}  {:<22}  {:>4}  {:>6}  {:>5}  {:>5}  {:>5}  {:>5}  {:>5}"
             print(col.format("Name", "Team", "App", "IP", "ERA", "WHIP", "K/9", "BB/9", "HR/9"))
@@ -677,8 +681,8 @@ def _show_pitching(watched: dict):
             )
             continue
         if result == "filter":
-            season_filter, team_filter, ip_min = _filter_prompt(
-                watched, season_filter, team_filter, ip_min, show_ip=True
+            season_filter, team_filter, ip_min, _ = _filter_prompt(
+                watched, season_filter, team_filter, ip_min=ip_min, show_ip=True
             )
             continue
         if isinstance(result, tuple) and result[0] == "limit":
@@ -692,29 +696,29 @@ def _show_pitching(watched: dict):
 def _show_batting(watched: dict):
     season_filter: str | None = None
     team_filter:   str | None = None
+    pa_min:        int | None = None
 
     sort_col, sort_rev = "_ops", True
     limit, from_tail   = 25, False
 
+    # Fetch once — all filtering happens in memory via filter_and_aggregate
     clear()
     print_header("Batter Summary")
     print(f"\n  Fetching boxscore data for {len(watched)} game(s)...\n")
     try:
-        _, all_batters = player_summary.collect_player_game_stats(watched)
+        all_pitchers, all_batters = player_summary.collect_player_game_stats(watched)
     except Exception as e:
         print(f"\n  Error collecting stats: {e}")
         input("\nPress Enter to continue...")
         return
 
     while True:
-        filtered_watched = _apply_watched_filters(watched, season_filter, team_filter)
-
-        if (season_filter or team_filter) and filtered_watched != watched:
-            _, batters = player_summary.collect_player_game_stats(filtered_watched)
-        else:
-            batters = all_batters
-
-        rows = player_summary.batting_leaderboard(batters)
+        _, batters_raw = player_summary.filter_and_aggregate(
+            all_pitchers, all_batters,
+            season_filter=season_filter,
+            team_filter=team_filter,
+        )
+        rows = player_summary.batting_leaderboard(batters_raw, pa_min=pa_min)
 
         sorted_rows = sorted(
             rows,
@@ -727,19 +731,19 @@ def _show_batting(watched: dict):
         clear()
         print_header("Batter Summary")
         sort_label = next(l for l, k, _ in _BAT_SORT_COLS if k == sort_col)
-        fl = _filters_label(season_filter, team_filter, None)
+        fl = _filters_label(season_filter, team_filter, pa_min=pa_min)
         print(f"\n  {len(rows)} batters  |  sorted by {sort_label}  |  showing {_limit_label(limit, from_tail)}{fl}\n")
 
         if not rows:
-            print(f"  No batters match current filters (min {player_summary.MIN_BATTER_AB} AB).")
+            print("  No batters match current filters.")
         else:
-            col = "{:<22}  {:<22}  {:>4}  {:>5}  {:>5}  {:>6}  {:>5}  {:>5}  {:>5}"
-            print(col.format("Name", "Team", "App", "AB", "H", "AVG", "OBP", "SLG", "OPS"))
-            print("  " + "-" * 80)
+            col = "{:<22}  {:<22}  {:>4}  {:>5}  {:>5}  {:>5}  {:>6}  {:>5}  {:>5}  {:>5}"
+            print(col.format("Name", "Team", "App", "PA", "AB", "H", "AVG", "OBP", "SLG", "OPS"))
+            print("  " + "-" * 85)
             for r in visible:
                 print("  " + col.format(
                     r["name"][:22], r["team"][:22],
-                    r["app"], r["ab"], r["h"],
+                    r["app"], r["pa"], r["ab"], r["h"],
                     r["avg"], r["obp"], r["slg"], r["ops"],
                 ))
 
@@ -749,14 +753,14 @@ def _show_batting(watched: dict):
         if result == "csv":
             _dump_csv(
                 "batter_summary.csv",
-                ["Name", "Team", "App", "AB", "H", "AVG", "OBP", "SLG", "OPS"],
+                ["Name", "Team", "App", "PA", "AB", "H", "AVG", "OBP", "SLG", "OPS"],
                 visible,
-                ["name", "team", "app", "ab", "h", "avg", "obp", "slg", "ops"],
+                ["name", "team", "app", "pa", "ab", "h", "avg", "obp", "slg", "ops"],
             )
             continue
         if result == "filter":
-            season_filter, team_filter, _ = _filter_prompt(
-                watched, season_filter, team_filter, None, show_ip=False
+            season_filter, team_filter, _, pa_min = _filter_prompt(
+                watched, season_filter, team_filter, pa_min=pa_min, show_pa=True
             )
             continue
         if isinstance(result, tuple) and result[0] == "limit":
@@ -766,6 +770,291 @@ def _show_batting(watched: dict):
             continue
         sort_col, sort_rev = result
 
+
+
+# ── Screen: Small Sample Comparison ──────────────────────────────────────────
+
+_COMP_PITCH_SORT_COLS = [
+    ("Name",          "name",    False),
+    ("Team",          "team",    False),
+    ("App",           "app",     True),
+    ("Watched IP",    "w_ip",    True),
+    ("Watched ERA",   "_w_era",  False),
+    ("Watched WHIP",  "_w_whip", False),
+    ("Watched K/9",   "_w_k9",   True),
+    ("Watched BB/9",  "_w_bb9",  False),
+    ("Watched HR/9",  "_w_hr9",  False),
+    ("ERA Δ",         "d_era",   False),
+    ("WHIP Δ",        "d_whip",  False),
+    ("K/9 Δ",         "d_k9",    True),
+    ("BB/9 Δ",        "d_bb9",   False),
+    ("HR/9 Δ",        "d_hr9",   False),
+]
+
+_COMP_BAT_SORT_COLS = [
+    ("Name",         "name",    False),
+    ("Team",         "team",    False),
+    ("App",          "app",     True),
+    ("Watched PA",   "w_pa",    True),
+    ("Watched AVG",  "_w_avg",  True),
+    ("Watched OBP",  "_w_obp",  True),
+    ("Watched SLG",  "_w_slg",  True),
+    ("Watched OPS",  "_w_ops",  True),
+    ("AVG Δ",        "d_avg",   True),
+    ("OBP Δ",        "d_obp",   True),
+    ("SLG Δ",        "d_slg",   True),
+    ("OPS Δ",        "d_ops",   True),
+]
+
+
+def screen_small_sample(watched: dict):
+    """Sub-menu: compare watched-game stats to career/season reference."""
+    if not watched:
+        clear()
+        print_header("My Small Sample")
+        print("\n  No games watched yet. Browse a season to add some!")
+        input("\nPress Enter to continue...")
+        return
+
+    while True:
+        clear()
+        print_header("My Small Sample")
+        print(f"\n  Compare watched-game performance to season/career averages.")
+        print(f"  Season filter → uses that season's stats as reference.")
+        print(f"  No season filter → uses career stats as reference.\n")
+        print("  [1]  Pitchers")
+        print("  [2]  Batters")
+        print("  [q]  Back\n")
+        cmd = input("> ").strip().lower()
+        if cmd == "q":
+            return
+        elif cmd == "1":
+            _show_comp_pitching(watched)
+        elif cmd == "2":
+            _show_comp_batting(watched)
+
+
+def _show_comp_pitching(watched: dict):
+    season_filter: str | None  = None
+    team_filter:   str | None  = None
+    ip_min:        float | None = None
+    sort_col, sort_rev = "_w_era", False
+    limit, from_tail   = 25, False
+
+    # ── Step 1: ask for filters BEFORE any expensive fetching ────────────────
+    clear()
+    print_header("Small Sample — Pitchers")
+    print("\n  Set filters before loading (reduces players fetched).\n")
+    print(f"  Watched games: {len(watched)}")
+    print(f"  Tip: set a Team filter to load only ~15-25 players instead of hundreds.\n")
+    season_filter, team_filter, ip_min, _ = _filter_prompt(
+        watched, season_filter, team_filter, ip_min=ip_min, show_ip=True
+    )
+
+    # ── Step 2: fetch boxscore data once ─────────────────────────────────────
+    clear()
+    print_header("Small Sample — Pitchers")
+    print(f"\n  Fetching boxscore data for {len(watched)} game(s)...\n")
+    try:
+        all_pitchers, all_batters = player_summary.collect_player_game_stats(watched)
+    except Exception as e:
+        print(f"\n  Error: {e}")
+        input("\nPress Enter to continue...")
+        return
+
+    # need_ref_fetch tracks when filters change and we must re-call the API
+    need_ref_fetch = True
+    rows: list = []
+
+    while True:
+        if need_ref_fetch:
+            pitchers_raw, _ = player_summary.filter_and_aggregate(
+                all_pitchers, all_batters,
+                season_filter=season_filter,
+                team_filter=team_filter,
+            )
+            ref_type = f"{season_filter} season" if season_filter else "career"
+            leaderboard_size = len(player_summary.pitching_leaderboard(pitchers_raw, ip_min=ip_min))
+
+            clear()
+            print_header("Small Sample — Pitchers")
+            fl = _filters_label(season_filter, team_filter, ip_min=ip_min)
+            print(f"\n  Fetching {ref_type} ref stats for {leaderboard_size} pitchers{fl}...\n")
+            rows = comparison.build_pitcher_rows(pitchers_raw, ip_min=ip_min, season_filter=season_filter)
+            need_ref_fetch = False
+
+        try:
+            sorted_rows = sorted(
+                rows,
+                key=lambda r: (float(r[sort_col].lstrip("▲▼ +-")) if isinstance(r[sort_col], str) and r[sort_col] not in ("—", "")
+                               else r[sort_col] if isinstance(r[sort_col], (int, float)) else r[sort_col].lower()),
+                reverse=sort_rev,
+            )
+        except Exception:
+            sorted_rows = rows
+
+        visible = _apply_limit(sorted_rows, limit, from_tail)
+
+        clear()
+        print_header("Small Sample — Pitchers")
+        sort_label = next(l for l, k, _ in _COMP_PITCH_SORT_COLS if k == sort_col)
+        fl = _filters_label(season_filter, team_filter, ip_min=ip_min)
+        print(f"\n  {len(rows)} pitchers  |  ref: {ref_type}  |  sorted by {sort_label}  |  showing {_limit_label(limit, from_tail)}{fl}\n")
+
+        if not rows:
+            print("  No pitchers match current filters.")
+        else:
+            n = "{:<22}  {:<18}  {:>4}"
+            s = "  {:>5}  {:>5}  {:>5}  {:>5}  {:>5}"
+            print("  " + n.format("Name", "Team", "App") + s.format("ERA", "WHIP", "K/9", "BB/9", "HR/9"))
+            print("  " + "-"*22 + "  " + "-"*18 + "  " + "-"*4 + ("  " + "-"*5)*5)
+            for r in visible:
+                base = n.format(r["name"][:22], r["team"][:18], r["app"])
+                print("  " + base + s.format(r["w_era"], r["w_whip"], r["w_k9"], r["w_bb9"], r["w_hr9"]) + "  ← watched")
+                print("  " + " "*46 + s.format(r["r_era"], r["r_whip"], r["r_k9"], r["r_bb9"], r["r_hr9"]) + f"  ← {ref_type}")
+                print("  " + " "*46 + s.format(r["d_era"], r["d_whip"], r["d_k9"], r["d_bb9"], r["d_hr9"]) + "  ← delta")
+                print()
+
+        result = _sort_prompt(_COMP_PITCH_SORT_COLS)
+        if result is None:
+            return
+        if result == "csv":
+            _dump_csv(
+                "comp_pitcher.csv",
+                ["Name","Team","App","W-IP","W-ERA","W-WHIP","W-K9","W-BB9","W-HR9",
+                 "R-ERA","R-WHIP","R-K9","R-BB9","R-HR9",
+                 "D-ERA","D-WHIP","D-K9","D-BB9","D-HR9"],
+                visible,
+                ["name","team","app","w_ip","w_era","w_whip","w_k9","w_bb9","w_hr9",
+                 "r_era","r_whip","r_k9","r_bb9","r_hr9",
+                 "d_era","d_whip","d_k9","d_bb9","d_hr9"],
+            )
+            continue
+        if result == "filter":
+            new_sf, new_tf, new_ip, _ = _filter_prompt(
+                watched, season_filter, team_filter, ip_min=ip_min, show_ip=True
+            )
+            if (new_sf, new_tf, new_ip) != (season_filter, team_filter, ip_min):
+                season_filter, team_filter, ip_min = new_sf, new_tf, new_ip
+                need_ref_fetch = True
+            continue
+        if isinstance(result, tuple) and result[0] == "limit":
+            limit, from_tail = _ask_limit(limit, result[1] == "t")
+            continue
+        if result is False:
+            continue
+        sort_col, sort_rev = result
+
+
+def _show_comp_batting(watched: dict):
+    season_filter: str | None = None
+    team_filter:   str | None = None
+    pa_min:        int | None = None
+    sort_col, sort_rev = "_w_ops", True
+    limit, from_tail   = 25, False
+
+    # ── Step 1: ask for filters BEFORE any expensive fetching ────────────────
+    clear()
+    print_header("Small Sample — Batters")
+    print("\n  Set filters before loading (reduces players fetched).\n")
+    print(f"  Watched games: {len(watched)}")
+    print(f"  Tip: set a Team filter to load only ~15-25 players instead of hundreds.\n")
+    season_filter, team_filter, _, pa_min = _filter_prompt(
+        watched, season_filter, team_filter, pa_min=pa_min, show_pa=True
+    )
+
+    # ── Step 2: fetch boxscore data once ─────────────────────────────────────
+    clear()
+    print_header("Small Sample — Batters")
+    print(f"\n  Fetching boxscore data for {len(watched)} game(s)...\n")
+    try:
+        all_pitchers, all_batters = player_summary.collect_player_game_stats(watched)
+    except Exception as e:
+        print(f"\n  Error: {e}")
+        input("\nPress Enter to continue...")
+        return
+
+    need_ref_fetch = True
+    rows: list = []
+
+    while True:
+        if need_ref_fetch:
+            _, batters_raw = player_summary.filter_and_aggregate(
+                all_pitchers, all_batters,
+                season_filter=season_filter,
+                team_filter=team_filter,
+            )
+            ref_type = f"{season_filter} season" if season_filter else "career"
+            leaderboard_size = len(player_summary.batting_leaderboard(batters_raw, pa_min=pa_min))
+
+            clear()
+            print_header("Small Sample — Batters")
+            fl = _filters_label(season_filter, team_filter, pa_min=pa_min)
+            print(f"\n  Fetching {ref_type} ref stats for {leaderboard_size} batters{fl}...\n")
+            rows = comparison.build_batter_rows(batters_raw, pa_min=pa_min, season_filter=season_filter)
+            need_ref_fetch = False
+
+        try:
+            sorted_rows = sorted(
+                rows,
+                key=lambda r: (float(r[sort_col].lstrip("▲▼ +-")) if isinstance(r[sort_col], str) and r[sort_col] not in ("—", "")
+                               else r[sort_col] if isinstance(r[sort_col], (int, float)) else r[sort_col].lower()),
+                reverse=sort_rev,
+            )
+        except Exception:
+            sorted_rows = rows
+
+        visible = _apply_limit(sorted_rows, limit, from_tail)
+
+        clear()
+        print_header("Small Sample — Batters")
+        sort_label = next(l for l, k, _ in _COMP_BAT_SORT_COLS if k == sort_col)
+        fl = _filters_label(season_filter, team_filter, pa_min=pa_min)
+        print(f"\n  {len(rows)} batters  |  ref: {ref_type}  |  sorted by {sort_label}  |  showing {_limit_label(limit, from_tail)}{fl}\n")
+
+        if not rows:
+            print("  No batters match current filters.")
+        else:
+            n = "{:<22}  {:<18}  {:>4}  {:>5}  {:>5}"
+            s = "  {:>6}  {:>5}  {:>5}  {:>5}"
+            print("  " + n.format("Name", "Team", "App", "PA", "AB") + s.format("AVG", "OBP", "SLG", "OPS"))
+            print("  " + "-"*22 + "  " + "-"*18 + "  " + "-"*4 + "  " + "-"*5 + "  " + "-"*5 + ("  " + "-"*6)*4)
+            for r in visible:
+                base = n.format(r["name"][:22], r["team"][:18], r["app"], r["w_pa"], r["w_ab"])
+                print("  " + base + s.format(r["w_avg"], r["w_obp"], r["w_slg"], r["w_ops"]) + "  ← watched")
+                print("  " + " "*52 + s.format(r["r_avg"], r["r_obp"], r["r_slg"], r["r_ops"]) + f"  ← {ref_type}")
+                print("  " + " "*52 + s.format(r["d_avg"], r["d_obp"], r["d_slg"], r["d_ops"]) + "  ← delta")
+                print()
+
+        result = _sort_prompt(_COMP_BAT_SORT_COLS)
+        if result is None:
+            return
+        if result == "csv":
+            _dump_csv(
+                "comp_batter.csv",
+                ["Name","Team","App","W-PA","W-AB","W-AVG","W-OBP","W-SLG","W-OPS",
+                 "R-AVG","R-OBP","R-SLG","R-OPS",
+                 "D-AVG","D-OBP","D-SLG","D-OPS"],
+                visible,
+                ["name","team","app","w_pa","w_ab","w_avg","w_obp","w_slg","w_ops",
+                 "r_avg","r_obp","r_slg","r_ops",
+                 "d_avg","d_obp","d_slg","d_ops"],
+            )
+            continue
+        if result == "filter":
+            new_sf, new_tf, _, new_pa = _filter_prompt(
+                watched, season_filter, team_filter, pa_min=pa_min, show_pa=True
+            )
+            if (new_sf, new_tf, new_pa) != (season_filter, team_filter, pa_min):
+                season_filter, team_filter, pa_min = new_sf, new_tf, new_pa
+                need_ref_fetch = True
+            continue
+        if isinstance(result, tuple) and result[0] == "limit":
+            limit, from_tail = _ask_limit(limit, result[1] == "t")
+            continue
+        if result is False:
+            continue
+        sort_col, sort_rev = result
 
 # ── Main menu ─────────────────────────────────────────────────────────────────
 
@@ -781,6 +1070,7 @@ def main():
         print("  [3]  Remove a watched game")
         print("  [4]  Game Summary")
         print("  [5]  Player Summary")
+        print("  [6]  My Small Sample")
         print("  [q]  Quit\n")
 
         cmd = input("> ").strip().lower()
@@ -795,6 +1085,8 @@ def main():
             summary(watched)
         elif cmd == "5":
             screen_player_summary(watched)
+        elif cmd == "6":
+            screen_small_sample(watched)
         elif cmd == "q":
             print("\nBye!\n")
             break

@@ -4,14 +4,14 @@ Aggregates per-player pitching and batting stats across a set of watched games.
 
 Pitching stats computed:
   ERA, WHIP, K/9, BB/9, HR/9
-  (all derived from raw counting stats: IP, ER, H, BB, K, HR)
+  (derived from raw counting stats: IP, ER, H, BB, K, HR)
 
 Batting stats computed:
   AVG, OBP, SLG, OPS
-  (derived from AB, H, BB, HBP, SF, TB)
+  (derived from AB, H, BB, HBP, SF, TB; PA = AB + BB + HBP + SF)
 
-All stats are accumulated from game-level data so the numbers reflect
-only the games the user has watched, not full-season totals.
+Data is stored per-player per-game so that season and team filters can be
+applied in memory without re-fetching from the API.
 """
 from __future__ import annotations
 
@@ -24,9 +24,7 @@ def ip_to_outs(ip_str: str) -> int:
     """Convert an innings-pitched string like '6.2' into a whole-out count."""
     try:
         parts = str(ip_str).split(".")
-        full_innings = int(parts[0])
-        extra_outs = int(parts[1]) if len(parts) > 1 else 0
-        return full_innings * 3 + extra_outs
+        return int(parts[0]) * 3 + (int(parts[1]) if len(parts) > 1 else 0)
     except (ValueError, IndexError):
         return 0
 
@@ -40,24 +38,28 @@ def outs_to_ip(outs: int) -> str:
 
 def collect_player_game_stats(watched: dict) -> tuple[dict, dict]:
     """
-    Fetch boxscore data for every watched game and accumulate raw counting
-    stats per player.
+    Fetch boxscore data for every watched game and store per-player, per-game
+    stats. Returns two dicts keyed by player name:
 
-    Returns:
-        pitchers: { player_name: { outs, er, h, bb, k, hr, appearances, teams } }
-        batters:  { player_name: { ab, h, bb, hbp, sf, tb, appearances, teams } }
+      pitchers[name] = {
+          "games": [ { "game_id", "season", "team", outs, er, h, bb, k, hr } ],
+      }
+      batters[name] = {
+          "games": [ { "game_id", "season", "team", ab, h, bb, hbp, sf, tb, pa } ],
+      }
 
-    'teams' is a dict of { team_name: appearance_count } used to pick the
-    most-seen team for display.
+    All filtering and aggregation happens downstream from these raw records,
+    so no re-fetch is needed when the user changes season/team filters.
     """
     pitchers: dict[str, dict] = {}
-    batters: dict[str, dict] = {}
+    batters:  dict[str, dict] = {}
 
     game_ids = list(watched.keys())
-    total = len(game_ids)
+    total    = len(game_ids)
 
     for i, gid in enumerate(game_ids, 1):
-        game = watched[gid]
+        game   = watched[gid]
+        season = game["date"][:4]
         print(f"  Fetching game {i}/{total}: {game['date']}  {game['away']} @ {game['home']}...")
         try:
             data = mlb.fetch_boxscore_data(int(game["game_id"]))
@@ -67,74 +69,155 @@ def collect_player_game_stats(watched: dict) -> tuple[dict, dict]:
 
         for side in ("away", "home"):
             team_name = game["away"] if side == "away" else game["home"]
-            players = data.get(side, {}).get("players", {})
+            players   = data.get(side, {}).get("players", {})
 
             for pid, p in players.items():
-                name = p.get("person", {}).get("fullName", pid)
-                game_batting  = p.get("stats", {}).get("batting", {})
+                name          = p.get("person", {}).get("fullName", pid)
+                game_batting  = p.get("stats", {}).get("batting",  {})
                 game_pitching = p.get("stats", {}).get("pitching", {})
 
                 # ── Pitching ──────────────────────────────────────────────
                 if game_pitching.get("inningsPitched") not in (None, "", "0.0", 0):
-                    if name not in pitchers:
-                        pitchers[name] = {"outs": 0, "er": 0, "h": 0, "bb": 0,
-                                          "k": 0, "hr": 0, "appearances": 0, "teams": {}}
-                    acc = pitchers[name]
-                    acc["outs"]        += ip_to_outs(game_pitching.get("inningsPitched", 0))
-                    acc["er"]          += int(game_pitching.get("earnedRuns", 0))
-                    acc["h"]           += int(game_pitching.get("hits", 0))
-                    acc["bb"]          += int(game_pitching.get("baseOnBalls", 0))
-                    acc["k"]           += int(game_pitching.get("strikeOuts", 0))
-                    acc["hr"]          += int(game_pitching.get("homeRuns", 0))
-                    acc["appearances"] += 1
-                    acc["teams"][team_name] = acc["teams"].get(team_name, 0) + 1
+                    person_id = int(pid.lstrip("ID")) if pid.startswith("ID") else None
+                    pitchers.setdefault(name, {"person_id": person_id, "games": []})
+                    pitchers[name]["games"].append({
+                        "game_id": gid,
+                        "season":  season,
+                        "team":    team_name,
+                        "outs":    ip_to_outs(game_pitching.get("inningsPitched", 0)),
+                        "er":      int(game_pitching.get("earnedRuns",  0)),
+                        "h":       int(game_pitching.get("hits",        0)),
+                        "bb":      int(game_pitching.get("baseOnBalls", 0)),
+                        "k":       int(game_pitching.get("strikeOuts",  0)),
+                        "hr":      int(game_pitching.get("homeRuns",    0)),
+                    })
 
                 # ── Batting ───────────────────────────────────────────────
-                if game_batting.get("atBats") not in (None, "", 0):
-                    if name not in batters:
-                        batters[name] = {"ab": 0, "h": 0, "bb": 0, "hbp": 0,
-                                         "sf": 0, "tb": 0, "appearances": 0, "teams": {}}
-                    acc = batters[name]
-                    acc["ab"]          += int(game_batting.get("atBats", 0))
-                    acc["h"]           += int(game_batting.get("hits", 0))
-                    acc["bb"]          += int(game_batting.get("baseOnBalls", 0))
-                    acc["hbp"]         += int(game_batting.get("hitByPitch", 0))
-                    acc["sf"]          += int(game_batting.get("sacFlies", 0))
-                    singles = (int(game_batting.get("hits", 0))
-                               - int(game_batting.get("doubles", 0))
-                               - int(game_batting.get("triples", 0))
-                               - int(game_batting.get("homeRuns", 0)))
-                    tb = (singles
-                          + 2 * int(game_batting.get("doubles", 0))
-                          + 3 * int(game_batting.get("triples", 0))
-                          + 4 * int(game_batting.get("homeRuns", 0)))
-                    acc["tb"]          += tb
-                    acc["appearances"] += 1
-                    acc["teams"][team_name] = acc["teams"].get(team_name, 0) + 1
+                ab = int(game_batting.get("atBats", 0))
+                if ab > 0:
+                    bb  = int(game_batting.get("baseOnBalls", 0))
+                    hbp = int(game_batting.get("hitByPitch",  0))
+                    sf  = int(game_batting.get("sacFlies",    0))
+                    h   = int(game_batting.get("hits",        0))
+                    dbl = int(game_batting.get("doubles",     0))
+                    trp = int(game_batting.get("triples",     0))
+                    hr  = int(game_batting.get("homeRuns",    0))
+                    tb  = (h - dbl - trp - hr) + 2*dbl + 3*trp + 4*hr
+
+                    person_id = int(pid.lstrip("ID")) if pid.startswith("ID") else None
+                    batters.setdefault(name, {"person_id": person_id, "games": []})
+                    batters[name]["games"].append({
+                        "game_id": gid,
+                        "season":  season,
+                        "team":    team_name,
+                        "ab":      ab,
+                        "h":       h,
+                        "bb":      bb,
+                        "hbp":     hbp,
+                        "sf":      sf,
+                        "tb":      tb,
+                        "pa":      ab + bb + hbp + sf,
+                    })
 
     return pitchers, batters
 
 
+# ── In-memory filtering & aggregation ────────────────────────────────────────
+
+def _aggregate_pitcher(name: str, game_rows: list[dict]) -> dict:
+    """Sum raw pitching counting stats across a list of filtered game records."""
+    acc = {"outs": 0, "er": 0, "h": 0, "bb": 0, "k": 0, "hr": 0, "appearances": 0, "teams": {}}
+    for g in game_rows:
+        acc["outs"]        += g["outs"]
+        acc["er"]          += g["er"]
+        acc["h"]           += g["h"]
+        acc["bb"]          += g["bb"]
+        acc["k"]           += g["k"]
+        acc["hr"]          += g["hr"]
+        acc["appearances"] += 1
+        acc["teams"][g["team"]] = acc["teams"].get(g["team"], 0) + 1
+    return acc
+
+
+def _aggregate_batter(name: str, game_rows: list[dict]) -> dict:
+    """Sum raw batting counting stats across a list of filtered game records."""
+    acc = {"ab": 0, "h": 0, "bb": 0, "hbp": 0, "sf": 0, "tb": 0, "pa": 0, "appearances": 0, "teams": {}}
+    for g in game_rows:
+        acc["ab"]          += g["ab"]
+        acc["h"]           += g["h"]
+        acc["bb"]          += g["bb"]
+        acc["hbp"]         += g["hbp"]
+        acc["sf"]          += g["sf"]
+        acc["tb"]          += g["tb"]
+        acc["pa"]          += g["pa"]
+        acc["appearances"] += 1
+        acc["teams"][g["team"]] = acc["teams"].get(g["team"], 0) + 1
+    return acc
+
+
 def _primary_team(teams_dict: dict) -> str:
-    """Return the team name a player appeared for most across watched games."""
     if not teams_dict:
         return "—"
     return max(teams_dict, key=teams_dict.get)
 
 
+def filter_and_aggregate(
+    pitchers: dict,
+    batters:  dict,
+    season_filter: str | None = None,
+    team_filter:   str | None = None,
+) -> tuple[dict, dict]:
+    """
+    Apply season and team filters entirely in memory — no API calls.
+
+    season_filter: if set, only include game records from that year.
+    team_filter:   if set, only include game records where the player's
+                   team for that game matches. This means only players
+                   who actually played for that team appear.
+
+    Returns aggregated (pitchers_raw, batters_raw) dicts keyed by player name,
+    in the same shape that calc_pitching_stats / calc_batting_stats expect.
+    """
+    def keep(g: dict) -> bool:
+        if season_filter and g["season"] != season_filter:
+            return False
+        if team_filter and g["team"] != team_filter:
+            return False
+        return True
+
+    filtered_pitchers: dict[str, dict] = {}
+    for name, data in pitchers.items():
+        matching = [g for g in data["games"] if keep(g)]
+        if matching:
+            agg = _aggregate_pitcher(name, matching)
+            agg["person_id"] = data.get("person_id")
+            filtered_pitchers[name] = agg
+
+    filtered_batters: dict[str, dict] = {}
+    for name, data in batters.items():
+        matching = [g for g in data["games"] if keep(g)]
+        if matching:
+            agg = _aggregate_batter(name, matching)
+            agg["person_id"] = data.get("person_id")
+            filtered_batters[name] = agg
+
+    return filtered_pitchers, filtered_batters
+
+
 # ── Stat calculators ──────────────────────────────────────────────────────────
 
 def calc_pitching_stats(name: str, raw: dict) -> dict:
-    """Derive ERA, WHIP, K/9, BB/9, HR/9 from raw counting stats."""
+    """Derive ERA, WHIP, K/9, BB/9, HR/9 from aggregated raw counting stats."""
     outs = raw["outs"]
     ip   = outs / 3
 
     base = {
-        "name": name,
-        "team": _primary_team(raw.get("teams", {})),
-        "app":  raw["appearances"],
-        "ip":   outs_to_ip(outs),
-        # numeric shadow values for sorting (never displayed)
+        "name":      name,
+        "person_id": raw.get("person_id"),
+        "team":      _primary_team(raw.get("teams", {})),
+        "app":       raw["appearances"],
+        "ip":        outs_to_ip(outs),
+        "_outs":     outs,
         "_era": 999.0, "_whip": 999.0, "_k9": 0.0, "_bb9": 999.0, "_hr9": 999.0,
     }
 
@@ -157,25 +240,24 @@ def calc_pitching_stats(name: str, raw: dict) -> dict:
 
 
 def calc_batting_stats(name: str, raw: dict) -> dict:
-    """Derive AVG, OBP, SLG, OPS from raw counting stats."""
-    ab  = raw["ab"]
-    h   = raw["h"]
-    bb  = raw["bb"]
-    hbp = raw["hbp"]
-    sf  = raw["sf"]
-    tb  = raw["tb"]
+    """Derive AVG, OBP, SLG, OPS from aggregated raw counting stats."""
+    ab  = raw["ab"];  h   = raw["h"];  bb  = raw["bb"]
+    hbp = raw["hbp"]; sf  = raw["sf"]; tb  = raw["tb"]
+    pa  = raw["pa"]
 
-    avg = h / ab if ab > 0 else 0
+    avg       = h / ab if ab > 0 else 0
     obp_denom = ab + bb + hbp + sf
-    obp = (h + bb + hbp) / obp_denom if obp_denom > 0 else 0
-    slg = tb / ab if ab > 0 else 0
-    ops = obp + slg
+    obp       = (h + bb + hbp) / obp_denom if obp_denom > 0 else 0
+    slg       = tb / ab if ab > 0 else 0
+    ops       = obp + slg
 
     return {
-        "name": name,
-        "team": _primary_team(raw.get("teams", {})),
-        "app":  raw["appearances"],
+        "name":      name,
+        "person_id": raw.get("person_id"),
+        "team":      _primary_team(raw.get("teams", {})),
+        "app":       raw["appearances"],
         "ab":   ab,
+        "pa":   pa,
         "h":    h,
         "avg":  f"{avg:.3f}", "_avg": avg,
         "obp":  f"{obp:.3f}", "_obp": obp,
@@ -184,27 +266,35 @@ def calc_batting_stats(name: str, raw: dict) -> dict:
     }
 
 
-# ── Leaderboard builders (unsorted — caller decides order) ────────────────────
+# ── Leaderboard builders ──────────────────────────────────────────────────────
 
-MIN_PITCHER_OUTS = 3   # at least 1 IP to appear in pitching summary
-MIN_BATTER_AB    = 5   # at least 5 AB to appear in batting summary
+MIN_PITCHER_OUTS = 3   # at least 1 IP to appear
+MIN_BATTER_PA    = 5   # at least 5 PA to appear (replaces AB threshold)
 
 
-def pitching_leaderboard(pitchers: dict) -> list[dict]:
-    """Return all qualifying pitchers with computed stats. No sort applied."""
+def pitching_leaderboard(pitchers_raw: dict, ip_min: float | None = None) -> list[dict]:
+    """
+    Return qualifying pitchers with computed stats. No sort applied.
+    ip_min: optional minimum IP (float, e.g. 5.0); overrides MIN_PITCHER_OUTS.
+    """
+    outs_threshold = int(ip_min * 3) if ip_min is not None else MIN_PITCHER_OUTS
     rows = []
-    for name, raw in pitchers.items():
-        if raw["outs"] < MIN_PITCHER_OUTS:
+    for name, raw in pitchers_raw.items():
+        if raw["outs"] < outs_threshold:
             continue
         rows.append(calc_pitching_stats(name, raw))
     return rows
 
 
-def batting_leaderboard(batters: dict) -> list[dict]:
-    """Return all qualifying batters with computed stats. No sort applied."""
+def batting_leaderboard(batters_raw: dict, pa_min: int | None = None) -> list[dict]:
+    """
+    Return qualifying batters with computed stats. No sort applied.
+    pa_min: optional minimum PA; overrides MIN_BATTER_PA.
+    """
+    threshold = pa_min if pa_min is not None else MIN_BATTER_PA
     rows = []
-    for name, raw in batters.items():
-        if raw["ab"] < MIN_BATTER_AB:
+    for name, raw in batters_raw.items():
+        if raw["pa"] < threshold:
             continue
         rows.append(calc_batting_stats(name, raw))
     return rows
