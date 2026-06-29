@@ -22,12 +22,31 @@ def find_teams(query: str) -> list[dict]:
     return statsapi.lookup_team(query)
 
 
-def fetch_season_schedule(team_id: int, season: str) -> list[dict]:
+# Human-readable labels for MLB game type codes
+GAME_TYPE_LABELS = {
+    "S": "Spring Training",
+    "R": "Regular Season",
+    "F": "Wild Card",
+    "D": "Division Series (ALDS/NLDS)",
+    "L": "League Championship (ALCS/NLCS)",
+    "W": "World Series",
+}
+
+
+def fetch_season_schedule(
+    team_id: int,
+    season: str,
+    game_types: list[str] | None = None,
+) -> list[dict]:
     """
-    Fetch all regular-season games for a team in a given year.
-    Returns a list of game dicts from statsapi.schedule(), filtered to game_type == 'R'.
+    Fetch games for a team in a given year, filtered to the requested game types.
+    game_types: list of type codes e.g. ['R', 'F', 'D', 'L', 'W'].
+                Defaults to ['R'] (regular season only).
     Raises RuntimeError on API failure.
     """
+    if game_types is None:
+        game_types = ["R"]
+
     try:
         schedule = statsapi.schedule(
             team=team_id,
@@ -38,7 +57,7 @@ def fetch_season_schedule(team_id: int, season: str) -> list[dict]:
     except Exception as e:
         raise RuntimeError(f"Failed to fetch schedule: {e}") from e
 
-    return [g for g in schedule if g.get("game_type") == "R"]
+    return [g for g in schedule if g.get("game_type") in game_types]
 
 
 def fetch_boxscore(game_id: int) -> str:

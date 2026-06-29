@@ -65,6 +65,20 @@ Name                    Team                     App     AB      H     AVG    OB
 
 ```
 
+## through-my-eyes (comparison)
+
+Example:
+
+```
+ Matt Olson              Atlanta Braves        44    188    172   0.320  0.378  0.581  0.959  ← watched
+                                                         0.276  0.345  0.530  0.875  ← 2026 season
+                                                        ▲+0.044  ▲+0.033  ▲+0.051  ▲+0.084  ← delta
+
+  José Azócar             Atlanta Braves         7     13     13   0.462  0.462  0.462  0.923  ← watched
+                                                         0.333  0.375  0.467  0.842  ← 2026 season
+                                                        ▲+0.129  ▲+0.087  ▼-0.005  ▲+0.081  ← delta
+```
+
 ## limitations
 
 It is a bit dumb now... it just drops all of your *watched games* into a json file. This could become very large if you are a true sports fan and could cause long start up times.
@@ -83,33 +97,6 @@ The API counts games as 0-0 when they are canceled. It would just be better to f
 
 ## todo
 
-add a comparison from user watched games to career/season averages
+We still re-load every boxscore after filter in comparison (after the first time we have loaded it, which should be unnecessary)
 
-*in-progress*
-
-```
-python3 test.py 
-Traceback (most recent call last):
-  File "/Users/nicholascassarino/Desktop/mlb-through-my-eyes/src/test.py", line 82, in fetch_player_stat_data
-    data = statsapi.player_stat_data(person_id, **kwargs)
-  File "/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages/statsapi/__init__.py", line 1185, in player_stat_data
-    r = get("person", params)
-  File "/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages/statsapi/__init__.py", line 1787, in get
-    r.raise_for_status()
-  File "/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
-    raise HTTPError(http_error_msg, response=self)
-requests.exceptions.HTTPError: 400 Client Error: Bad Request for url: https://statsapi.mlb.com/api/v1/people/%5B,%20'primaryPosition':%20,%20'useName':%20'Matt',%20'boxscoreName':%20'Olson',%20'nickName':%20'Oly',%20'mlbDebutDate':%20'2016-09-12',%20'nameFirstLast':%20'Matt%20Olson',%20'nameSlug':%20'matt-olson-621566',%20'firstLastName':%20'Matt%20Olson',%20'lastFirstName':%20'Olson,%20Matt',%20'lastInitName':%20'Olson,%20M',%20'initLastName':%20'M%20Olson',%20'fullFMLName':%20'Matthew%20Kent%20Olson',%20'fullLFMName':%20'Olson,%20Matthew%20Kent'%7D%5D?hydrate=stats(group=hitting,type=career,sportId=1),currentTeam
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "/Users/nicholascassarino/Desktop/mlb-through-my-eyes/src/test.py", line 100, in <module>
-    print(fetch_player_stat_data(name, 'hitting', 'career'))
-  File "/Users/nicholascassarino/Desktop/mlb-through-my-eyes/src/test.py", line 85, in fetch_player_stat_data
-    raise RuntimeError(f"Failed to fetch stats for player {person_id}: {e}") from e
-RuntimeError: Failed to fetch stats for player [{'id': 621566, 'fullName': 'Matt Olson', 'firstName': 'Matthew', 'lastName': 'Olson', 'primaryNumber': '28', 'currentTeam': {'id': 144}, 'primaryPosition': {'code': '3', 'abbreviation': '1B'}, 'useName': 'Matt', 'boxscoreName': 'Olson', 'nickName': 'Oly', 'mlbDebutDate': '2016-09-12', 'nameFirstLast': 'Matt Olson', 'nameSlug': 'matt-olson-621566', 'firstLastName': 'Matt Olson', 'lastFirstName': 'Olson, Matt', 'lastInitName': 'Olson, M', 'initLastName': 'M Olson', 'fullFMLName': 'Matthew Kent Olson', 'fullLFMName': 'Olson, Matthew Kent'}]: 400 Client Error: Bad Request for url: https://statsapi.mlb.com/api/v1/people/%5B,%20'primaryPosition':%20,%20'useName':%20'Matt',%20'boxscoreName':%20'Olson',%20'nickName':%20'Oly',%20'mlbDebutDate':%20'2016-09-12',%20'nameFirstLast':%20'Matt%20Olson',%20'nameSlug':%20'matt-olson-621566',%20'firstLastName':%20'Matt%20Olson',%20'lastFirstName':%20'Olson,%20Matt',%20'lastInitName':%20'Olson,%20M',%20'initLastName':%20'M%20Olson',%20'fullFMLName':%20'Matthew%20Kent%20Olson',%20'fullLFMName':%20'Olson,%20Matthew%20Kent'%7D%5D?hydrate=stats(group=hitting,type=career,sportId=1),currentTeam
-```
-
-it's only regular season games (no need for preseason but definitely want postseason
-
-filter by team/season before comparison works only for fetching player careers. not games
+The comparison text is not tabbed well right now. 

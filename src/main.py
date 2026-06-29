@@ -81,16 +81,37 @@ def browse_season(watched: dict):
         input("\nPress Enter to continue...")
         return
 
-    print(f"\nFetching {team['name']} {season} schedule...")
+    # Ask which game types to include
+    print("\n  Which game types to include?\n")
+    all_types = list(mlb.GAME_TYPE_LABELS.items())  # [(code, label), ...]
+    for i, (code, label) in enumerate(all_types, 1):
+        print(f"    [{i}] {label}  ({code})")
+    print("\n  Enter numbers separated by spaces (e.g. '2 3 4 5 6' for all postseason)")
+    print("  or press Enter for Regular Season only.")
+    raw = input("\n  > ").strip()
+
+    if not raw:
+        game_types = ["R"]
+    else:
+        chosen = []
+        for tok in raw.split():
+            if tok.isdigit():
+                idx = int(tok) - 1
+                if 0 <= idx < len(all_types):
+                    chosen.append(all_types[idx][0])
+        game_types = chosen if chosen else ["R"]
+
+    type_labels = ", ".join(mlb.GAME_TYPE_LABELS.get(t, t) for t in game_types)
+    print(f"\nFetching {team['name']} {season} schedule ({type_labels})...")
     try:
-        games = mlb.fetch_season_schedule(team["id"], season)
+        games = mlb.fetch_season_schedule(team["id"], season, game_types=game_types)
     except RuntimeError as e:
         print(f"Error: {e}")
         input("\nPress Enter to continue...")
         return
 
     if not games:
-        print("No regular season games found.")
+        print(f"No games found for the selected type(s): {type_labels}.")
         input("\nPress Enter to continue...")
         return
 
@@ -851,12 +872,15 @@ def _show_comp_pitching(watched: dict):
         watched, season_filter, team_filter, ip_min=ip_min, show_ip=True
     )
 
-    # ── Step 2: fetch boxscore data once ─────────────────────────────────────
+    # ── Step 2: fetch boxscore data for filtered games only ─────────────────
+    # Pre-filter watched to games involving the selected team/season so we
+    # don't fetch boxscores for hundreds of irrelevant games.
+    fetch_watched = _apply_watched_filters(watched, season_filter, team_filter)
     clear()
     print_header("Small Sample — Pitchers")
-    print(f"\n  Fetching boxscore data for {len(watched)} game(s)...\n")
+    print(f"\n  Fetching boxscore data for {len(fetch_watched)} game(s) (filtered from {len(watched)} total)...\n")
     try:
-        all_pitchers, all_batters = player_summary.collect_player_game_stats(watched)
+        all_pitchers, all_batters = player_summary.collect_player_game_stats(fetch_watched)
     except Exception as e:
         print(f"\n  Error: {e}")
         input("\nPress Enter to continue...")
@@ -868,10 +892,13 @@ def _show_comp_pitching(watched: dict):
 
     while True:
         if need_ref_fetch:
+            # Games are already scoped to the right season/team at fetch time,
+            # but both sides of each game are in all_pitchers/all_batters.
+            # Pass team_filter so only players who were ON that team are kept.
             pitchers_raw, _ = player_summary.filter_and_aggregate(
                 all_pitchers, all_batters,
-                season_filter=season_filter,
-                team_filter=team_filter,
+                season_filter=None,         # already applied at fetch time
+                team_filter=team_filter,    # still needed to exclude opponents
             )
             ref_type = f"{season_filter} season" if season_filter else "career"
             leaderboard_size = len(player_summary.pitching_leaderboard(pitchers_raw, ip_min=ip_min))
@@ -883,15 +910,26 @@ def _show_comp_pitching(watched: dict):
             rows = comparison.build_pitcher_rows(pitchers_raw, ip_min=ip_min, season_filter=season_filter)
             need_ref_fetch = False
 
-        try:
-            sorted_rows = sorted(
-                rows,
-                key=lambda r: (float(r[sort_col].lstrip("▲▼ +-")) if isinstance(r[sort_col], str) and r[sort_col] not in ("—", "")
-                               else r[sort_col] if isinstance(r[sort_col], (int, float)) else r[sort_col].lower()),
-                reverse=sort_rev,
-            )
-        except Exception:
-            sorted_rows = rows
+        def _comp_sort_key(r):
+            v = r.get(sort_col)
+            if isinstance(v, (int, float)):
+                return v
+            if isinstance(v, str):
+                if v in ("—", ""):
+                    return 999.0
+                # delta strings: "▲+1.83" or "▼-1.68" — extract the signed float
+                import re
+                m = re.search(r"[+-]?\d+\.?\d*", v.replace("▲", "").replace("▼", "").replace("─", ""))
+                if m:
+                    sign = -1 if "-" in v and "▲" not in v else (1 if v.startswith("▲") or "+" in v else 1)
+                    # Actually just grab the signed number directly
+                    m2 = re.search(r"[+-]?\d+\.?\d*", v[1:])  # skip arrow char
+                    if m2:
+                        return float(m2.group())
+                return v.lower()
+            return 0
+
+        sorted_rows = sorted(rows, key=_comp_sort_key, reverse=sort_rev)
 
         visible = _apply_limit(sorted_rows, limit, from_tail)
 
@@ -936,6 +974,17 @@ def _show_comp_pitching(watched: dict):
             )
             if (new_sf, new_tf, new_ip) != (season_filter, team_filter, ip_min):
                 season_filter, team_filter, ip_min = new_sf, new_tf, new_ip
+                # Re-fetch boxscores for the new filter scope
+                fetch_watched = _apply_watched_filters(watched, season_filter, team_filter)
+                clear()
+                print_header("Small Sample — Pitchers")
+                print(f"\n  Re-fetching boxscore data for {len(fetch_watched)} game(s)...\n")
+                try:
+                    all_pitchers, all_batters = player_summary.collect_player_game_stats(fetch_watched)
+                except Exception as e:
+                    print(f"\n  Error: {e}")
+                    input("\nPress Enter to continue...")
+                    return
                 need_ref_fetch = True
             continue
         if isinstance(result, tuple) and result[0] == "limit":
@@ -963,12 +1012,13 @@ def _show_comp_batting(watched: dict):
         watched, season_filter, team_filter, pa_min=pa_min, show_pa=True
     )
 
-    # ── Step 2: fetch boxscore data once ─────────────────────────────────────
+    # ── Step 2: fetch boxscore data for filtered games only ─────────────────
+    fetch_watched = _apply_watched_filters(watched, season_filter, team_filter)
     clear()
     print_header("Small Sample — Batters")
-    print(f"\n  Fetching boxscore data for {len(watched)} game(s)...\n")
+    print(f"\n  Fetching boxscore data for {len(fetch_watched)} game(s) (filtered from {len(watched)} total)...\n")
     try:
-        all_pitchers, all_batters = player_summary.collect_player_game_stats(watched)
+        all_pitchers, all_batters = player_summary.collect_player_game_stats(fetch_watched)
     except Exception as e:
         print(f"\n  Error: {e}")
         input("\nPress Enter to continue...")
@@ -981,8 +1031,8 @@ def _show_comp_batting(watched: dict):
         if need_ref_fetch:
             _, batters_raw = player_summary.filter_and_aggregate(
                 all_pitchers, all_batters,
-                season_filter=season_filter,
-                team_filter=team_filter,
+                season_filter=None,         # already applied at fetch time
+                team_filter=team_filter,    # still needed to exclude opponents
             )
             ref_type = f"{season_filter} season" if season_filter else "career"
             leaderboard_size = len(player_summary.batting_leaderboard(batters_raw, pa_min=pa_min))
@@ -994,15 +1044,21 @@ def _show_comp_batting(watched: dict):
             rows = comparison.build_batter_rows(batters_raw, pa_min=pa_min, season_filter=season_filter)
             need_ref_fetch = False
 
-        try:
-            sorted_rows = sorted(
-                rows,
-                key=lambda r: (float(r[sort_col].lstrip("▲▼ +-")) if isinstance(r[sort_col], str) and r[sort_col] not in ("—", "")
-                               else r[sort_col] if isinstance(r[sort_col], (int, float)) else r[sort_col].lower()),
-                reverse=sort_rev,
-            )
-        except Exception:
-            sorted_rows = rows
+        def _comp_sort_key(r):
+            v = r.get(sort_col)
+            if isinstance(v, (int, float)):
+                return v
+            if isinstance(v, str):
+                if v in ("—", ""):
+                    return 999.0
+                import re
+                m2 = re.search(r"[+-]?\d+\.?\d*", v[1:])
+                if m2:
+                    return float(m2.group())
+                return v.lower()
+            return 0
+
+        sorted_rows = sorted(rows, key=_comp_sort_key, reverse=sort_rev)
 
         visible = _apply_limit(sorted_rows, limit, from_tail)
 
@@ -1047,6 +1103,16 @@ def _show_comp_batting(watched: dict):
             )
             if (new_sf, new_tf, new_pa) != (season_filter, team_filter, pa_min):
                 season_filter, team_filter, pa_min = new_sf, new_tf, new_pa
+                fetch_watched = _apply_watched_filters(watched, season_filter, team_filter)
+                clear()
+                print_header("Small Sample — Batters")
+                print(f"\n  Re-fetching boxscore data for {len(fetch_watched)} game(s)...\n")
+                try:
+                    all_pitchers, all_batters = player_summary.collect_player_game_stats(fetch_watched)
+                except Exception as e:
+                    print(f"\n  Error: {e}")
+                    input("\nPress Enter to continue...")
+                    return
                 need_ref_fetch = True
             continue
         if isinstance(result, tuple) and result[0] == "limit":

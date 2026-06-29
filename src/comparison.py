@@ -54,24 +54,24 @@ def _extract_stat_dict(data: dict, stat_type: str) -> dict | None:
         if block_type.lower() != stat_type.lower():
             continue
 
-        # Prefer the top-level aggregate stat dict
-        if "stat" in block and block["stat"]:
-            return block["stat"]
+        # The aggregate stat dict is under "stats" (not "stat")
+        if "stats" in block and block["stats"]:
+            return block["stats"]
 
         # Fall back to first split
         splits = block.get("splits", [])
         if splits:
-            return splits[0].get("stat", {})
+            return splits[0].get("stats", splits[0].get("stat", {}))
 
     # If we never matched the type string, just take the first block with data
     for block in stats_list:
         if not isinstance(block, dict):
             continue
-        if "stat" in block and block["stat"]:
-            return block["stat"]
+        if "stats" in block and block["stats"]:
+            return block["stats"]
         splits = block.get("splits", [])
         if splits:
-            return splits[0].get("stat", {})
+            return splits[0].get("stats", splits[0].get("stat", {}))
 
     return None
 
