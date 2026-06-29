@@ -156,9 +156,22 @@ def _aggregate_batter(name: str, game_rows: list[dict]) -> dict:
 
 
 def _primary_team(teams_dict: dict) -> str:
+    """Return the team a player appeared for most across watched games."""
     if not teams_dict:
         return "—"
     return max(teams_dict, key=teams_dict.get)
+
+
+def _all_teams_display(teams_dict: dict) -> str:
+    """
+    Return a display string listing all teams a player appeared for,
+    sorted by appearance count descending. Used in unfiltered views.
+    e.g. "Atlanta Braves / Los Angeles Dodgers"
+    """
+    if not teams_dict:
+        return "—"
+    sorted_teams = sorted(teams_dict, key=teams_dict.get, reverse=True)
+    return " / ".join(sorted_teams)
 
 
 def filter_and_aggregate(
@@ -172,11 +185,16 @@ def filter_and_aggregate(
 
     season_filter: if set, only include game records from that year.
     team_filter:   if set, only include game records where the player's
-                   team for that game matches. This means only players
-                   who actually played for that team appear.
+                   team for that game matches exactly — so a player who
+                   appeared for multiple teams only shows their stats
+                   from games while on that specific team.
 
-    Returns aggregated (pitchers_raw, batters_raw) dicts keyed by player name,
-    in the same shape that calc_pitching_stats / calc_batting_stats expect.
+    When team_filter is None: players who appeared for multiple teams
+    get ONE row per team, keyed as "Name (Team)" so their stats from
+    each team context are shown separately rather than merged together.
+
+    Returns aggregated (pitchers_raw, batters_raw) dicts keyed by a
+    unique "display key" (player name, or "Name (Team)" for multi-teamers).
     """
     def keep(g: dict) -> bool:
         if season_filter and g["season"] != season_filter:
@@ -185,21 +203,61 @@ def filter_and_aggregate(
             return False
         return True
 
+    def split_by_team(name: str, games: list[dict], person_id) -> dict[str, dict]:
+        """
+        If the player appeared for multiple teams, return one aggregated
+        dict per team keyed as "Name (Team)".
+        If only one team, return a single entry keyed by plain name.
+        """
+        by_team: dict[str, list] = {}
+        for g in games:
+            by_team.setdefault(g["team"], []).append(g)
+
+        if len(by_team) <= 1:
+            # Single team — use plain name as key
+            team = next(iter(by_team)) if by_team else "—"
+            return {name: (games, person_id, team)}
+        else:
+            # Multiple teams — split into separate keyed rows
+            result = {}
+            for team, tgames in by_team.items():
+                key = f"{name} ({team})"
+                result[key] = (tgames, person_id, team)
+            return result
+
     filtered_pitchers: dict[str, dict] = {}
     for name, data in pitchers.items():
         matching = [g for g in data["games"] if keep(g)]
-        if matching:
+        if not matching:
+            continue
+        if team_filter:
+            # Single team context — aggregate all matching records together
             agg = _aggregate_pitcher(name, matching)
             agg["person_id"] = data.get("person_id")
             filtered_pitchers[name] = agg
+        else:
+            # No team filter — split multi-team players by team
+            for key, (games, pid, team) in split_by_team(name, matching, data.get("person_id")).items():
+                agg = _aggregate_pitcher(name, games)
+                agg["person_id"] = pid
+                agg["display_team"] = team   # override _primary_team in calc step
+                filtered_pitchers[key] = agg
 
     filtered_batters: dict[str, dict] = {}
     for name, data in batters.items():
         matching = [g for g in data["games"] if keep(g)]
-        if matching:
+        if not matching:
+            continue
+        if team_filter:
             agg = _aggregate_batter(name, matching)
             agg["person_id"] = data.get("person_id")
             filtered_batters[name] = agg
+        else:
+            for key, (games, pid, team) in split_by_team(name, matching, data.get("person_id")).items():
+                agg = _aggregate_batter(name, games)
+                agg["person_id"] = pid
+                agg["display_team"] = team
+                filtered_batters[key] = agg
 
     return filtered_pitchers, filtered_batters
 
@@ -214,7 +272,7 @@ def calc_pitching_stats(name: str, raw: dict) -> dict:
     base = {
         "name":      name,
         "person_id": raw.get("person_id"),
-        "team":      _primary_team(raw.get("teams", {})),
+        "team":      raw.get("display_team") or _primary_team(raw.get("teams", {})),
         "app":       raw["appearances"],
         "ip":        outs_to_ip(outs),
         "_outs":     outs,
@@ -254,7 +312,7 @@ def calc_batting_stats(name: str, raw: dict) -> dict:
     return {
         "name":      name,
         "person_id": raw.get("person_id"),
-        "team":      _primary_team(raw.get("teams", {})),
+        "team":      raw.get("display_team") or _primary_team(raw.get("teams", {})),
         "app":       raw["appearances"],
         "ab":   ab,
         "pa":   pa,

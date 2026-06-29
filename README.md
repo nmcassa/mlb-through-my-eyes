@@ -100,3 +100,5 @@ The API counts games as 0-0 when they are canceled. It would just be better to f
 We still re-load every boxscore after filter in comparison (after the first time we have loaded it, which should be unnecessary)
 
 The comparison text is not tabbed well right now. 
+
+Players who have played on more than one team get split into two rows. IDK if i wanna change that later 
