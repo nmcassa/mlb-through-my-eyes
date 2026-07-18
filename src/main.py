@@ -385,21 +385,23 @@ def _filter_prompt(
 
 # ── Sort / limit helpers ──────────────────────────────────────────────────────
 
-def _sort_prompt(cols: list[tuple[str, str, bool]]) -> tuple[str, bool] | None:
+def _sort_prompt(cols: list[tuple[str, str, bool]], total_pages: int = 1) -> object:
     """
     Display the action menu and return one of:
-      (sort_key, reverse)           — user picked a sort column
-      "csv"                         — export to CSV
-      ("limit", "h"|"t")           — change head/tail limit
-      "filter"                      — open filter menu
-      None                          — go back
-      False                         — invalid input (re-prompt)
+      (sort_key, reverse)     — user picked a sort column
+      "csv"                   — export to CSV
+      ("page", +1|-1)         — scroll to next/previous page
+      ("pagesize", None)      — change rows-per-page
+      "filter"                — open filter menu
+      None                    — go back
+      False                   — invalid input (re-prompt)
     """
     print("\n  Sort by:")
     for i, (label, _, _) in enumerate(cols, 1):
         print(f"    [{i}] {label}")
-    print("    [h] Show top N (head)")
-    print("    [t] Show bottom N (tail)")
+    if total_pages > 1:
+        print("    [n] Next page   [p] Previous page")
+    print("    [z] Rows per page")
     print("    [f] Filters")
     print("    [c] Export to CSV")
     print("    [q] Back")
@@ -410,8 +412,12 @@ def _sort_prompt(cols: list[tuple[str, str, bool]]) -> tuple[str, bool] | None:
         return "csv"
     if cmd == "f":
         return "filter"
-    if cmd in ("h", "t"):
-        return ("limit", cmd)
+    if cmd == "z":
+        return ("pagesize", None)
+    if cmd == "n" and total_pages > 1:
+        return ("page", 1)
+    if cmd == "p" and total_pages > 1:
+        return ("page", -1)
     if cmd.isdigit():
         idx = int(cmd) - 1
         if 0 <= idx < len(cols):
@@ -420,30 +426,32 @@ def _sort_prompt(cols: list[tuple[str, str, bool]]) -> tuple[str, bool] | None:
     return False
 
 
-def _ask_limit(current_limit: int | None, current_tail: bool) -> tuple[int | None, bool]:
-    direction = "tail" if current_tail else "head"
-    showing   = f"{current_limit} ({direction})" if current_limit else "all"
-    print(f"\n  Currently showing: {showing}")
-    print("  Enter a number to limit rows, or 0 to show all.")
-    raw = input("  Rows: ").strip()
+def _ask_page_size(current: int | None) -> int | None:
+    showing = f"{current} rows/page" if current else "all rows on one page"
+    print(f"\n  Currently: {showing}")
+    print("  Enter rows per page, or 0 to show everything on one page.")
+    raw = input("  Rows per page: ").strip()
     if not raw.isdigit():
-        return current_limit, current_tail
+        return current
     n = int(raw)
-    if n == 0:
-        return None, current_tail
-    return n, current_tail
+    return None if n == 0 else n
 
 
-def _apply_limit(rows: list, limit: int | None, from_tail: bool) -> list:
-    if limit is None:
-        return rows
-    return rows[-limit:] if from_tail else rows[:limit]
+def _paginate(rows: list, page: int, page_size: int | None) -> tuple[list, int, int]:
+    """
+    Slice rows into the requested page. page_size=None shows everything as
+    a single page. Returns (visible_rows, clamped_page, total_pages).
+    """
+    if not rows or not page_size:
+        return rows, 0, 1
+    total_pages = max(1, (len(rows) - 1) // page_size + 1)
+    page  = max(0, min(page, total_pages - 1))
+    start = page * page_size
+    return rows[start:start + page_size], page, total_pages
 
 
-def _limit_label(limit: int | None, from_tail: bool) -> str:
-    if limit is None:
-        return "all rows"
-    return f"bottom {limit}" if from_tail else f"top {limit}"
+def _page_label(page: int, total_pages: int) -> str:
+    return f"page {page + 1}/{total_pages}" if total_pages > 1 else "all rows"
 
 
 # ── CSV export helper ─────────────────────────────────────────────────────────
@@ -486,7 +494,7 @@ def summary(watched: dict):
     team_filter:   str | None = None
 
     sort_col, sort_rev  = "pct", True
-    limit, from_tail    = 25, False
+    page, page_size     = 0, 25
 
     while True:
         active = _apply_watched_filters(watched, season_filter, team_filter)
@@ -525,13 +533,13 @@ def summary(watched: dict):
             key=lambda r: r[sort_col] if isinstance(r[sort_col], (int, float)) else r[sort_col].lower(),
             reverse=sort_rev,
         )
-        visible = _apply_limit(rows, limit, from_tail)
+        visible, page, total_pages = _paginate(rows, page, page_size)
 
         clear()
         print_header("Game Summary")
         sort_label = next(l for l, k, _ in _GAME_SORT_COLS if k == sort_col)
         fl = _filters_label(season_filter, team_filter, None)
-        print(f"\n  {len(scored)} game(s)  |  {len(teams)} teams  |  sorted by {sort_label}  |  showing {_limit_label(limit, from_tail)}{fl}\n")
+        print(f"\n  {len(scored)} game(s)  |  {len(teams)} teams  |  sorted by {sort_label}  |  {_page_label(page, total_pages)}{fl}\n")
 
         if not scored:
             print("  No completed games match current filters.")
@@ -559,7 +567,7 @@ def summary(watched: dict):
             print(f"  🥱 Lowest-scoring:  {lowest['date']}  {lowest['away']} @ {lowest['home']}  ({lowest['away_score']}–{lowest['home_score']})")
             print(f"  💥 Biggest blowout: {blowout['date']}  {blowout['away']} @ {blowout['home']}  ({blowout['away_score']}–{blowout['home_score']}, margin: {margin})")
 
-        result = _sort_prompt(_GAME_SORT_COLS)
+        result = _sort_prompt(_GAME_SORT_COLS, total_pages)
         if result is None:
             return
         if result == "csv":
@@ -572,16 +580,22 @@ def summary(watched: dict):
             )
             continue
         if result == "filter":
-            season_filter, team_filter, _ = _filter_prompt(
+            season_filter, team_filter, _, _ = _filter_prompt(
                 watched, season_filter, team_filter, None, show_ip=False
             )
+            page = 0
             continue
-        if isinstance(result, tuple) and result[0] == "limit":
-            limit, from_tail = _ask_limit(limit, result[1] == "t")
+        if isinstance(result, tuple) and result[0] == "pagesize":
+            page_size = _ask_page_size(page_size)
+            page = 0
+            continue
+        if isinstance(result, tuple) and result[0] == "page":
+            page += result[1]
             continue
         if result is False:
             continue
         sort_col, sort_rev = result
+        page = 0
 
 
 # ── Screen: Player Summary ────────────────────────────────────────────────────
@@ -616,6 +630,9 @@ _PITCH_SORT_COLS = [
     ("Team",        "team",  False),
     ("Appearances", "app",   True),
     ("IP",          "_outs", True),
+    ("Wins",        "w",     True),
+    ("Losses",      "l",     True),
+    ("Saves",       "sv",    True),
     ("ERA",         "_era",  False),
     ("WHIP",        "_whip", False),
     ("K/9",         "_k9",   True),
@@ -629,6 +646,10 @@ _BAT_SORT_COLS = [
     ("Appearances", "app",   True),
     ("PA",          "pa",    True),
     ("AB",          "ab",    True),
+    ("Runs",        "r",     True),
+    ("Home runs",   "hr",    True),
+    ("RBI",         "rbi",   True),
+    ("Stolen bases","sb",    True),
     ("AVG",         "_avg",  True),
     ("OBP",         "_obp",  True),
     ("SLG",         "_slg",  True),
@@ -642,14 +663,25 @@ def _show_pitching(watched: dict):
     ip_min:        float | None = None
 
     sort_col, sort_rev = "_era", False
-    limit, from_tail   = 25, False
+    page, page_size    = 0, 25
 
-    # Fetch once — all filtering happens in memory via filter_and_aggregate
+    # ── Step 1: ask for filters BEFORE any expensive fetching ────────────────
+    # (Mirrors the Small Sample screens — avoids fetching boxscores for games
+    # outside the filter scope when the watched list is large.)
     clear()
     print_header("Pitcher Summary")
-    print(f"\n  Fetching boxscore data for {len(watched)} game(s)...\n")
+    print("\n  Set filters before loading (reduces games fetched).\n")
+    print(f"  Watched games: {len(watched)}\n")
+    season_filter, team_filter, ip_min, _ = _filter_prompt(
+        watched, season_filter, team_filter, ip_min=ip_min, show_ip=True
+    )
+
+    fetch_watched = _apply_watched_filters(watched, season_filter, team_filter)
+    clear()
+    print_header("Pitcher Summary")
+    print(f"\n  Fetching boxscore data for {len(fetch_watched)} game(s) (filtered from {len(watched)} total)...\n")
     try:
-        all_pitchers, all_batters = player_summary.collect_player_game_stats(watched)
+        all_pitchers, all_batters = player_summary.collect_player_game_stats(fetch_watched)
     except Exception as e:
         print(f"\n  Error collecting stats: {e}")
         input("\nPress Enter to continue...")
@@ -658,8 +690,8 @@ def _show_pitching(watched: dict):
     while True:
         pitchers_raw, _ = player_summary.filter_and_aggregate(
             all_pitchers, all_batters,
-            season_filter=season_filter,
-            team_filter=team_filter,
+            season_filter=None,         # already applied at fetch time
+            team_filter=team_filter,    # still needed to exclude opponents
         )
         rows = player_summary.pitching_leaderboard(pitchers_raw, ip_min=ip_min)
 
@@ -669,49 +701,71 @@ def _show_pitching(watched: dict):
                            else r[sort_col].lower()),
             reverse=sort_rev,
         )
-        visible = _apply_limit(sorted_rows, limit, from_tail)
+        visible, page, total_pages = _paginate(sorted_rows, page, page_size)
 
         clear()
         print_header("Pitcher Summary")
         sort_label = next(l for l, k, _ in _PITCH_SORT_COLS if k == sort_col)
         fl = _filters_label(season_filter, team_filter, ip_min=ip_min)
-        print(f"\n  {len(rows)} pitchers  |  sorted by {sort_label}  |  showing {_limit_label(limit, from_tail)}{fl}\n")
+        print(f"\n  {len(rows)} pitchers  |  sorted by {sort_label}  |  {_page_label(page, total_pages)}{fl}\n")
 
         if not rows:
             print("  No pitchers match current filters.")
         else:
-            col = "{:<22}  {:<22}  {:>4}  {:>6}  {:>5}  {:>5}  {:>5}  {:>5}  {:>5}"
-            print(col.format("Name", "Team", "App", "IP", "ERA", "WHIP", "K/9", "BB/9", "HR/9"))
-            print("  " + "-" * 80)
+            col = "{:<20}  {:<18}  {:>4}  {:>6}  {:>5}  {:>3}  {:>5}  {:>5}  {:>5}  {:>5}  {:>5}"
+            print(col.format("Name", "Team", "App", "IP", "W-L", "SV", "ERA", "WHIP", "K/9", "BB/9", "HR/9"))
+            print("  " + "-" * 96)
             for r in visible:
                 print("  " + col.format(
-                    r["name"][:22], r["team"][:22],
-                    r["app"], r["ip"],
+                    r["name"][:20], r["team"][:18],
+                    r["app"], r["ip"], r["wl"], r["sv"],
                     r["era"], r["whip"], r["k9"], r["bb9"], r["hr9"],
                 ))
+            if total_pages > 1:
+                print(f"\n  Press [n]/[p] to scroll pages.")
 
-        result = _sort_prompt(_PITCH_SORT_COLS)
+        result = _sort_prompt(_PITCH_SORT_COLS, total_pages)
         if result is None:
             return
         if result == "csv":
             _dump_csv(
                 "pitcher_summary.csv",
-                ["Name", "Team", "App", "IP", "ERA", "WHIP", "K/9", "BB/9", "HR/9"],
+                ["Name", "Team", "App", "IP", "W", "L", "SV", "HLD", "BS", "ERA", "WHIP", "K/9", "BB/9", "HR/9"],
                 visible,
-                ["name", "team", "app", "ip", "era", "whip", "k9", "bb9", "hr9"],
+                ["name", "team", "app", "ip", "w", "l", "sv", "hld", "bs", "era", "whip", "k9", "bb9", "hr9"],
             )
             continue
         if result == "filter":
-            season_filter, team_filter, ip_min, _ = _filter_prompt(
+            new_sf, new_tf, new_ip, _ = _filter_prompt(
                 watched, season_filter, team_filter, ip_min=ip_min, show_ip=True
             )
+            if (new_sf, new_tf) != (season_filter, team_filter):
+                season_filter, team_filter, ip_min = new_sf, new_tf, new_ip
+                fetch_watched = _apply_watched_filters(watched, season_filter, team_filter)
+                clear()
+                print_header("Pitcher Summary")
+                print(f"\n  Re-fetching boxscore data for {len(fetch_watched)} game(s)...\n")
+                try:
+                    all_pitchers, all_batters = player_summary.collect_player_game_stats(fetch_watched)
+                except Exception as e:
+                    print(f"\n  Error: {e}")
+                    input("\nPress Enter to continue...")
+                    return
+            else:
+                season_filter, team_filter, ip_min = new_sf, new_tf, new_ip
+            page = 0
             continue
-        if isinstance(result, tuple) and result[0] == "limit":
-            limit, from_tail = _ask_limit(limit, result[1] == "t")
+        if isinstance(result, tuple) and result[0] == "pagesize":
+            page_size = _ask_page_size(page_size)
+            page = 0
+            continue
+        if isinstance(result, tuple) and result[0] == "page":
+            page += result[1]
             continue
         if result is False:
             continue
         sort_col, sort_rev = result
+        page = 0
 
 
 def _show_batting(watched: dict):
@@ -720,14 +774,23 @@ def _show_batting(watched: dict):
     pa_min:        int | None = None
 
     sort_col, sort_rev = "_ops", True
-    limit, from_tail   = 25, False
+    page, page_size    = 0, 25
 
-    # Fetch once — all filtering happens in memory via filter_and_aggregate
+    # ── Step 1: ask for filters BEFORE any expensive fetching ────────────────
     clear()
     print_header("Batter Summary")
-    print(f"\n  Fetching boxscore data for {len(watched)} game(s)...\n")
+    print("\n  Set filters before loading (reduces games fetched).\n")
+    print(f"  Watched games: {len(watched)}\n")
+    season_filter, team_filter, _, pa_min = _filter_prompt(
+        watched, season_filter, team_filter, pa_min=pa_min, show_pa=True
+    )
+
+    fetch_watched = _apply_watched_filters(watched, season_filter, team_filter)
+    clear()
+    print_header("Batter Summary")
+    print(f"\n  Fetching boxscore data for {len(fetch_watched)} game(s) (filtered from {len(watched)} total)...\n")
     try:
-        all_pitchers, all_batters = player_summary.collect_player_game_stats(watched)
+        all_pitchers, all_batters = player_summary.collect_player_game_stats(fetch_watched)
     except Exception as e:
         print(f"\n  Error collecting stats: {e}")
         input("\nPress Enter to continue...")
@@ -736,8 +799,8 @@ def _show_batting(watched: dict):
     while True:
         _, batters_raw = player_summary.filter_and_aggregate(
             all_pitchers, all_batters,
-            season_filter=season_filter,
-            team_filter=team_filter,
+            season_filter=None,         # already applied at fetch time
+            team_filter=team_filter,    # still needed to exclude opponents
         )
         rows = player_summary.batting_leaderboard(batters_raw, pa_min=pa_min)
 
@@ -747,49 +810,71 @@ def _show_batting(watched: dict):
                            else r[sort_col].lower()),
             reverse=sort_rev,
         )
-        visible = _apply_limit(sorted_rows, limit, from_tail)
+        visible, page, total_pages = _paginate(sorted_rows, page, page_size)
 
         clear()
         print_header("Batter Summary")
         sort_label = next(l for l, k, _ in _BAT_SORT_COLS if k == sort_col)
         fl = _filters_label(season_filter, team_filter, pa_min=pa_min)
-        print(f"\n  {len(rows)} batters  |  sorted by {sort_label}  |  showing {_limit_label(limit, from_tail)}{fl}\n")
+        print(f"\n  {len(rows)} batters  |  sorted by {sort_label}  |  {_page_label(page, total_pages)}{fl}\n")
 
         if not rows:
             print("  No batters match current filters.")
         else:
-            col = "{:<22}  {:<22}  {:>4}  {:>5}  {:>5}  {:>5}  {:>6}  {:>5}  {:>5}  {:>5}"
-            print(col.format("Name", "Team", "App", "PA", "AB", "H", "AVG", "OBP", "SLG", "OPS"))
-            print("  " + "-" * 85)
+            col = "{:<20}  {:<18}  {:>4}  {:>5}  {:>5}  {:>3}  {:>3}  {:>4}  {:>3}  {:>6}  {:>5}  {:>5}  {:>5}"
+            print(col.format("Name", "Team", "App", "PA", "AB", "R", "HR", "RBI", "SB", "AVG", "OBP", "SLG", "OPS"))
+            print("  " + "-" * 105)
             for r in visible:
                 print("  " + col.format(
-                    r["name"][:22], r["team"][:22],
-                    r["app"], r["pa"], r["ab"], r["h"],
+                    r["name"][:20], r["team"][:18],
+                    r["app"], r["pa"], r["ab"], r["r"], r["hr"], r["rbi"], r["sb"],
                     r["avg"], r["obp"], r["slg"], r["ops"],
                 ))
+            if total_pages > 1:
+                print(f"\n  Press [n]/[p] to scroll pages.")
 
-        result = _sort_prompt(_BAT_SORT_COLS)
+        result = _sort_prompt(_BAT_SORT_COLS, total_pages)
         if result is None:
             return
         if result == "csv":
             _dump_csv(
                 "batter_summary.csv",
-                ["Name", "Team", "App", "PA", "AB", "H", "AVG", "OBP", "SLG", "OPS"],
+                ["Name", "Team", "App", "PA", "AB", "H", "R", "2B", "3B", "HR", "RBI", "SB", "CS", "SO", "GIDP", "AVG", "OBP", "SLG", "OPS"],
                 visible,
-                ["name", "team", "app", "pa", "ab", "h", "avg", "obp", "slg", "ops"],
+                ["name", "team", "app", "pa", "ab", "h", "r", "2b", "3b", "hr", "rbi", "sb", "cs", "so", "gidp", "avg", "obp", "slg", "ops"],
             )
             continue
         if result == "filter":
-            season_filter, team_filter, _, pa_min = _filter_prompt(
+            new_sf, new_tf, _, new_pa = _filter_prompt(
                 watched, season_filter, team_filter, pa_min=pa_min, show_pa=True
             )
+            if (new_sf, new_tf) != (season_filter, team_filter):
+                season_filter, team_filter, pa_min = new_sf, new_tf, new_pa
+                fetch_watched = _apply_watched_filters(watched, season_filter, team_filter)
+                clear()
+                print_header("Batter Summary")
+                print(f"\n  Re-fetching boxscore data for {len(fetch_watched)} game(s)...\n")
+                try:
+                    all_pitchers, all_batters = player_summary.collect_player_game_stats(fetch_watched)
+                except Exception as e:
+                    print(f"\n  Error: {e}")
+                    input("\nPress Enter to continue...")
+                    return
+            else:
+                season_filter, team_filter, pa_min = new_sf, new_tf, new_pa
+            page = 0
             continue
-        if isinstance(result, tuple) and result[0] == "limit":
-            limit, from_tail = _ask_limit(limit, result[1] == "t")
+        if isinstance(result, tuple) and result[0] == "pagesize":
+            page_size = _ask_page_size(page_size)
+            page = 0
+            continue
+        if isinstance(result, tuple) and result[0] == "page":
+            page += result[1]
             continue
         if result is False:
             continue
         sort_col, sort_rev = result
+        page = 0
 
 
 
@@ -860,7 +945,7 @@ def _show_comp_pitching(watched: dict):
     team_filter:   str | None  = None
     ip_min:        float | None = None
     sort_col, sort_rev = "_w_era", False
-    limit, from_tail   = 25, False
+    page, page_size    = 0, 8   # each row spans 3 printed lines, so keep pages short
 
     # ── Step 1: ask for filters BEFORE any expensive fetching ────────────────
     clear()
@@ -931,29 +1016,38 @@ def _show_comp_pitching(watched: dict):
 
         sorted_rows = sorted(rows, key=_comp_sort_key, reverse=sort_rev)
 
-        visible = _apply_limit(sorted_rows, limit, from_tail)
+        visible, page, total_pages = _paginate(sorted_rows, page, page_size)
 
         clear()
         print_header("Small Sample — Pitchers")
         sort_label = next(l for l, k, _ in _COMP_PITCH_SORT_COLS if k == sort_col)
         fl = _filters_label(season_filter, team_filter, ip_min=ip_min)
-        print(f"\n  {len(rows)} pitchers  |  ref: {ref_type}  |  sorted by {sort_label}  |  showing {_limit_label(limit, from_tail)}{fl}\n")
+        print(f"\n  {len(rows)} pitchers  |  ref: {ref_type}  |  sorted by {sort_label}  |  {_page_label(page, total_pages)}{fl}\n")
 
         if not rows:
             print("  No pitchers match current filters.")
         else:
             n = "{:<22}  {:<18}  {:>4}"
             s = "  {:>5}  {:>5}  {:>5}  {:>5}  {:>5}"
-            print("  " + n.format("Name", "Team", "App") + s.format("ERA", "WHIP", "K/9", "BB/9", "HR/9"))
+            header = n.format("Name", "Team", "App")
+            # Bug fix: the ref/delta lines used to be indented with a
+            # hardcoded 46 spaces, but the actual "name/team/app" block is
+            # 48 chars wide — so the reference/delta rows drifted two
+            # columns left of the watched row above them. Pad dynamically
+            # off the real header width instead of a magic number.
+            pad = " " * len(header)
+            print("  " + header + s.format("ERA", "WHIP", "K/9", "BB/9", "HR/9"))
             print("  " + "-"*22 + "  " + "-"*18 + "  " + "-"*4 + ("  " + "-"*5)*5)
             for r in visible:
                 base = n.format(r["name"][:22], r["team"][:18], r["app"])
                 print("  " + base + s.format(r["w_era"], r["w_whip"], r["w_k9"], r["w_bb9"], r["w_hr9"]) + "  ← watched")
-                print("  " + " "*46 + s.format(r["r_era"], r["r_whip"], r["r_k9"], r["r_bb9"], r["r_hr9"]) + f"  ← {ref_type}")
-                print("  " + " "*46 + s.format(r["d_era"], r["d_whip"], r["d_k9"], r["d_bb9"], r["d_hr9"]) + "  ← delta")
+                print("  " + pad + s.format(r["r_era"], r["r_whip"], r["r_k9"], r["r_bb9"], r["r_hr9"]) + f"  ← {ref_type}")
+                print("  " + pad + s.format(r["d_era"], r["d_whip"], r["d_k9"], r["d_bb9"], r["d_hr9"]) + "  ← delta")
                 print()
+            if total_pages > 1:
+                print(f"  Press [n]/[p] to scroll pages.")
 
-        result = _sort_prompt(_COMP_PITCH_SORT_COLS)
+        result = _sort_prompt(_COMP_PITCH_SORT_COLS, total_pages)
         if result is None:
             return
         if result == "csv":
@@ -986,13 +1080,19 @@ def _show_comp_pitching(watched: dict):
                     input("\nPress Enter to continue...")
                     return
                 need_ref_fetch = True
+            page = 0
             continue
-        if isinstance(result, tuple) and result[0] == "limit":
-            limit, from_tail = _ask_limit(limit, result[1] == "t")
+        if isinstance(result, tuple) and result[0] == "pagesize":
+            page_size = _ask_page_size(page_size)
+            page = 0
+            continue
+        if isinstance(result, tuple) and result[0] == "page":
+            page += result[1]
             continue
         if result is False:
             continue
         sort_col, sort_rev = result
+        page = 0
 
 
 def _show_comp_batting(watched: dict):
@@ -1000,7 +1100,7 @@ def _show_comp_batting(watched: dict):
     team_filter:   str | None = None
     pa_min:        int | None = None
     sort_col, sort_rev = "_w_ops", True
-    limit, from_tail   = 25, False
+    page, page_size    = 0, 8   # each row spans 3 printed lines, so keep pages short
 
     # ── Step 1: ask for filters BEFORE any expensive fetching ────────────────
     clear()
@@ -1060,29 +1160,36 @@ def _show_comp_batting(watched: dict):
 
         sorted_rows = sorted(rows, key=_comp_sort_key, reverse=sort_rev)
 
-        visible = _apply_limit(sorted_rows, limit, from_tail)
+        visible, page, total_pages = _paginate(sorted_rows, page, page_size)
 
         clear()
         print_header("Small Sample — Batters")
         sort_label = next(l for l, k, _ in _COMP_BAT_SORT_COLS if k == sort_col)
         fl = _filters_label(season_filter, team_filter, pa_min=pa_min)
-        print(f"\n  {len(rows)} batters  |  ref: {ref_type}  |  sorted by {sort_label}  |  showing {_limit_label(limit, from_tail)}{fl}\n")
+        print(f"\n  {len(rows)} batters  |  ref: {ref_type}  |  sorted by {sort_label}  |  {_page_label(page, total_pages)}{fl}\n")
 
         if not rows:
             print("  No batters match current filters.")
         else:
             n = "{:<22}  {:<18}  {:>4}  {:>5}  {:>5}"
             s = "  {:>6}  {:>5}  {:>5}  {:>5}"
-            print("  " + n.format("Name", "Team", "App", "PA", "AB") + s.format("AVG", "OBP", "SLG", "OPS"))
+            header = n.format("Name", "Team", "App", "PA", "AB")
+            # Bug fix: was hardcoded to 52 spaces, but the actual
+            # "name/team/app/pa/ab" block is 62 chars wide — the ref/delta
+            # rows were drifting ten columns left of the watched row.
+            pad = " " * len(header)
+            print("  " + header + s.format("AVG", "OBP", "SLG", "OPS"))
             print("  " + "-"*22 + "  " + "-"*18 + "  " + "-"*4 + "  " + "-"*5 + "  " + "-"*5 + ("  " + "-"*6)*4)
             for r in visible:
                 base = n.format(r["name"][:22], r["team"][:18], r["app"], r["w_pa"], r["w_ab"])
                 print("  " + base + s.format(r["w_avg"], r["w_obp"], r["w_slg"], r["w_ops"]) + "  ← watched")
-                print("  " + " "*52 + s.format(r["r_avg"], r["r_obp"], r["r_slg"], r["r_ops"]) + f"  ← {ref_type}")
-                print("  " + " "*52 + s.format(r["d_avg"], r["d_obp"], r["d_slg"], r["d_ops"]) + "  ← delta")
+                print("  " + pad + s.format(r["r_avg"], r["r_obp"], r["r_slg"], r["r_ops"]) + f"  ← {ref_type}")
+                print("  " + pad + s.format(r["d_avg"], r["d_obp"], r["d_slg"], r["d_ops"]) + "  ← delta")
                 print()
+            if total_pages > 1:
+                print(f"  Press [n]/[p] to scroll pages.")
 
-        result = _sort_prompt(_COMP_BAT_SORT_COLS)
+        result = _sort_prompt(_COMP_BAT_SORT_COLS, total_pages)
         if result is None:
             return
         if result == "csv":
@@ -1114,13 +1221,19 @@ def _show_comp_batting(watched: dict):
                     input("\nPress Enter to continue...")
                     return
                 need_ref_fetch = True
+            page = 0
             continue
-        if isinstance(result, tuple) and result[0] == "limit":
-            limit, from_tail = _ask_limit(limit, result[1] == "t")
+        if isinstance(result, tuple) and result[0] == "pagesize":
+            page_size = _ask_page_size(page_size)
+            page = 0
+            continue
+        if isinstance(result, tuple) and result[0] == "page":
+            page += result[1]
             continue
         if result is False:
             continue
         sort_col, sort_rev = result
+        page = 0
 
 # ── Main menu ─────────────────────────────────────────────────────────────────
 

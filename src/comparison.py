@@ -155,7 +155,12 @@ def _parse_batter_stat(s: dict) -> dict | None:
         pa  = int(s.get("plateAppearances", 0) or 0)
         ab  = int(s.get("atBats",           0) or 0)
 
-        if avg == 0 and obp == 0 and slg == 0:
+        # Bug fix: this used to treat avg==obp==slg==0 as "no record", but a
+        # player who genuinely went hitless across real plate appearances
+        # (a true .000 season/career) has that exact same signature and was
+        # being silently hidden. Check PA instead — that's the actual signal
+        # for "no record" (career stat block with nothing in it).
+        if pa == 0:
             return None   # genuinely empty record
 
         return {
@@ -180,9 +185,18 @@ def _fmt_delta_stat(
 ) -> str:
     if watched is None or ref is None:
         return "—"
-    d     = watched - ref
-    sign  = "+" if d >= 0 else "-"
-    arrow = "▲" if d > 0 else ("▼" if d < 0 else "─")
+    d    = watched - ref
+    sign = "+" if d >= 0 else "-"
+    if d == 0:
+        arrow = "─"
+    else:
+        # Bug fix: higher_is_better used to be accepted but ignored, so the
+        # arrow always tracked the raw numeric sign — meaning a HIGHER ERA
+        # (worse) still rendered as ▲, which reads as "improvement". The
+        # arrow should mean better/worse relative to the reference, not just
+        # numerically up/down.
+        better = (d > 0) == higher_is_better
+        arrow  = "▲" if better else "▼"
     return f"{arrow}{sign}{abs(d):{fmt}}"
 
 
