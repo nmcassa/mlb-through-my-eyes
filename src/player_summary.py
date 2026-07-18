@@ -78,7 +78,7 @@ def collect_player_game_stats(watched: dict) -> tuple[dict, dict]:
 
                 # ── Pitching ──────────────────────────────────────────────
                 if game_pitching.get("inningsPitched") not in (None, "", "0.0", 0):
-                    person_id = int(pid.lstrip("ID")) if pid.startswith("ID") else None
+                    person_id = int(pid[2:]) if pid.startswith("ID") else None
                     pitchers.setdefault(name, {"person_id": person_id, "games": []})
                     pitchers[name]["games"].append({
                         "game_id": gid,
@@ -90,6 +90,16 @@ def collect_player_game_stats(watched: dict) -> tuple[dict, dict]:
                         "bb":      int(game_pitching.get("baseOnBalls", 0)),
                         "k":       int(game_pitching.get("strikeOuts",  0)),
                         "hr":      int(game_pitching.get("homeRuns",    0)),
+                        # Additional counting stats — free to collect since we
+                        # already have the boxscore in hand, no extra API calls.
+                        "w":       int(game_pitching.get("wins",        0) or 0),
+                        "l":       int(game_pitching.get("losses",      0) or 0),
+                        "sv":      int(game_pitching.get("saves",       0) or 0),
+                        "hld":     int(game_pitching.get("holds",       0) or 0),
+                        "bs":      int(game_pitching.get("blownSaves",  0) or 0),
+                        "hbp":     int(game_pitching.get("hitBatsmen",  0) or 0),
+                        "bk":      int(game_pitching.get("balks",       0) or 0),
+                        "wp":      int(game_pitching.get("wildPitches", 0) or 0),
                     })
 
                 # ── Batting ───────────────────────────────────────────────
@@ -104,7 +114,7 @@ def collect_player_game_stats(watched: dict) -> tuple[dict, dict]:
                     hr  = int(game_batting.get("homeRuns",    0))
                     tb  = (h - dbl - trp - hr) + 2*dbl + 3*trp + 4*hr
 
-                    person_id = int(pid.lstrip("ID")) if pid.startswith("ID") else None
+                    person_id = int(pid[2:]) if pid.startswith("ID") else None
                     batters.setdefault(name, {"person_id": person_id, "games": []})
                     batters[name]["games"].append({
                         "game_id": gid,
@@ -117,6 +127,17 @@ def collect_player_game_stats(watched: dict) -> tuple[dict, dict]:
                         "sf":      sf,
                         "tb":      tb,
                         "pa":      ab + bb + hbp + sf,
+                        # Additional counting stats — free to collect since we
+                        # already have the boxscore in hand, no extra API calls.
+                        "r":       int(game_batting.get("runs",                0) or 0),
+                        "2b":      dbl,
+                        "3b":      trp,
+                        "hr":      hr,
+                        "rbi":     int(game_batting.get("rbi",                 0) or 0),
+                        "so":      int(game_batting.get("strikeOuts",          0) or 0),
+                        "sb":      int(game_batting.get("stolenBases",         0) or 0),
+                        "cs":      int(game_batting.get("caughtStealing",      0) or 0),
+                        "gidp":    int(game_batting.get("groundIntoDoublePlay",0) or 0),
                     })
 
     return pitchers, batters
@@ -126,7 +147,11 @@ def collect_player_game_stats(watched: dict) -> tuple[dict, dict]:
 
 def _aggregate_pitcher(name: str, game_rows: list[dict]) -> dict:
     """Sum raw pitching counting stats across a list of filtered game records."""
-    acc = {"outs": 0, "er": 0, "h": 0, "bb": 0, "k": 0, "hr": 0, "appearances": 0, "teams": {}}
+    acc = {
+        "outs": 0, "er": 0, "h": 0, "bb": 0, "k": 0, "hr": 0,
+        "w": 0, "l": 0, "sv": 0, "hld": 0, "bs": 0, "hbp": 0, "bk": 0, "wp": 0,
+        "appearances": 0, "teams": {},
+    }
     for g in game_rows:
         acc["outs"]        += g["outs"]
         acc["er"]          += g["er"]
@@ -134,6 +159,14 @@ def _aggregate_pitcher(name: str, game_rows: list[dict]) -> dict:
         acc["bb"]          += g["bb"]
         acc["k"]           += g["k"]
         acc["hr"]          += g["hr"]
+        acc["w"]           += g.get("w",   0)
+        acc["l"]           += g.get("l",   0)
+        acc["sv"]          += g.get("sv",  0)
+        acc["hld"]         += g.get("hld", 0)
+        acc["bs"]          += g.get("bs",  0)
+        acc["hbp"]         += g.get("hbp", 0)
+        acc["bk"]          += g.get("bk",  0)
+        acc["wp"]          += g.get("wp",  0)
         acc["appearances"] += 1
         acc["teams"][g["team"]] = acc["teams"].get(g["team"], 0) + 1
     return acc
@@ -141,7 +174,11 @@ def _aggregate_pitcher(name: str, game_rows: list[dict]) -> dict:
 
 def _aggregate_batter(name: str, game_rows: list[dict]) -> dict:
     """Sum raw batting counting stats across a list of filtered game records."""
-    acc = {"ab": 0, "h": 0, "bb": 0, "hbp": 0, "sf": 0, "tb": 0, "pa": 0, "appearances": 0, "teams": {}}
+    acc = {
+        "ab": 0, "h": 0, "bb": 0, "hbp": 0, "sf": 0, "tb": 0, "pa": 0,
+        "r": 0, "2b": 0, "3b": 0, "hr": 0, "rbi": 0, "so": 0, "sb": 0, "cs": 0, "gidp": 0,
+        "appearances": 0, "teams": {},
+    }
     for g in game_rows:
         acc["ab"]          += g["ab"]
         acc["h"]           += g["h"]
@@ -150,6 +187,15 @@ def _aggregate_batter(name: str, game_rows: list[dict]) -> dict:
         acc["sf"]          += g["sf"]
         acc["tb"]          += g["tb"]
         acc["pa"]          += g["pa"]
+        acc["r"]           += g.get("r",    0)
+        acc["2b"]          += g.get("2b",   0)
+        acc["3b"]          += g.get("3b",   0)
+        acc["hr"]          += g.get("hr",   0)
+        acc["rbi"]         += g.get("rbi",  0)
+        acc["so"]          += g.get("so",   0)
+        acc["sb"]          += g.get("sb",   0)
+        acc["cs"]          += g.get("cs",   0)
+        acc["gidp"]        += g.get("gidp", 0)
         acc["appearances"] += 1
         acc["teams"][g["team"]] = acc["teams"].get(g["team"], 0) + 1
     return acc
@@ -218,6 +264,15 @@ def calc_pitching_stats(name: str, raw: dict) -> dict:
         "app":       raw["appearances"],
         "ip":        outs_to_ip(outs),
         "_outs":     outs,
+        "w":         raw.get("w", 0),
+        "l":         raw.get("l", 0),
+        "wl":        f"{raw.get('w', 0)}-{raw.get('l', 0)}",
+        "sv":        raw.get("sv", 0),
+        "hld":       raw.get("hld", 0),
+        "bs":        raw.get("bs", 0),
+        "hbp":       raw.get("hbp", 0),
+        "bk":        raw.get("bk", 0),
+        "wp":        raw.get("wp", 0),
         "_era": 999.0, "_whip": 999.0, "_k9": 0.0, "_bb9": 999.0, "_hr9": 999.0,
     }
 
@@ -259,6 +314,15 @@ def calc_batting_stats(name: str, raw: dict) -> dict:
         "ab":   ab,
         "pa":   pa,
         "h":    h,
+        "r":    raw.get("r", 0),
+        "2b":   raw.get("2b", 0),
+        "3b":   raw.get("3b", 0),
+        "hr":   raw.get("hr", 0),
+        "rbi":  raw.get("rbi", 0),
+        "so":   raw.get("so", 0),
+        "sb":   raw.get("sb", 0),
+        "cs":   raw.get("cs", 0),
+        "gidp": raw.get("gidp", 0),
         "avg":  f"{avg:.3f}", "_avg": avg,
         "obp":  f"{obp:.3f}", "_obp": obp,
         "slg":  f"{slg:.3f}", "_slg": slg,
