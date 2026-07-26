@@ -454,6 +454,21 @@ def _page_label(page: int, total_pages: int) -> str:
     return f"page {page + 1}/{total_pages}" if total_pages > 1 else "all rows"
 
 
+def _sort_rows(rows: list[dict], col: str, reverse: bool) -> list[dict]:
+    """
+    Sort rows by column. Rows where the column is None (e.g. an
+    uncomputable Nick+) are kept at the bottom regardless of sort direction,
+    rather than flip-flopping to the top when the direction reverses.
+    """
+    present = [r for r in rows if r[col] is not None]
+    missing = [r for r in rows if r[col] is None]
+    present.sort(
+        key=lambda r: r[col] if isinstance(r[col], (int, float)) else r[col].lower(),
+        reverse=reverse,
+    )
+    return present + missing
+
+
 # ── CSV export helper ─────────────────────────────────────────────────────────
 
 def _dump_csv(filename: str, headers: list[str], rows: list[dict], display_keys: list[str]) -> None:
@@ -600,6 +615,156 @@ def summary(watched: dict):
 
 # ── Screen: Player Summary ────────────────────────────────────────────────────
 
+def screen_player_search(watched: dict):
+    """Search for a player by name and see a season-by-season breakdown of
+    the games you've logged for them (one row per watched season)."""
+    if not watched:
+        clear()
+        print_header("Search Player")
+        print("\n  No games watched yet. Browse a season to add some!")
+        input("\nPress Enter to continue...")
+        return
+
+    while True:
+        clear()
+        print_header("Search Player")
+        print(f"\n  Searching across {len(watched)} watched game(s).")
+        query = input("\n  Player name (or part of it), or 'q' to go back: ").strip()
+        if query.lower() == "q":
+            return
+        if not query:
+            continue
+
+        clear()
+        print_header("Search Player")
+        print(f"\n  Fetching boxscore data for {len(watched)} game(s)...\n")
+        try:
+            all_pitchers, all_batters = player_summary.collect_player_game_stats(watched)
+        except Exception as e:
+            print(f"\n  Error collecting stats: {e}")
+            input("\nPress Enter to continue...")
+            return
+
+        q = query.lower()
+        matches = sorted({
+            n for n in list(all_pitchers.keys()) + list(all_batters.keys())
+            if q in n.lower()
+        })
+
+        if not matches:
+            print(f"\n  No players matching '{query}' found in your watched games.")
+            input("\nPress Enter to continue...")
+            continue
+
+        # Nick+ pool: every qualifying player across your ENTIRE watched
+        # history (not just this search), so a player's score means
+        # "compared to everyone you've watched" consistently.
+        pool_pitchers_raw, pool_batters_raw = player_summary.filter_and_aggregate(all_pitchers, all_batters)
+        pitch_baseline = player_summary.compute_pitcher_pool_baseline(
+            player_summary.pitching_leaderboard(pool_pitchers_raw)
+        )
+        bat_baseline = player_summary.compute_batter_pool_baseline(
+            player_summary.batting_leaderboard(pool_batters_raw)
+        )
+
+        if len(matches) == 1:
+            name = matches[0]
+        else:
+            clear()
+            print_header("Search Player")
+            print(f"\n  {len(matches)} players match '{query}':\n")
+            for i, n in enumerate(matches, 1):
+                roles = []
+                if n in all_pitchers:
+                    roles.append("P")
+                if n in all_batters:
+                    roles.append("B")
+                print(f"    [{i}] {n}  ({'/'.join(roles)})")
+            print("    [q] Back")
+            sel = input("\n  > ").strip().lower()
+            if sel == "q":
+                continue
+            if not sel.isdigit() or not (1 <= int(sel) <= len(matches)):
+                continue
+            name = matches[int(sel) - 1]
+
+        _show_player_seasons(
+            name, all_pitchers.get(name), all_batters.get(name),
+            pitch_baseline, bat_baseline,
+        )
+
+
+def _show_player_seasons(
+    name: str,
+    pitcher_data: dict | None,
+    batter_data: dict | None,
+    pitch_baseline: dict | None,
+    bat_baseline: dict | None,
+):
+    """Render a per-season table (pitching and/or batting) for one player."""
+    while True:
+        clear()
+        print_header(f"Season Log — {name}")
+
+        pitch_rows = player_summary.pitcher_season_rows(name, pitcher_data["games"]) if pitcher_data else []
+        bat_rows   = player_summary.batter_season_rows(name, batter_data["games"])   if batter_data  else []
+        for r in pitch_rows:
+            n = player_summary.nick_plus_pitcher(r, pitch_baseline)
+            r["nickplus"], r["nick+"] = n, (str(n) if n is not None else "—")
+        for r in bat_rows:
+            n = player_summary.nick_plus_batter(r, bat_baseline)
+            r["nickplus"], r["nick+"] = n, (str(n) if n is not None else "—")
+
+        if pitch_rows:
+            print("\n  PITCHING\n")
+            print("  Nick+: 100 = average of every qualifying pitcher you've watched. Higher is better.\n")
+            col = "  {:<14}  {:<18}  {:>4}  {:>6}  {:>6}  {:>5}  {:>3}  {:>5}  {:>5}  {:>5}  {:>5}  {:>5}"
+            print(col.format("Season", "Team", "App", "Nick+", "IP", "W-L", "SV", "ERA", "WHIP", "K/9", "BB/9", "HR/9"))
+            print("  " + "-" * 105)
+            for r in pitch_rows:
+                print(col.format(
+                    r["season"], r["team"][:18], r["app"], r["nick+"], r["ip"], r["wl"], r["sv"],
+                    r["era"], r["whip"], r["k9"], r["bb9"], r["hr9"],
+                ))
+
+        if bat_rows:
+            print("\n  BATTING\n")
+            print("  Nick+: 100 = average of every qualifying batter you've watched. Higher is better.\n")
+            col = "  {:<14}  {:<18}  {:>4}  {:>6}  {:>5}  {:>5}  {:>3}  {:>3}  {:>4}  {:>3}  {:>6}  {:>5}  {:>5}  {:>5}"
+            print(col.format("Season", "Team", "App", "Nick+", "PA", "AB", "R", "HR", "RBI", "SB", "AVG", "OBP", "SLG", "OPS"))
+            print("  " + "-" * 116)
+            for r in bat_rows:
+                print(col.format(
+                    r["season"], r["team"][:18], r["app"], r["nick+"], r["pa"], r["ab"], r["r"], r["hr"],
+                    r["rbi"], r["sb"], r["avg"], r["obp"], r["slg"], r["ops"],
+                ))
+
+        if not pitch_rows and not bat_rows:
+            print("\n  No qualifying games found for this player.")
+
+        print("\n  [c] Export to CSV")
+        print("  [q] Back")
+        cmd = input("\n  > ").strip().lower()
+        if cmd == "q":
+            return
+        if cmd == "c":
+            safe_name = name.replace(" ", "_").replace("/", "_")
+            if pitch_rows:
+                _dump_csv(
+                    f"{safe_name}_pitching_by_season.csv",
+                    ["Season", "Team", "App", "Nick+", "IP", "W", "L", "SV", "HLD", "BS", "ERA", "WHIP", "K/9", "BB/9", "HR/9"],
+                    pitch_rows,
+                    ["season", "team", "app", "nick+", "ip", "w", "l", "sv", "hld", "bs", "era", "whip", "k9", "bb9", "hr9"],
+                )
+            if bat_rows:
+                _dump_csv(
+                    f"{safe_name}_batting_by_season.csv",
+                    ["Season", "Team", "App", "Nick+", "PA", "AB", "H", "R", "2B", "3B", "HR", "RBI", "SB", "CS", "SO", "GIDP", "AVG", "OBP", "SLG", "OPS"],
+                    bat_rows,
+                    ["season", "team", "app", "nick+", "pa", "ab", "h", "r", "2b", "3b", "hr", "rbi", "sb", "cs", "so", "gidp", "avg", "obp", "slg", "ops"],
+                )
+
+
 def screen_player_summary(watched: dict):
     """Sub-menu: choose pitchers or batters."""
     if not watched:
@@ -626,34 +791,36 @@ def screen_player_summary(watched: dict):
 
 
 _PITCH_SORT_COLS = [
-    ("Name",        "name",  False),
-    ("Team",        "team",  False),
-    ("Appearances", "app",   True),
-    ("IP",          "_outs", True),
-    ("Wins",        "w",     True),
-    ("Losses",      "l",     True),
-    ("Saves",       "sv",    True),
-    ("ERA",         "_era",  False),
-    ("WHIP",        "_whip", False),
-    ("K/9",         "_k9",   True),
-    ("BB/9",        "_bb9",  False),
-    ("HR/9",        "_hr9",  False),
+    ("Name",        "name",     False),
+    ("Team",        "team",     False),
+    ("Appearances", "app",      True),
+    ("Nick+",       "nickplus", True),
+    ("IP",          "_outs",    True),
+    ("Wins",        "w",        True),
+    ("Losses",      "l",        True),
+    ("Saves",       "sv",       True),
+    ("ERA",         "_era",     False),
+    ("WHIP",        "_whip",    False),
+    ("K/9",         "_k9",      True),
+    ("BB/9",        "_bb9",     False),
+    ("HR/9",        "_hr9",     False),
 ]
 
 _BAT_SORT_COLS = [
-    ("Name",        "name",  False),
-    ("Team",        "team",  False),
-    ("Appearances", "app",   True),
-    ("PA",          "pa",    True),
-    ("AB",          "ab",    True),
-    ("Runs",        "r",     True),
-    ("Home runs",   "hr",    True),
-    ("RBI",         "rbi",   True),
-    ("Stolen bases","sb",    True),
-    ("AVG",         "_avg",  True),
-    ("OBP",         "_obp",  True),
-    ("SLG",         "_slg",  True),
-    ("OPS",         "_ops",  True),
+    ("Name",        "name",     False),
+    ("Team",        "team",     False),
+    ("Appearances", "app",      True),
+    ("Nick+",       "nickplus", True),
+    ("PA",          "pa",       True),
+    ("AB",          "ab",       True),
+    ("Runs",        "r",        True),
+    ("Home runs",   "hr",       True),
+    ("RBI",         "rbi",      True),
+    ("Stolen bases","sb",       True),
+    ("AVG",         "_avg",     True),
+    ("OBP",         "_obp",     True),
+    ("SLG",         "_slg",     True),
+    ("OPS",         "_ops",     True),
 ]
 
 
@@ -694,13 +861,9 @@ def _show_pitching(watched: dict):
             team_filter=team_filter,    # still needed to exclude opponents
         )
         rows = player_summary.pitching_leaderboard(pitchers_raw, ip_min=ip_min)
+        player_summary.annotate_nick_plus_pitching(rows)   # pool = this qualifying leaderboard
 
-        sorted_rows = sorted(
-            rows,
-            key=lambda r: (r[sort_col] if isinstance(r[sort_col], (int, float))
-                           else r[sort_col].lower()),
-            reverse=sort_rev,
-        )
+        sorted_rows = _sort_rows(rows, sort_col, sort_rev)
         visible, page, total_pages = _paginate(sorted_rows, page, page_size)
 
         clear()
@@ -708,17 +871,18 @@ def _show_pitching(watched: dict):
         sort_label = next(l for l, k, _ in _PITCH_SORT_COLS if k == sort_col)
         fl = _filters_label(season_filter, team_filter, ip_min=ip_min)
         print(f"\n  {len(rows)} pitchers  |  sorted by {sort_label}  |  {_page_label(page, total_pages)}{fl}\n")
+        print("  Nick+: 100 = average of these pitchers, weighted by how much you've watched them. Higher is better.\n")
 
         if not rows:
             print("  No pitchers match current filters.")
         else:
-            col = "{:<20}  {:<18}  {:>4}  {:>6}  {:>5}  {:>3}  {:>5}  {:>5}  {:>5}  {:>5}  {:>5}"
-            print(col.format("Name", "Team", "App", "IP", "W-L", "SV", "ERA", "WHIP", "K/9", "BB/9", "HR/9"))
-            print("  " + "-" * 96)
+            col = "{:<20}  {:<18}  {:>4}  {:>6}  {:>6}  {:>5}  {:>3}  {:>5}  {:>5}  {:>5}  {:>5}  {:>5}"
+            print(col.format("Name", "Team", "App", "Nick+", "IP", "W-L", "SV", "ERA", "WHIP", "K/9", "BB/9", "HR/9"))
+            print("  " + "-" * 105)
             for r in visible:
                 print("  " + col.format(
                     r["name"][:20], r["team"][:18],
-                    r["app"], r["ip"], r["wl"], r["sv"],
+                    r["app"], r["nick+"], r["ip"], r["wl"], r["sv"],
                     r["era"], r["whip"], r["k9"], r["bb9"], r["hr9"],
                 ))
             if total_pages > 1:
@@ -730,9 +894,9 @@ def _show_pitching(watched: dict):
         if result == "csv":
             _dump_csv(
                 "pitcher_summary.csv",
-                ["Name", "Team", "App", "IP", "W", "L", "SV", "HLD", "BS", "ERA", "WHIP", "K/9", "BB/9", "HR/9"],
+                ["Name", "Team", "App", "Nick+", "IP", "W", "L", "SV", "HLD", "BS", "ERA", "WHIP", "K/9", "BB/9", "HR/9"],
                 visible,
-                ["name", "team", "app", "ip", "w", "l", "sv", "hld", "bs", "era", "whip", "k9", "bb9", "hr9"],
+                ["name", "team", "app", "nick+", "ip", "w", "l", "sv", "hld", "bs", "era", "whip", "k9", "bb9", "hr9"],
             )
             continue
         if result == "filter":
@@ -803,13 +967,9 @@ def _show_batting(watched: dict):
             team_filter=team_filter,    # still needed to exclude opponents
         )
         rows = player_summary.batting_leaderboard(batters_raw, pa_min=pa_min)
+        player_summary.annotate_nick_plus_batting(rows)   # pool = this qualifying leaderboard
 
-        sorted_rows = sorted(
-            rows,
-            key=lambda r: (r[sort_col] if isinstance(r[sort_col], (int, float))
-                           else r[sort_col].lower()),
-            reverse=sort_rev,
-        )
+        sorted_rows = _sort_rows(rows, sort_col, sort_rev)
         visible, page, total_pages = _paginate(sorted_rows, page, page_size)
 
         clear()
@@ -817,17 +977,18 @@ def _show_batting(watched: dict):
         sort_label = next(l for l, k, _ in _BAT_SORT_COLS if k == sort_col)
         fl = _filters_label(season_filter, team_filter, pa_min=pa_min)
         print(f"\n  {len(rows)} batters  |  sorted by {sort_label}  |  {_page_label(page, total_pages)}{fl}\n")
+        print("  Nick+: 100 = average of these batters, weighted by how much you've watched them. Higher is better.\n")
 
         if not rows:
             print("  No batters match current filters.")
         else:
-            col = "{:<20}  {:<18}  {:>4}  {:>5}  {:>5}  {:>3}  {:>3}  {:>4}  {:>3}  {:>6}  {:>5}  {:>5}  {:>5}"
-            print(col.format("Name", "Team", "App", "PA", "AB", "R", "HR", "RBI", "SB", "AVG", "OBP", "SLG", "OPS"))
-            print("  " + "-" * 105)
+            col = "{:<20}  {:<18}  {:>4}  {:>6}  {:>5}  {:>5}  {:>3}  {:>3}  {:>4}  {:>3}  {:>6}  {:>5}  {:>5}  {:>5}"
+            print(col.format("Name", "Team", "App", "Nick+", "PA", "AB", "R", "HR", "RBI", "SB", "AVG", "OBP", "SLG", "OPS"))
+            print("  " + "-" * 113)
             for r in visible:
                 print("  " + col.format(
                     r["name"][:20], r["team"][:18],
-                    r["app"], r["pa"], r["ab"], r["r"], r["hr"], r["rbi"], r["sb"],
+                    r["app"], r["nick+"], r["pa"], r["ab"], r["r"], r["hr"], r["rbi"], r["sb"],
                     r["avg"], r["obp"], r["slg"], r["ops"],
                 ))
             if total_pages > 1:
@@ -839,9 +1000,9 @@ def _show_batting(watched: dict):
         if result == "csv":
             _dump_csv(
                 "batter_summary.csv",
-                ["Name", "Team", "App", "PA", "AB", "H", "R", "2B", "3B", "HR", "RBI", "SB", "CS", "SO", "GIDP", "AVG", "OBP", "SLG", "OPS"],
+                ["Name", "Team", "App", "Nick+", "PA", "AB", "H", "R", "2B", "3B", "HR", "RBI", "SB", "CS", "SO", "GIDP", "AVG", "OBP", "SLG", "OPS"],
                 visible,
-                ["name", "team", "app", "pa", "ab", "h", "r", "2b", "3b", "hr", "rbi", "sb", "cs", "so", "gidp", "avg", "obp", "slg", "ops"],
+                ["name", "team", "app", "nick+", "pa", "ab", "h", "r", "2b", "3b", "hr", "rbi", "sb", "cs", "so", "gidp", "avg", "obp", "slg", "ops"],
             )
             continue
         if result == "filter":
@@ -1250,6 +1411,7 @@ def main():
         print("  [4]  Game Summary")
         print("  [5]  Player Summary")
         print("  [6]  My Small Sample")
+        print("  [7]  Search Player")
         print("  [q]  Quit\n")
 
         cmd = input("> ").strip().lower()
@@ -1266,6 +1428,8 @@ def main():
             screen_player_summary(watched)
         elif cmd == "6":
             screen_small_sample(watched)
+        elif cmd == "7":
+            screen_player_search(watched)
         elif cmd == "q":
             print("\nBye!\n")
             break

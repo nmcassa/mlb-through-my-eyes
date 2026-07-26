@@ -362,3 +362,163 @@ def batting_leaderboard(batters_raw: dict, pa_min: int | None = None) -> list[di
             continue
         rows.append(calc_batting_stats(name, raw))
     return rows
+
+
+# ── Per-player season breakdown (for the Search Player screen) ───────────────
+
+def _group_by_season(games: list[dict]) -> dict[str, list[dict]]:
+    """Group one player's per-game records by season (year string)."""
+    seasons: dict[str, list[dict]] = {}
+    for g in games:
+        seasons.setdefault(g["season"], []).append(g)
+    return seasons
+
+
+def pitcher_season_rows(name: str, games: list[dict]) -> list[dict]:
+    """
+    One row per season this pitcher was watched, oldest to newest — only
+    seasons with logged games appear. If more than one season is present, a
+    trailing "ALL (logged)" row totals everything you've watched across all
+    seasons. Each row has calc_pitching_stats()'s usual keys plus "season".
+    """
+    seasons = _group_by_season(games)
+    rows = []
+    for season in sorted(seasons):
+        agg = _aggregate_pitcher(name, seasons[season])
+        row = calc_pitching_stats(name, agg)
+        row["season"] = season
+        rows.append(row)
+
+    if len(seasons) > 1:
+        total_agg = _aggregate_pitcher(name, games)
+        total_row = calc_pitching_stats(name, total_agg)
+        total_row["season"] = "ALL (logged)"
+        rows.append(total_row)
+
+    return rows
+
+
+def batter_season_rows(name: str, games: list[dict]) -> list[dict]:
+    """Same idea as pitcher_season_rows(), but for batting."""
+    seasons = _group_by_season(games)
+    rows = []
+    for season in sorted(seasons):
+        agg = _aggregate_batter(name, seasons[season])
+        row = calc_batting_stats(name, agg)
+        row["season"] = season
+        rows.append(row)
+
+    if len(seasons) > 1:
+        total_agg = _aggregate_batter(name, games)
+        total_row = calc_batting_stats(name, total_agg)
+        total_row["season"] = "ALL (logged)"
+        rows.append(total_row)
+
+    return rows
+
+
+# ── Nick+ — a sample-size-aware normalized composite ──────────────────────────
+#
+# Idea: like ERA+/OPS+, 100 = average of the comparison pool and higher is
+# always better (even for ERA/WHIP, where lower raw numbers are better).
+# The twist requested: a player's rate stat is first pulled ("shrunk") toward
+# the pool average, and how hard it gets pulled depends on how much of them
+# you've actually watched. A guy with one huge game barely moves off 100; a
+# guy you've watched all year keeps most of his real rate. This is standard
+# empirical-Bayes shrinkage — the K constants below are the "half-credibility"
+# points (IP/PA at which a player's own rate and the pool average are
+# weighted equally).
+
+_PITCH_K_IP = 40.0    # innings pitched for 50% credibility
+_BAT_K_PA   = 100.0   # plate appearances for 50% credibility
+
+
+def _weighted_mean(pairs: list[tuple[float, float]]) -> float | None:
+    """Weighted mean of (value, weight) pairs. None if there's no weight."""
+    total_w = sum(w for _, w in pairs if w > 0)
+    if total_w <= 0:
+        return None
+    return sum(v * w for v, w in pairs if w > 0) / total_w
+
+
+def compute_pitcher_pool_baseline(pool_rows: list[dict]) -> dict | None:
+    """
+    IP-weighted league-average ERA/WHIP across a pool of pitcher rows (as
+    returned by pitching_leaderboard() or calc_pitching_stats()). This is
+    the "100" reference point for Nick+. None if the pool has no innings.
+    """
+    era_avg  = _weighted_mean([(r["_era"],  r["_outs"] / 3) for r in pool_rows])
+    whip_avg = _weighted_mean([(r["_whip"], r["_outs"] / 3) for r in pool_rows])
+    if not era_avg or not whip_avg:
+        return None
+    return {"era": era_avg, "whip": whip_avg}
+
+
+def compute_batter_pool_baseline(pool_rows: list[dict]) -> dict | None:
+    """PA-weighted league-average OPS across a pool of batter rows. None if empty."""
+    ops_avg = _weighted_mean([(r["_ops"], r["pa"]) for r in pool_rows])
+    if not ops_avg:
+        return None
+    return {"ops": ops_avg}
+
+
+def nick_plus_pitcher(row: dict, baseline: dict | None) -> int | None:
+    """
+    Nick+ for one pitcher row. Blends an ERA+-style component with a WHIP
+    analog, after shrinking both toward the pool average based on IP seen.
+    Returns None if there's no baseline or the player has no innings logged.
+    """
+    ip = row.get("_outs", 0) / 3
+    if not baseline or ip <= 0:
+        return None
+
+    credibility = ip / (ip + _PITCH_K_IP)
+    shrunk_era  = credibility * row["_era"]  + (1 - credibility) * baseline["era"]
+    shrunk_whip = credibility * row["_whip"] + (1 - credibility) * baseline["whip"]
+    if shrunk_era <= 0 or shrunk_whip <= 0 or baseline["era"] <= 0 or baseline["whip"] <= 0:
+        return None
+
+    era_plus  = 100 * baseline["era"]  / shrunk_era    # lower ERA -> higher score
+    whip_plus = 100 * baseline["whip"] / shrunk_whip   # lower WHIP -> higher score
+    return round((era_plus + whip_plus) / 2)
+
+
+def nick_plus_batter(row: dict, baseline: dict | None) -> int | None:
+    """
+    Nick+ for one batter row. Shrinks OPS toward the pool average based on
+    PA seen, then scales so 100 = pool average. Returns None if there's no
+    baseline or the player has no plate appearances logged.
+    """
+    pa = row.get("pa", 0)
+    if not baseline or pa <= 0 or baseline["ops"] <= 0:
+        return None
+
+    credibility = pa / (pa + _BAT_K_PA)
+    shrunk_ops  = credibility * row["_ops"] + (1 - credibility) * baseline["ops"]
+    return round(100 * shrunk_ops / baseline["ops"])
+
+
+def annotate_nick_plus_pitching(rows: list[dict], pool_rows: list[dict] | None = None) -> list[dict]:
+    """
+    Attach 'nickplus' (int|None) and 'nick+' (display string) to each row
+    in place. pool_rows defaults to `rows` itself (e.g. a leaderboard being
+    compared against itself); pass a separate pool when scoring rows that
+    aren't the comparison set (e.g. one player's season lines vs. everyone
+    you've watched).
+    """
+    baseline = compute_pitcher_pool_baseline(pool_rows if pool_rows is not None else rows)
+    for r in rows:
+        n = nick_plus_pitcher(r, baseline)
+        r["nickplus"] = n
+        r["nick+"] = str(n) if n is not None else "—"
+    return rows
+
+
+def annotate_nick_plus_batting(rows: list[dict], pool_rows: list[dict] | None = None) -> list[dict]:
+    """Same idea as annotate_nick_plus_pitching(), for batters."""
+    baseline = compute_batter_pool_baseline(pool_rows if pool_rows is not None else rows)
+    for r in rows:
+        n = nick_plus_batter(r, baseline)
+        r["nickplus"] = n
+        r["nick+"] = str(n) if n is not None else "—"
+    return rows
