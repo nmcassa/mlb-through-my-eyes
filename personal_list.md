@@ -1,3 +1,3 @@
 # what i have added manually
 
-Braves and Yankees up to 6/27/26
+All up to 6/26/26

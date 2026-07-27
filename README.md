@@ -97,6 +97,8 @@ The API counts games as 0-0 when they are canceled. It would just be better to f
 
 ## todo
 
-We still re-load every boxscore after filter in comparison (after the first time we have loaded it, which should be unnecessary)
+maybe Nick+ should just be per season instead of across all players?
 
-The comparison text is not tabbed well right now. 
+## Telez bug
+
+some players just don't show up sometimes, when they played on multiple teams and flter for one of their teamsk

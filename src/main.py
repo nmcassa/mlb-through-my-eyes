@@ -118,6 +118,59 @@ def browse_season(watched: dict):
     _game_select_loop(games, watched, team["name"], season)
 
 
+# ── Screen: Browse by Date ────────────────────────────────────────────────────
+
+def browse_by_date(watched: dict):
+    """Pick a single date (optionally a team), then page through that day's games."""
+    print_header("Browse by Date")
+
+    date = input("\nEnter date (YYYY-MM-DD): ").strip()
+    try:
+        datetime.strptime(date, "%Y-%m-%d")
+    except ValueError:
+        print("Invalid date. Use YYYY-MM-DD, e.g. 2014-07-04.")
+        input("\nPress Enter to continue...")
+        return
+
+    team_query = input("Team name (optional, press Enter for all teams): ").strip()
+    team = None
+    if team_query:
+        results = mlb.find_teams(team_query)
+        if not results:
+            print("No team found. Try a different name.")
+            input("\nPress Enter to continue...")
+            return
+        if len(results) > 1:
+            print("\nMultiple teams found:")
+            for i, t in enumerate(results):
+                print(f"  [{i+1}] {t['name']}  (id: {t['id']})")
+            choice = input("Select number: ").strip()
+            try:
+                team = results[int(choice) - 1]
+            except (ValueError, IndexError):
+                print("Invalid choice.")
+                input("\nPress Enter to continue...")
+                return
+        else:
+            team = results[0]
+
+    print(f"\nFetching games for {date}" + (f" ({team['name']})" if team else "") + "...")
+    try:
+        games = mlb.fetch_games_by_date(date, team_id=team["id"] if team else None)
+    except RuntimeError as e:
+        print(f"Error: {e}")
+        input("\nPress Enter to continue...")
+        return
+
+    if not games:
+        print(f"No games found on {date}" + (f" for {team['name']}" if team else "") + ".")
+        input("\nPress Enter to continue...")
+        return
+
+    label = f"{team['name']} — {date}" if team else f"All Teams — {date}"
+    _game_select_loop(games, watched, label, date)
+
+
 def _game_select_loop(games: list, watched: dict, team_name: str, season: str):
     """Paginated game list with toggle-to-watch."""
     page_size   = 15
@@ -1412,6 +1465,7 @@ def main():
         print("  [5]  Player Summary")
         print("  [6]  My Small Sample")
         print("  [7]  Search Player")
+        print("  [8]  Browse by Date")
         print("  [q]  Quit\n")
 
         cmd = input("> ").strip().lower()
@@ -1430,6 +1484,8 @@ def main():
             screen_small_sample(watched)
         elif cmd == "7":
             screen_player_search(watched)
+        elif cmd == "8":
+            browse_by_date(watched)
         elif cmd == "q":
             print("\nBye!\n")
             break

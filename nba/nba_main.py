@@ -15,6 +15,7 @@ import os
 from datetime import datetime
 
 import espn_nba
+import nba_dates
 import nba_player_summary as player_summary
 import nba_json_store as json_store
 
@@ -129,6 +130,64 @@ def browse_season(watched: dict):
     _game_select_loop(games, watched, team["name"], season)
 
 
+# ── Screen: Browse by Date ────────────────────────────────────────────────────
+
+def browse_by_date(watched: dict):
+    """Pick a single date (optionally a team), then page through that day's games."""
+    print_header("Browse by Date")
+
+    date = input("\nEnter date (YYYY-MM-DD): ").strip()
+    try:
+        datetime.strptime(date, "%Y-%m-%d")
+    except ValueError:
+        print("Invalid date. Use YYYY-MM-DD, e.g. 2024-12-25.")
+        input("\nPress Enter to continue...")
+        return
+
+    team_query = input("Team name (optional, press Enter for all teams): ").strip()
+    team = None
+    if team_query:
+        try:
+            results = espn_nba.find_teams(team_query)
+        except RuntimeError as e:
+            print(f"Error: {e}")
+            input("\nPress Enter to continue...")
+            return
+        if not results:
+            print("No team found. Try a different name.")
+            input("\nPress Enter to continue...")
+            return
+        if len(results) > 1:
+            print("\nMultiple teams found:")
+            for i, t in enumerate(results):
+                print(f"  [{i+1}] {t['name']}  ({t['abbreviation']})")
+            choice = input("Select number: ").strip()
+            try:
+                team = results[int(choice) - 1]
+            except (ValueError, IndexError):
+                print("Invalid choice.")
+                input("\nPress Enter to continue...")
+                return
+        else:
+            team = results[0]
+
+    print(f"\nFetching games for {date}" + (f" ({team['name']})" if team else "") + "...")
+    try:
+        games = espn_nba.fetch_games_by_date(date, team_id=team["id"] if team else None)
+    except RuntimeError as e:
+        print(f"Error: {e}")
+        input("\nPress Enter to continue...")
+        return
+
+    if not games:
+        print(f"No games found on {date}" + (f" for {team['name']}" if team else "") + ".")
+        input("\nPress Enter to continue...")
+        return
+
+    label = f"{team['name']} — {date}" if team else f"All Teams — {date}"
+    _game_select_loop(games, watched, label, date)
+
+
 def _game_select_loop(games: list, watched: dict, team_name: str, season: str):
     """Paginated game list with toggle-to-watch."""
     page_size   = 15
@@ -197,7 +256,7 @@ def view_watched(watched: dict):
 
     by_year: dict[str, list] = {}
     for g in watched.values():
-        year = g["date"][:4]
+        year = nba_dates.season_label(g["date"])
         by_year.setdefault(year, []).append(g)
 
     total = len(watched)
@@ -257,7 +316,7 @@ def _apply_watched_filters(watched: dict, season_filter: str | None, team_filter
     """Return a subset of watched matching the active season and/or team filters."""
     out = {}
     for gid, g in watched.items():
-        if season_filter and g["date"][:4] != season_filter:
+        if season_filter and nba_dates.season_label(g["date"]) != season_filter:
             continue
         if team_filter and team_filter not in (g["away"], g["home"]):
             continue
@@ -308,7 +367,7 @@ def _filter_prompt(
             season_filter, team_filter, min_min = None, None, None
             continue
         if cmd == "1":
-            seasons = sorted({g["date"][:4] for g in watched.values()})
+            seasons = sorted({nba_dates.season_label(g["date"]) for g in watched.values()})
             print(f"\n  Seasons watched: {', '.join(seasons) if seasons else 'none'}")
             raw = input("  Enter season (blank = all): ").strip()
             season_filter = raw or None
@@ -567,7 +626,7 @@ _PLAYER_SORT_COLS = [
     ("FG%",          "_fg_pct",  True),
     ("3P%",          "_tp_pct",  True),
     ("FT%",          "_ft_pct",  True),
-    ("Game Score",   "_gmsc",    True),
+    ("GmSc/48",      "_gmsc",    True),
 ]
 
 
@@ -641,7 +700,7 @@ def _show_players(watched: dict):
             _dump_csv(
                 "nba_player_summary.csv",
                 ["Name", "Team", "App", "Nick+", "MIN", "PPG", "RPG", "APG", "SPG", "BPG", "TOPG",
-                 "FGM", "FGA", "FG%", "3PM", "3PA", "3P%", "FTM", "FTA", "FT%", "GameScore"],
+                 "FGM", "FGA", "FG%", "3PM", "3PA", "3P%", "FTM", "FTA", "FT%", "GmSc48"],
                 visible,
                 ["name", "team", "app", "nick+", "min", "ppg", "rpg", "apg", "spg", "bpg", "topg",
                  "fgm", "fga", "fg_pct", "3pm", "3pa", "tp_pct", "ftm", "fta", "ft_pct", "gmsc"],
@@ -781,7 +840,7 @@ def _show_player_seasons(name: str, player_data: dict | None, baseline: dict | N
             _dump_csv(
                 f"{safe_name}_nba_by_season.csv",
                 ["Season", "Team", "App", "Nick+", "MIN", "PPG", "RPG", "APG", "SPG", "BPG", "TOPG",
-                 "FGM", "FGA", "FG%", "3PM", "3PA", "3P%", "FTM", "FTA", "FT%", "GameScore"],
+                 "FGM", "FGA", "FG%", "3PM", "3PA", "3P%", "FTM", "FTA", "FT%", "GmSc48"],
                 rows,
                 ["season", "team", "app", "nick+", "min", "ppg", "rpg", "apg", "spg", "bpg", "topg",
                  "fgm", "fga", "fg_pct", "3pm", "3pa", "tp_pct", "ftm", "fta", "ft_pct", "gmsc"],
@@ -804,6 +863,7 @@ def main():
         print("  [4]  Game Summary")
         print("  [5]  Player Summary")
         print("  [6]  Search Player")
+        print("  [7]  Browse by Date")
         print("  [q]  Quit\n")
 
         cmd = input("> ").strip().lower()
@@ -820,6 +880,8 @@ def main():
             _show_players(watched)
         elif cmd == "6":
             screen_player_search(watched)
+        elif cmd == "7":
+            browse_by_date(watched)
         elif cmd == "q":
             print("\nGoodbye!")
             break

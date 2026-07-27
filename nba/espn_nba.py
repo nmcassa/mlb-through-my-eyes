@@ -23,6 +23,8 @@ from __future__ import annotations
 
 import sys
 
+import nba_dates
+
 try:
     import requests
 except ImportError:
@@ -73,8 +75,17 @@ def find_teams(query: str) -> list[dict]:
 SEASON_TYPE_LABELS = {
     "1": "Preseason",
     "2": "Regular Season",
-    "3": "Postseason",
+    "3": "Postseason (playoffs + play-in)",
 }
+
+# ESPN doesn't publish a stable "seasontype" code for the Play-In
+# Tournament — in some seasons it seems to be folded into type 3
+# (postseason), in others it may need a different code. Rather than risk
+# silently dropping play-in games by guessing wrong, whenever postseason is
+# requested we also probe a couple of extra candidate codes and merge in
+# anything new. A code that doesn't exist for this team/season just comes
+# back with zero events, which is harmless — just an extra request or two.
+_PLAY_IN_PROBE_CODES = ["4", "5"]
 
 
 def _score_value(competitor: dict) -> str:
@@ -90,6 +101,26 @@ def _score_value(competitor: dict) -> str:
     return str(score) if score not in (None, "") else ""
 
 
+def _parse_schedule_event(ev: dict) -> dict:
+    comp = (ev.get("competitions") or [{}])[0]
+    competitors = comp.get("competitors", [])
+    away = next((c for c in competitors if c.get("homeAway") == "away"), {})
+    home = next((c for c in competitors if c.get("homeAway") == "home"), {})
+    status = comp.get("status", {}).get("type", {})
+    completed = bool(status.get("completed"))
+
+    return {
+        "game_id":    ev.get("id"),
+        "game_date":  nba_dates.espn_date_to_local(ev.get("date") or ""),
+        "away_name":  away.get("team", {}).get("displayName", "?"),
+        "home_name":  home.get("team", {}).get("displayName", "?"),
+        "away_score": _score_value(away) if completed else "",
+        "home_score": _score_value(home) if completed else "",
+        "status":     status.get("shortDetail") or status.get("description") or "",
+        "completed":  completed,
+    }
+
+
 def fetch_team_schedule(team_id: str, season: str, season_types: list[str] | None = None) -> list[dict]:
     """
     Fetch a team's game log for a season. Returns a list of dicts:
@@ -100,42 +131,78 @@ def fetch_team_schedule(team_id: str, season: str, season_types: list[str] | Non
     '2' regular season, '3' postseason. Defaults to ['2'] (regular season
     only) if omitted. The schedule endpoint only returns one season type
     per request, so postseason games are invisible unless requested
-    explicitly — this was previously missing.
+    explicitly. If '3' is included, a couple of extra candidate codes are
+    also probed to catch play-in games (see _PLAY_IN_PROBE_CODES above).
 
     Raises RuntimeError on API failure.
     """
     if season_types is None:
         season_types = ["2"]
 
+    codes_to_try = list(season_types)
+    if "3" in codes_to_try:
+        codes_to_try += [c for c in _PLAY_IN_PROBE_CODES if c not in codes_to_try]
+
     games = []
     seen_ids = set()
-    for st in season_types:
-        data = _get(f"teams/{team_id}/schedule", season=season, seasontype=st)
+    for st in codes_to_try:
+        try:
+            data = _get(f"teams/{team_id}/schedule", season=season, seasontype=st)
+        except RuntimeError:
+            if st in season_types:
+                raise   # a code the user actually asked for should still error loudly
+            continue    # a probe code failing is fine — it may just not exist
         for ev in data.get("events", []):
             gid = ev.get("id")
-            if gid in seen_ids:
+            if not gid or gid in seen_ids:
                 continue
             seen_ids.add(gid)
-
-            comp = (ev.get("competitions") or [{}])[0]
-            competitors = comp.get("competitors", [])
-            away = next((c for c in competitors if c.get("homeAway") == "away"), {})
-            home = next((c for c in competitors if c.get("homeAway") == "home"), {})
-            status = comp.get("status", {}).get("type", {})
-            completed = bool(status.get("completed"))
-
-            games.append({
-                "game_id":    gid,
-                "game_date":  (ev.get("date") or "")[:10],
-                "away_name":  away.get("team", {}).get("displayName", "?"),
-                "home_name":  home.get("team", {}).get("displayName", "?"),
-                "away_score": _score_value(away) if completed else "",
-                "home_score": _score_value(home) if completed else "",
-                "status":     status.get("shortDetail") or status.get("description") or "",
-                "completed":  completed,
-            })
+            games.append(_parse_schedule_event(ev))
     games.sort(key=lambda g: g["game_date"])
     return games
+
+
+def fetch_games_by_date(date: str, team_id: str | None = None) -> list[dict]:
+    """
+    Fetch all games played on a single date (YYYY-MM-DD), optionally
+    filtered to one team. Uses ESPN's "scoreboard" endpoint, which is keyed
+    by date rather than by team — a separate endpoint from the
+    teams/{id}/schedule one fetch_team_schedule() uses, so this doesn't
+    disturb that path at all.
+
+    Note: the scoreboard endpoint wants dates as YYYYMMDD (no dashes),
+    unlike everywhere else in this file that uses YYYY-MM-DD — that
+    conversion happens here so callers keep using the normal format.
+
+    Raises RuntimeError on API failure.
+    """
+    espn_date = date.replace("-", "")
+    data = _get("scoreboard", dates=espn_date, limit=100)
+
+    games = [_parse_schedule_event(ev) for ev in data.get("events", [])]
+
+    if team_id is not None:
+        team_id = str(team_id)
+        events_by_id = {ev.get("id"): ev for ev in data.get("events", [])}
+        kept = []
+        for g in games:
+            ev = events_by_id.get(g["game_id"])
+            ids = _event_team_ids(ev) if ev else {}
+            if str(ids.get("away")) == team_id or str(ids.get("home")) == team_id:
+                kept.append(g)
+        games = kept
+
+    games.sort(key=lambda g: g["game_date"])
+    return games
+
+
+def _event_team_ids(ev: dict) -> dict:
+    """Map home/away -> team id for one scoreboard event, for team filtering."""
+    comp = (ev.get("competitions") or [{}])[0]
+    competitors = comp.get("competitors", [])
+    away = next((c for c in competitors if c.get("homeAway") == "away"), {})
+    home = next((c for c in competitors if c.get("homeAway") == "home"), {})
+    return {"away": away.get("team", {}).get("id"), "home": home.get("team", {}).get("id")}
 
 
 # ── Boxscore ───────────────────────────────────────────────────────────────

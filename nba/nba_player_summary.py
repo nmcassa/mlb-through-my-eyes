@@ -12,9 +12,11 @@ shooting percentages are correctly weighted by volume):
 
 Also computes Nick+, a sample-size-aware composite similar to the MLB
 tracker's Nick+: built on John Hollinger's Game Score (a well-known, public
-box-score formula), shrunk toward the pool average based on total minutes
-watched, then scaled so 100 = average of the comparison pool. Higher is
-better.
+box-score formula), normalized to a per-48-minutes rate (NOT a per-game
+average — a raw per-game average inherently rewards players who simply play
+more minutes, since counting stats accumulate the longer someone's on the
+floor), then shrunk toward the pool average based on total minutes watched,
+then scaled so 100 = average of the comparison pool. Higher is better.
 
 Data is stored per-player per-game so season/team filters can be applied in
 memory without re-fetching from ESPN.
@@ -22,6 +24,7 @@ memory without re-fetching from ESPN.
 from __future__ import annotations
 
 import espn_nba
+import nba_dates
 
 
 # ── Data collection ───────────────────────────────────────────────────────────
@@ -48,7 +51,7 @@ def collect_player_game_stats(watched: dict) -> dict:
 
     for i, gid in enumerate(game_ids, 1):
         game   = watched[gid]
-        season = game["date"][:4]
+        season = nba_dates.season_label(game["date"])
         print(f"  Fetching game {i}/{total}: {game['date']}  {game['away']} @ {game['home']}...")
         try:
             data = espn_nba.fetch_boxscore_data(game["game_id"])
@@ -196,7 +199,9 @@ def calc_player_stats(name: str, raw: dict) -> dict:
     tp_pct = raw["3pm"] / raw["3pa"] if raw["3pa"] else 0.0
     ft_pct = raw["ftm"] / raw["fta"] if raw["fta"] else 0.0
 
-    avg_gmsc = sum(raw["game_scores"]) / app if raw["game_scores"] else 0.0
+    total_min = raw["min"]
+    gmsc_sum  = sum(raw["game_scores"]) if raw["game_scores"] else 0.0
+    gmsc_per48 = (gmsc_sum / total_min) * 48 if total_min > 0 else 0.0
 
     return {
         "name":       name,
@@ -214,7 +219,7 @@ def calc_player_stats(name: str, raw: dict) -> dict:
         "fgm": raw["fgm"], "fga": raw["fga"], "_fg_pct": fg_pct, "fg_pct": f"{fg_pct:.3f}",
         "3pm": raw["3pm"], "3pa": raw["3pa"], "_tp_pct": tp_pct, "tp_pct": f"{tp_pct:.3f}",
         "ftm": raw["ftm"], "fta": raw["fta"], "_ft_pct": ft_pct, "ft_pct": f"{ft_pct:.3f}",
-        "_gmsc": avg_gmsc, "gmsc": f"{avg_gmsc:.1f}",
+        "_gmsc": gmsc_per48, "gmsc": f"{gmsc_per48:.1f}",
     }
 
 
@@ -276,10 +281,20 @@ def player_season_rows(name: str, games: list[dict]) -> list[dict]:
 # ── Nick+ — a sample-size-aware normalized composite ──────────────────────────
 #
 # Same idea as the MLB tracker's Nick+: 100 = average of the comparison pool,
-# higher is always better. Built on Game Score (see _game_score() above),
-# shrunk toward the pool average based on total minutes watched — a hot
-# 15-minute cameo barely moves off 100, a guy you've watched heavy minutes
-# across many games keeps most of his real per-game impact.
+# higher is always better. Built on Game Score PER 48 MINUTES (see
+# _game_score() above and the per48 conversion in calc_player_stats()) —
+# using per-48 rather than a raw per-game average matters: a raw per-game
+# average bakes in more minutes = more counting stats = a higher number,
+# which would make Nick+ mostly measure playing time rather than quality.
+# Per-48 is a true rate, so it doesn't automatically favor whoever's on the
+# floor longer in a given game.
+#
+# On top of that rate, each player's number is shrunk toward the pool
+# average based on TOTAL minutes watched across all their games — that part
+# intentionally does still reward players you've watched more, since it's
+# regression to the mean based on sample size, not raw production. A hot
+# 15-minute cameo barely moves off 100; a guy you've watched heavy minutes
+# across many games keeps most of his real per-48 rate.
 
 _K_MIN = 200.0   # total minutes watched for 50% credibility (~5-6 starter games)
 
@@ -292,7 +307,7 @@ def _weighted_mean(pairs: list[tuple[float, float]]) -> float | None:
 
 
 def compute_pool_baseline(pool_rows: list[dict]) -> dict | None:
-    """Minutes-weighted average Game Score across a pool of player rows. None if empty."""
+    """Minutes-weighted average Game Score/48 across a pool of player rows. None if empty."""
     gmsc_avg = _weighted_mean([(r["_gmsc"], r["min"]) for r in pool_rows])
     if gmsc_avg is None:
         return None
@@ -301,7 +316,7 @@ def compute_pool_baseline(pool_rows: list[dict]) -> dict | None:
 
 def nick_plus(row: dict, baseline: dict | None) -> int | None:
     """
-    Nick+ for one player row. Shrinks average Game Score toward the pool
+    Nick+ for one player row. Shrinks their Game Score/48 toward the pool
     average based on total minutes watched, then scales so 100 = pool
     average. Returns None if there's no baseline or the pool average isn't
     usefully positive (a degenerate pool — shouldn't happen with real data).
