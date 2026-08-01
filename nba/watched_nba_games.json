@@ -2131,5 +2131,14 @@
     "away_score": "100",
     "home_score": "108",
     "added_at": "2026-07-31T17:56:32.100907"
+  },
+  "301026002": {
+    "game_id": "301026002",
+    "date": "2010-10-26",
+    "away": "Miami Heat",
+    "home": "Boston Celtics",
+    "away_score": "80",
+    "home_score": "88",
+    "added_at": "2026-07-31T20:21:57.905789"
   }
 }

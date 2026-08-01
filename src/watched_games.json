@@ -2070,5 +2070,23 @@
     "away_score": 2,
     "home_score": 0,
     "added_at": "2026-07-31T18:12:26.425777"
+  },
+  "813051": {
+    "game_id": 813051,
+    "date": "2025-10-04",
+    "away": "Los Angeles Dodgers",
+    "home": "Philadelphia Phillies",
+    "away_score": 5,
+    "home_score": 3,
+    "added_at": "2026-07-31T20:51:15.382911"
+  },
+  "822945": {
+    "game_id": 822945,
+    "date": "2026-07-31",
+    "away": "Chicago White Sox",
+    "home": "Tampa Bay Rays",
+    "away_score": 6,
+    "home_score": 1,
+    "added_at": "2026-07-31T21:40:42.870836"
   }
 }
