@@ -237,9 +237,50 @@ def _game_select_loop(games: list, watched: dict, team_name: str, season: str):
                         "home_score": game.get("home_score", ""),
                         "added_at":   datetime.now().isoformat(),
                     }
+                    json_store.save_watched(watched)
                     print(f"\n  ★ Added:   {game_label(game)}")
+                    _show_boxscore(game)
+                    continue
                 json_store.save_watched(watched)
                 input("  Press Enter to continue...")
+
+
+def _show_boxscore(game: dict):
+    """Fetch and print a formatted boxscore for a just-added game."""
+    clear()
+    print_header(game_label(game))
+    print(f"\n  Fetching boxscore...\n")
+    try:
+        data = espn_nba.fetch_boxscore_data(game["game_id"])
+    except RuntimeError as e:
+        print(f"  Could not load boxscore: {e}")
+        input("\n  Press Enter to continue...")
+        return
+
+    col = "  {:<22} {:>5} {:>6} {:>6} {:>6} {:>4} {:>4} {:>4} {:>4} {:>4} {:>4} {:>4}"
+    header = col.format("Player", "MIN", "FG", "3PT", "FT", "REB", "AST", "STL", "BLK", "TOV", "PF", "PTS")
+
+    for side in ("away", "home"):
+        side_data = data.get(side, {})
+        players   = list(side_data.get("players", {}).values())
+        players.sort(key=lambda p: p["stats"].get("min", 0), reverse=True)
+
+        print(f"\n  {side_data.get('team', '?')}")
+        print(header)
+        print("  " + "-" * (len(header) - 2))
+        for p in players:
+            s = p["stats"]
+            print(col.format(
+                p["name"][:22],
+                f"{s.get('min', 0):.0f}",
+                f"{s.get('fgm', 0)}-{s.get('fga', 0)}",
+                f"{s.get('3pm', 0)}-{s.get('3pa', 0)}",
+                f"{s.get('ftm', 0)}-{s.get('fta', 0)}",
+                s.get("reb", 0), s.get("ast", 0), s.get("stl", 0),
+                s.get("blk", 0), s.get("tov", 0), s.get("pf", 0), s.get("pts", 0),
+            ))
+
+    input("\n  Press Enter to continue...")
 
 
 # ── Screen: View Watched ──────────────────────────────────────────────────────

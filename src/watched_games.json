@@ -1971,5 +1971,104 @@
     "away_score": 3,
     "home_score": 2,
     "added_at": "2026-07-26T19:17:07.750498"
+  },
+  "823599": {
+    "game_id": 823599,
+    "date": "2026-07-26",
+    "away": "Los Angeles Dodgers",
+    "home": "New York Mets",
+    "away_score": 3,
+    "home_score": 8,
+    "added_at": "2026-07-27T00:48:49.675568"
+  },
+  "822870": {
+    "game_id": 822870,
+    "date": "2026-07-26",
+    "away": "Seattle Mariners",
+    "home": "Texas Rangers",
+    "away_score": 6,
+    "home_score": 4,
+    "added_at": "2026-07-27T01:02:44.742893"
+  },
+  "824570": {
+    "game_id": 824570,
+    "date": "2026-07-27",
+    "away": "New York Yankees",
+    "home": "Chicago White Sox",
+    "away_score": 9,
+    "home_score": 5,
+    "added_at": "2026-07-27T23:55:27.022431"
+  },
+  "823597": {
+    "game_id": 823597,
+    "date": "2026-07-27",
+    "away": "Atlanta Braves",
+    "home": "New York Mets",
+    "away_score": 3,
+    "home_score": 14,
+    "added_at": "2026-07-28T00:07:07.506388"
+  },
+  "824977": {
+    "game_id": 824977,
+    "date": "2026-07-27",
+    "away": "Boston Red Sox",
+    "home": "Athletics",
+    "away_score": 4,
+    "home_score": 2,
+    "added_at": "2026-07-28T00:22:47.063917"
+  },
+  "824569": {
+    "game_id": 824569,
+    "date": "2026-07-28",
+    "away": "New York Yankees",
+    "home": "Chicago White Sox",
+    "away_score": 3,
+    "home_score": 2,
+    "added_at": "2026-07-28T22:33:41.070548"
+  },
+  "823350": {
+    "game_id": 823350,
+    "date": "2026-07-28",
+    "away": "Arizona Diamondbacks",
+    "home": "Pittsburgh Pirates",
+    "away_score": 8,
+    "home_score": 7,
+    "added_at": "2026-07-28T23:47:38.611649"
+  },
+  "823598": {
+    "game_id": 823598,
+    "date": "2026-07-29",
+    "away": "Atlanta Braves",
+    "home": "New York Mets",
+    "away_score": 1,
+    "home_score": 0,
+    "added_at": "2026-07-29T23:36:47.506463"
+  },
+  "824487": {
+    "game_id": 824487,
+    "date": "2026-07-29",
+    "away": "Cleveland Guardians",
+    "home": "Cincinnati Reds",
+    "away_score": 6,
+    "home_score": 1,
+    "added_at": "2026-07-29T23:49:37.415879"
+  },
+  "823921": {
+    "game_id": 823921,
+    "date": "2026-07-30",
+    "away": "Seattle Mariners",
+    "home": "Los Angeles Dodgers",
+    "away_score": 2,
+    "home_score": 6,
+    "added_at": "2026-07-31T16:45:30.016278"
+  },
+  "824651": {
+    "game_id": 824651,
+    "date": "2026-07-31",
+    "away": "New York Yankees",
+    "home": "Chicago Cubs",
+    "away_score": 2,
+    "home_score": 0,
+    "added_at": "2026-07-31T18:12:26.425777"
   }
 }

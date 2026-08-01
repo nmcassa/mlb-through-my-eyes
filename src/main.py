@@ -220,9 +220,24 @@ def _game_select_loop(games: list, watched: dict, team_name: str, season: str):
                         "home_score": game.get("home_score", ""),
                         "added_at":   datetime.now().isoformat(),
                     }
+                    json_store.save_watched(watched)
                     print(f"\n  ★ Added:   {game_label(game)}")
+                    _show_boxscore(game)
+                    continue
                 json_store.save_watched(watched)
                 input("  Press Enter to continue...")
+
+
+def _show_boxscore(game: dict):
+    """Fetch and print the boxscore for a just-added game."""
+    clear()
+    print_header(game_label(game))
+    print()
+    try:
+        print(mlb.fetch_boxscore(game["game_id"]))
+    except RuntimeError as e:
+        print(f"  Could not load boxscore: {e}")
+    input("\n  Press Enter to continue...")
 
 
 # ── Screen: View Watched ──────────────────────────────────────────────────────
