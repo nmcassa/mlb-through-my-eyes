@@ -366,33 +366,38 @@ def batting_leaderboard(batters_raw: dict, pa_min: int | None = None) -> list[di
 
 # ── Per-player season breakdown (for the Search Player screen) ───────────────
 
-def _group_by_season(games: list[dict]) -> dict[str, list[dict]]:
-    """Group one player's per-game records by season (year string)."""
-    seasons: dict[str, list[dict]] = {}
+def _group_by_season_team(games: list[dict]) -> dict[tuple[str, str], list[dict]]:
+    """Group one player's per-game records by (season, team) — so a player
+    who was traded mid-season gets a separate row per team, not one row
+    with a single 'primary' team and blended stats."""
+    groups: dict[tuple[str, str], list[dict]] = {}
     for g in games:
-        seasons.setdefault(g["season"], []).append(g)
-    return seasons
+        groups.setdefault((g["season"], g["team"]), []).append(g)
+    return groups
 
 
 def pitcher_season_rows(name: str, games: list[dict]) -> list[dict]:
     """
-    One row per season this pitcher was watched, oldest to newest — only
-    seasons with logged games appear. If more than one season is present, a
-    trailing "ALL (logged)" row totals everything you've watched across all
-    seasons. Each row has calc_pitching_stats()'s usual keys plus "season".
+    One row per (season, team) this pitcher was watched on, oldest to
+    newest, sorted by team within a season — so a mid-season trade shows as
+    two rows for that season, each with that team's own stats. If more than
+    one row would appear, a trailing "ALL (logged)" row totals everything
+    you've watched across all seasons and teams. Each row has
+    calc_pitching_stats()'s usual keys plus "season".
     """
-    seasons = _group_by_season(games)
+    groups = _group_by_season_team(games)
     rows = []
-    for season in sorted(seasons):
-        agg = _aggregate_pitcher(name, seasons[season])
+    for season, team in sorted(groups):
+        agg = _aggregate_pitcher(name, groups[(season, team)])
         row = calc_pitching_stats(name, agg)
         row["season"] = season
         rows.append(row)
 
-    if len(seasons) > 1:
+    if len(groups) > 1:
         total_agg = _aggregate_pitcher(name, games)
         total_row = calc_pitching_stats(name, total_agg)
         total_row["season"] = "ALL (logged)"
+        total_row["team"] = "ALL"
         rows.append(total_row)
 
     return rows
@@ -400,18 +405,19 @@ def pitcher_season_rows(name: str, games: list[dict]) -> list[dict]:
 
 def batter_season_rows(name: str, games: list[dict]) -> list[dict]:
     """Same idea as pitcher_season_rows(), but for batting."""
-    seasons = _group_by_season(games)
+    groups = _group_by_season_team(games)
     rows = []
-    for season in sorted(seasons):
-        agg = _aggregate_batter(name, seasons[season])
+    for season, team in sorted(groups):
+        agg = _aggregate_batter(name, groups[(season, team)])
         row = calc_batting_stats(name, agg)
         row["season"] = season
         rows.append(row)
 
-    if len(seasons) > 1:
+    if len(groups) > 1:
         total_agg = _aggregate_batter(name, games)
         total_row = calc_batting_stats(name, total_agg)
         total_row["season"] = "ALL (logged)"
+        total_row["team"] = "ALL"
         rows.append(total_row)
 
     return rows

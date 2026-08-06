@@ -2088,5 +2088,194 @@
     "away_score": 6,
     "home_score": 1,
     "added_at": "2026-07-31T21:40:42.870836"
+  },
+  "824892": {
+    "game_id": 824892,
+    "date": "2026-07-31",
+    "away": "Washington Nationals",
+    "home": "Atlanta Braves",
+    "away_score": 2,
+    "home_score": 6,
+    "added_at": "2026-07-31T22:34:22.209948"
+  },
+  "824894": {
+    "game_id": 824894,
+    "date": "2026-07-30",
+    "away": "Washington Nationals",
+    "home": "Atlanta Braves",
+    "away_score": 4,
+    "home_score": 5,
+    "added_at": "2026-07-31T22:50:33.895389"
+  },
+  "824486": {
+    "game_id": 824486,
+    "date": "2026-07-31",
+    "away": "Pittsburgh Pirates",
+    "home": "Cincinnati Reds",
+    "away_score": 7,
+    "home_score": 8,
+    "added_at": "2026-07-31T23:25:27.561292"
+  },
+  "824758": {
+    "game_id": 824758,
+    "date": "2026-05-26",
+    "away": "Atlanta Braves",
+    "home": "Boston Red Sox",
+    "away_score": 7,
+    "home_score": 6,
+    "added_at": "2026-07-31T23:41:15.227759"
+  },
+  "823922": {
+    "game_id": 823922,
+    "date": "2026-07-31",
+    "away": "Boston Red Sox",
+    "home": "Los Angeles Dodgers",
+    "away_score": 9,
+    "home_score": 4,
+    "added_at": "2026-08-01T09:23:21.285207"
+  },
+  "824890": {
+    "game_id": 824890,
+    "date": "2026-08-01",
+    "away": "Washington Nationals",
+    "home": "Atlanta Braves",
+    "away_score": 3,
+    "home_score": 8,
+    "added_at": "2026-08-01T23:57:08.598259"
+  },
+  "823920": {
+    "game_id": 823920,
+    "date": "2026-08-01",
+    "away": "Boston Red Sox",
+    "home": "Los Angeles Dodgers",
+    "away_score": 3,
+    "home_score": 2,
+    "added_at": "2026-08-02T09:09:09.561576"
+  },
+  "824000": {
+    "game_id": 824000,
+    "date": "2026-08-01",
+    "away": "Milwaukee Brewers",
+    "home": "Los Angeles Angels",
+    "away_score": 3,
+    "home_score": 1,
+    "added_at": "2026-08-02T09:23:46.892975"
+  },
+  "824808": {
+    "game_id": 824808,
+    "date": "2026-08-01",
+    "away": "Philadelphia Phillies",
+    "home": "Baltimore Orioles",
+    "away_score": 5,
+    "home_score": 0,
+    "added_at": "2026-08-02T09:39:51.883190"
+  },
+  "824891": {
+    "game_id": 824891,
+    "date": "2026-08-02",
+    "away": "Washington Nationals",
+    "home": "Atlanta Braves",
+    "away_score": 2,
+    "home_score": 4,
+    "added_at": "2026-08-02T18:49:55.248866"
+  },
+  "822943": {
+    "game_id": 822943,
+    "date": "2026-08-02",
+    "away": "Chicago White Sox",
+    "home": "Tampa Bay Rays",
+    "away_score": 9,
+    "home_score": 1,
+    "added_at": "2026-08-02T21:42:15.071457"
+  },
+  "823996": {
+    "game_id": 823996,
+    "date": "2026-08-02",
+    "away": "Milwaukee Brewers",
+    "home": "Los Angeles Angels",
+    "away_score": 0,
+    "home_score": 3,
+    "added_at": "2026-08-02T22:45:29.558249"
+  },
+  "823919": {
+    "game_id": 823919,
+    "date": "2026-08-02",
+    "away": "Boston Red Sox",
+    "home": "Los Angeles Dodgers",
+    "away_score": 8,
+    "home_score": 4,
+    "added_at": "2026-08-02T23:03:47.815217"
+  },
+  "824648": {
+    "game_id": 824648,
+    "date": "2026-08-02",
+    "away": "New York Yankees",
+    "home": "Chicago Cubs",
+    "away_score": 2,
+    "home_score": 1,
+    "added_at": "2026-08-02T23:33:10.649503"
+  },
+  "822867": {
+    "game_id": 822867,
+    "date": "2026-08-03",
+    "away": "San Francisco Giants",
+    "home": "Texas Rangers",
+    "away_score": 5,
+    "home_score": 1,
+    "added_at": "2026-08-03T22:08:48.609510"
+  },
+  "824647": {
+    "game_id": 824647,
+    "date": "2026-08-03",
+    "away": "Los Angeles Dodgers",
+    "home": "Chicago Cubs",
+    "away_score": 5,
+    "home_score": 10,
+    "added_at": "2026-08-03T22:34:18.663165"
+  },
+  "824888": {
+    "game_id": 824888,
+    "date": "2026-08-04",
+    "away": "Miami Marlins",
+    "home": "Atlanta Braves",
+    "away_score": 2,
+    "home_score": 4,
+    "added_at": "2026-08-04T21:57:32.021975"
+  },
+  "824645": {
+    "game_id": 824645,
+    "date": "2026-08-04",
+    "away": "Los Angeles Dodgers",
+    "home": "Chicago Cubs",
+    "away_score": 1,
+    "home_score": 5,
+    "added_at": "2026-08-04T22:35:32.154579"
+  },
+  "823432": {
+    "game_id": 823432,
+    "date": "2026-08-04",
+    "away": "Washington Nationals",
+    "home": "Philadelphia Phillies",
+    "away_score": 0,
+    "home_score": 5,
+    "added_at": "2026-08-04T23:00:28.946179"
+  },
+  "823756": {
+    "game_id": 823756,
+    "date": "2026-08-04",
+    "away": "Pittsburgh Pirates",
+    "home": "Milwaukee Brewers",
+    "away_score": 2,
+    "home_score": 4,
+    "added_at": "2026-08-05T17:39:36.906875"
+  },
+  "824646": {
+    "game_id": 824646,
+    "date": "2026-08-05",
+    "away": "Los Angeles Dodgers",
+    "home": "Chicago Cubs",
+    "away_score": 6,
+    "home_score": 7,
+    "added_at": "2026-08-05T17:53:39.021858"
   }
 }

@@ -1,6 +1,12 @@
 """
 nba_player_summary.py
-Aggregates per-player box score stats across a set of watched NBA games.
+Aggregates per-player box score stats across a set of watched games — now
+spanning BOTH the NBA and men's college basketball, since a player's full
+"career" (as tracked here) can include both. Each watched game carries a
+"league" tag ("nba" or "college", added by nba_main.py when a game is
+added) that decides which ESPN module (espn_nba vs espn_cbb) fetches its
+box score; games missing the tag are treated as "nba" for backward
+compatibility with watched-games files saved before college support existed.
 
 Counting stats collected per game: MIN, PTS, REB (+OREB/DREB), AST, STL,
 BLK, TOV, PF, and made/attempted splits for FG, 3PT, FT.
@@ -17,32 +23,46 @@ average — a raw per-game average inherently rewards players who simply play
 more minutes, since counting stats accumulate the longer someone's on the
 floor), then shrunk toward the pool average based on total minutes watched,
 then scaled so 100 = average of the comparison pool. Higher is better.
+Note: this blends NBA and college games into one rate for combined/"career"
+rows — a real cross-level adjustment (pace, competition level, game length)
+is out of scope here, so treat cross-league Nick+ comparisons loosely.
 
-Data is stored per-player per-game so season/team filters can be applied in
-memory without re-fetching from ESPN.
+Data is stored per-player per-game so season/team/league filters can be
+applied in memory without re-fetching from ESPN.
 """
 from __future__ import annotations
 
 import espn_nba
+import espn_cbb
 import nba_dates
+
+# Which module fetches box scores for each league tag. game.get("league")
+# defaults to "nba" wherever it's read below, for watched-games files saved
+# before college support existed (no "league" key on those records).
+_LEAGUE_MODULES = {"nba": espn_nba, "college": espn_cbb}
+_LEAGUE_DISPLAY = {"nba": "NBA", "college": "College"}
 
 
 # ── Data collection ───────────────────────────────────────────────────────────
 
 def collect_player_game_stats(watched: dict) -> dict:
     """
-    Fetch box score data for every watched game and store per-player,
-    per-game stats. Returns a dict keyed by player name:
+    Fetch box score data for every watched game (NBA or college, per each
+    game's "league" tag) and store per-player, per-game stats. Returns a
+    dict keyed by player name:
 
       players[name] = {
           "athlete_id": ...,
-          "games": [ { "game_id", "season", "team", "min", "pts", "reb",
-                       "oreb", "dreb", "ast", "stl", "blk", "tov", "pf",
-                       "fgm", "fga", "3pm", "3pa", "ftm", "fta" } ],
+          "games": [ { "game_id", "season", "team", "league", "min", "pts",
+                       "reb", "oreb", "dreb", "ast", "stl", "blk", "tov",
+                       "pf", "fgm", "fga", "3pm", "3pa", "ftm", "fta" } ],
       }
 
     All filtering/aggregation happens downstream from these raw records, so
-    no re-fetch is needed when the user changes season/team filters.
+    no re-fetch is needed when the user changes season/team/league filters.
+    A player who appears in both leagets (e.g. college then NBA) collects
+    into the SAME entry under their name — that's what lets career-wide
+    aggregation combine both.
     """
     players: dict[str, dict] = {}
 
@@ -50,11 +70,14 @@ def collect_player_game_stats(watched: dict) -> dict:
     total    = len(game_ids)
 
     for i, gid in enumerate(game_ids, 1):
-        game   = watched[gid]
-        season = nba_dates.season_label(game["date"])
-        print(f"  Fetching game {i}/{total}: {game['date']}  {game['away']} @ {game['home']}...")
+        game    = watched[gid]
+        league  = game.get("league", "nba")
+        module  = _LEAGUE_MODULES.get(league, espn_nba)
+        season  = nba_dates.season_label(game["date"])
+        icon    = "🎓" if league == "college" else "🏀"
+        print(f"  Fetching game {i}/{total}: {icon} {game['date']}  {game['away']} @ {game['home']}...")
         try:
-            data = espn_nba.fetch_boxscore_data(game["game_id"])
+            data = module.fetch_boxscore_data(game["game_id"])
         except RuntimeError as e:
             print(f"    Warning: {e} — skipping.")
             continue
@@ -74,6 +97,7 @@ def collect_player_game_stats(watched: dict) -> dict:
                     "game_id": gid,
                     "season":  season,
                     "team":    team_name,
+                    "league":  league,
                     "min":  s.get("min", 0.0),
                     "pts":  s.get("pts", 0),
                     "reb":  s.get("reb", 0),
@@ -106,12 +130,15 @@ def _aggregate(games: list[dict]) -> dict:
     acc = {k: 0 for k in _COUNTING_KEYS}
     acc["appearances"] = 0
     acc["teams"] = {}
+    acc["leagues"] = {}       # league -> count, so a combined row can note "NBA + College"
     acc["game_scores"] = []   # per-game Game Score, kept for reference/debugging
     for g in games:
         for k in _COUNTING_KEYS:
             acc[k] += g.get(k, 0)
         acc["appearances"] += 1
         acc["teams"][g["team"]] = acc["teams"].get(g["team"], 0) + 1
+        league = g.get("league", "nba")
+        acc["leagues"][league] = acc["leagues"].get(league, 0) + 1
         acc["game_scores"].append(_game_score(g))
     return acc
 
@@ -122,17 +149,27 @@ def _primary_team(teams_dict: dict) -> str:
     return max(teams_dict, key=teams_dict.get)
 
 
+def _primary_league(leagues_dict: dict) -> str:
+    if not leagues_dict:
+        return "nba"
+    return max(leagues_dict, key=leagues_dict.get)
+
+
 def filter_and_aggregate(
     players: dict,
     season_filter: str | None = None,
     team_filter:   str | None = None,
+    league_filter: str | None = None,
 ) -> dict:
     """
-    Apply season and team filters entirely in memory — no API calls.
+    Apply season/team/league filters entirely in memory — no API calls.
 
     season_filter: if set, only include game records from that year.
     team_filter:   if set, only include game records where the player's
                    team for that game matches.
+    league_filter: if set ("nba" or "college"), only include game records
+                   from that league. Leave unset to combine both leagues —
+                   e.g. a player's full career including college.
 
     Returns an aggregated dict keyed by player name in the shape
     calc_player_stats() expects.
@@ -141,6 +178,8 @@ def filter_and_aggregate(
         if season_filter and g["season"] != season_filter:
             return False
         if team_filter and g["team"] != team_filter:
+            return False
+        if league_filter and g.get("league", "nba") != league_filter:
             return False
         return True
 
@@ -207,6 +246,7 @@ def calc_player_stats(name: str, raw: dict) -> dict:
         "name":       name,
         "athlete_id": raw.get("athlete_id"),
         "team":       _primary_team(raw.get("teams", {})),
+        "league":     _primary_league(raw.get("leagues", {})),
         "app":        app,
         "min":        raw["min"],
         "_mpg": mpg,   "mpg": f"{mpg:.1f}",
@@ -246,33 +286,58 @@ def player_leaderboard(players_raw: dict, min_min: float | None = None) -> list[
 
 # ── Per-player season breakdown (for the Search Player screen) ───────────────
 
-def _group_by_season(games: list[dict]) -> dict[str, list[dict]]:
-    seasons: dict[str, list[dict]] = {}
+def _group_by_season_team_league(games: list[dict]) -> dict[tuple[str, str, str], list[dict]]:
+    """Group one player's per-game records by (season, team, league) — so a
+    mid-season trade gets a separate row per team, AND a player's college
+    games never blend into their NBA rows (or vice versa)."""
+    groups: dict[tuple[str, str, str], list[dict]] = {}
     for g in games:
-        seasons.setdefault(g["season"], []).append(g)
-    return seasons
+        key = (g["season"], g["team"], g.get("league", "nba"))
+        groups.setdefault(key, []).append(g)
+    return groups
 
 
 def player_season_rows(name: str, games: list[dict]) -> list[dict]:
     """
-    One row per season this player was watched, oldest to newest — only
-    seasons with logged games appear. If more than one season is present, a
-    trailing "ALL (logged)" row totals everything across all seasons.
+    One row per (season, team, league) this player was watched in, oldest
+    to newest — so a mid-season trade shows as two rows for that season,
+    and college seasons appear as their own rows ahead of any NBA rows
+    (since college dates predate NBA dates for the same player). If a
+    player has games in more than one league, a subtotal row per league is
+    added ("ALL (College)", "ALL (NBA)"), followed by a grand
+    "ALL (Career)" row combining everything — that combined row is what
+    lets a player's college days count toward their overall aggregate.
     """
-    seasons = _group_by_season(games)
+    groups = _group_by_season_team_league(games)
     rows = []
-    for season in sorted(seasons):
-        agg = _aggregate(seasons[season])
+    for season, team, league in sorted(groups):
+        agg = _aggregate(groups[(season, team, league)])
         row = calc_player_stats(name, agg)
         if row:
             row["season"] = season
             rows.append(row)
 
-    if len(seasons) > 1:
+    leagues_present = {league for _, _, league in groups}
+
+    if len(leagues_present) > 1:
+        for league in ("college", "nba"):
+            if league not in leagues_present:
+                continue
+            league_games = [g for g in games if g.get("league", "nba") == league]
+            agg = _aggregate(league_games)
+            row = calc_player_stats(name, agg)
+            if row:
+                row["season"] = f"ALL ({_LEAGUE_DISPLAY[league]})"
+                row["team"] = "ALL"
+                rows.append(row)
+
+    if len(groups) > 1:
         total_agg = _aggregate(games)
         total_row = calc_player_stats(name, total_agg)
         if total_row:
-            total_row["season"] = "ALL (logged)"
+            total_row["season"] = "ALL (Career)"
+            total_row["team"] = "ALL"
+            total_row["league"] = "ALL"
             rows.append(total_row)
 
     return rows
