@@ -3694,5 +3694,65 @@
     "home_score": "78",
     "league": "college",
     "added_at": "2026-08-05T19:11:59.783138"
+  },
+  "401656361": {
+    "game_id": "401656361",
+    "date": "2024-06-12",
+    "away": "Boston Celtics",
+    "home": "Dallas Mavericks",
+    "away_score": "106",
+    "home_score": "99",
+    "league": "nba",
+    "added_at": "2026-08-05T19:22:50.546042"
+  },
+  "401656362": {
+    "game_id": "401656362",
+    "date": "2024-06-14",
+    "away": "Boston Celtics",
+    "home": "Dallas Mavericks",
+    "away_score": "84",
+    "home_score": "122",
+    "league": "nba",
+    "added_at": "2026-08-05T19:38:34.877704"
+  },
+  "401656363": {
+    "game_id": "401656363",
+    "date": "2024-06-17",
+    "away": "Dallas Mavericks",
+    "home": "Boston Celtics",
+    "away_score": "88",
+    "home_score": "106",
+    "league": "nba",
+    "added_at": "2026-08-05T19:44:45.628419"
+  },
+  "401746080": {
+    "game_id": "401746080",
+    "date": "2025-04-05",
+    "away": "Houston Cougars",
+    "home": "Duke Blue Devils",
+    "away_score": "70",
+    "home_score": "67",
+    "league": "college",
+    "added_at": "2026-08-05T19:58:19.944352"
+  },
+  "401746076": {
+    "game_id": "401746076",
+    "date": "2025-03-29",
+    "away": "Alabama Crimson Tide",
+    "home": "Duke Blue Devils",
+    "away_score": "65",
+    "home_score": "85",
+    "league": "college",
+    "added_at": "2026-08-05T22:25:49.470312"
+  },
+  "401746049": {
+    "game_id": "401746049",
+    "date": "2025-03-23",
+    "away": "Baylor Bears",
+    "home": "Duke Blue Devils",
+    "away_score": "66",
+    "home_score": "89",
+    "league": "college",
+    "added_at": "2026-08-05T22:59:34.136581"
   }
 }

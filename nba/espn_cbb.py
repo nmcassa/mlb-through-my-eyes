@@ -176,6 +176,28 @@ def fetch_games_by_date(date: str, team_id: str | None = None) -> list[dict]:
     return games
 
 
+def fetch_scoreboard_range(start_date: str, end_date: str) -> list[dict]:
+    """
+    Fetch ALL D-I games nationally within a date range (each YYYY-MM-DD),
+    independent of any one team. Used by awards.py to approximate the true
+    national NCAA Tournament field size for a season. Uses a date RANGE
+    query (dates=YYYYMMDD-YYYYMMDD) plus the large groups/limit params
+    documented in the community gist — without them the scoreboard
+    silently truncates to a small default slice instead of every D-I game
+    in the window.
+
+    Raises RuntimeError on API failure.
+    """
+    espn_start = start_date.replace("-", "")
+    espn_end   = end_date.replace("-", "")
+    data = _get("scoreboard", dates=f"{espn_start}-{espn_end}", groups=50, limit=1000)
+
+    events = data.get("events", [])
+    games  = [_parse_schedule_event(ev) for ev in events]
+    games.sort(key=lambda g: g["game_date"])
+    return games
+
+
 def _event_team_ids(ev: dict) -> dict:
     """Map home/away -> team id for one scoreboard event, for team filtering."""
     comp = (ev.get("competitions") or [{}])[0]
