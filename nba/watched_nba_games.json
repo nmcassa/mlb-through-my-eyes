@@ -3754,5 +3754,155 @@
     "home_score": "89",
     "league": "college",
     "added_at": "2026-08-05T22:59:34.136581"
+  },
+  "401859966": {
+    "game_id": "401859966",
+    "date": "2026-06-10",
+    "away": "San Antonio Spurs",
+    "home": "New York Knicks",
+    "away_score": "106",
+    "home_score": "107",
+    "league": "nba",
+    "added_at": "2026-08-05T23:46:32.299087"
+  },
+  "401746061": {
+    "game_id": "401746061",
+    "date": "2025-03-27",
+    "away": "Arizona Wildcats",
+    "home": "Duke Blue Devils",
+    "away_score": "93",
+    "home_score": "100",
+    "league": "college",
+    "added_at": "2026-08-06T17:10:52.967557"
+  },
+  "401746003": {
+    "game_id": "401746003",
+    "date": "2025-03-21",
+    "away": "Mount St. Mary's Mountaineers",
+    "home": "Duke Blue Devils",
+    "away_score": "49",
+    "home_score": "93",
+    "league": "college",
+    "added_at": "2026-08-06T17:11:29.109875"
+  },
+  "401540754": {
+    "game_id": "401540754",
+    "date": "2023-04-16",
+    "away": "Miami Heat",
+    "home": "Milwaukee Bucks",
+    "away_score": "130",
+    "home_score": "117",
+    "league": "nba",
+    "added_at": "2026-08-06T17:32:57.626529"
+  },
+  "400828562": {
+    "game_id": "400828562",
+    "date": "2016-01-25",
+    "away": "San Antonio Spurs",
+    "home": "Golden State Warriors",
+    "away_score": "90",
+    "home_score": "120",
+    "league": "nba",
+    "added_at": "2026-08-06T21:50:01.748737"
+  },
+  "401019997": {
+    "game_id": "401019997",
+    "date": "2018-03-09",
+    "away": "North Carolina Tar Heels",
+    "home": "Duke Blue Devils",
+    "away_score": "74",
+    "home_score": "69",
+    "league": "college",
+    "added_at": "2026-08-06T22:04:24.844894"
+  },
+  "401120705": {
+    "game_id": "401120705",
+    "date": "2019-03-15",
+    "away": "Duke Blue Devils",
+    "home": "North Carolina Tar Heels",
+    "away_score": "74",
+    "home_score": "73",
+    "league": "college",
+    "added_at": "2026-08-06T23:27:59.015771"
+  },
+  "401541171": {
+    "game_id": "401541171",
+    "date": "2023-04-19",
+    "away": "Miami Heat",
+    "home": "Milwaukee Bucks",
+    "away_score": "122",
+    "home_score": "138",
+    "league": "nba",
+    "added_at": "2026-08-10T00:29:51.614759"
+  },
+  "401541179": {
+    "game_id": "401541179",
+    "date": "2023-04-22",
+    "away": "Milwaukee Bucks",
+    "home": "Miami Heat",
+    "away_score": "99",
+    "home_score": "121",
+    "league": "nba",
+    "added_at": "2026-08-10T00:38:58.644907"
+  },
+  "401746045": {
+    "game_id": "401746045",
+    "date": "2025-03-23",
+    "away": "Oregon Ducks",
+    "home": "Arizona Wildcats",
+    "away_score": "83",
+    "home_score": "87",
+    "league": "college",
+    "added_at": "2026-08-10T21:20:09.973053"
+  },
+  "401541187": {
+    "game_id": "401541187",
+    "date": "2023-04-24",
+    "away": "Milwaukee Bucks",
+    "home": "Miami Heat",
+    "away_score": "114",
+    "home_score": "119",
+    "league": "nba",
+    "added_at": "2026-08-10T21:49:10.943678"
+  },
+  "401541240": {
+    "game_id": "401541240",
+    "date": "2023-04-26",
+    "away": "Miami Heat",
+    "home": "Milwaukee Bucks",
+    "away_score": "128",
+    "home_score": "126",
+    "league": "nba",
+    "added_at": "2026-08-10T21:59:33.988182"
+  },
+  "401810826": {
+    "game_id": "401810826",
+    "date": "2026-03-14",
+    "away": "Washington Wizards",
+    "home": "Boston Celtics",
+    "away_score": "100",
+    "home_score": "111",
+    "league": "nba",
+    "added_at": "2026-08-12T22:43:04.126949"
+  },
+  "400876750": {
+    "game_id": "400876750",
+    "date": "2016-05-16",
+    "away": "Oklahoma City Thunder",
+    "home": "Golden State Warriors",
+    "away_score": "108",
+    "home_score": "102",
+    "league": "nba",
+    "added_at": "2026-08-12T22:57:26.507290"
+  },
+  "401827719": {
+    "game_id": "401827719",
+    "date": "2026-03-03",
+    "away": "TCU Horned Frogs",
+    "home": "Texas Tech Red Raiders",
+    "away_score": "73",
+    "home_score": "65",
+    "league": "college",
+    "added_at": "2026-08-13T19:36:32.388664"
   }
 }
