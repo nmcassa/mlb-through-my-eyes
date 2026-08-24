@@ -157,6 +157,35 @@ def filter_and_aggregate(
     return out
 
 
+# ── Fantasy points ────────────────────────────────────────────────────────────
+#
+# Standard PPR (points-per-reception) scoring — the most common default
+# across ESPN/Yahoo/Sleeper leagues:
+#   Passing:   1 pt / 25 yds,  4 pts / TD,  -2 pts / INT
+#   Rushing:   1 pt / 10 yds,  6 pts / TD
+#   Receiving: 1 pt / 10 yds,  6 pts / TD,  1 pt / reception
+#
+# Scored PER CATEGORY, matching how each leaderboard is scoped — the QB
+# table's fantasy points are passing points only, Rushing's are rushing
+# points only, and so on. A real fantasy score for a dual-threat player
+# (say, a rushing QB) would sum passing + rushing together, but each
+# leaderboard here only has that one category's box score line for a given
+# player, so combining across categories isn't done. Fumbles aren't
+# tracked by this project at all (see espn_nfl.py's tracked-categories
+# note), so fumble-lost penalties aren't reflected here either.
+
+def _passing_fantasy_pts(pass_yds: int, pass_td: int, ints: int) -> float:
+    return pass_yds / 25 + pass_td * 4 - ints * 2
+
+
+def _rushing_fantasy_pts(rush_yds: int, rush_td: int) -> float:
+    return rush_yds / 10 + rush_td * 6
+
+
+def _receiving_fantasy_pts(rec_yds: int, rec_td: int, rec: int) -> float:
+    return rec_yds / 10 + rec_td * 6 + rec * 1
+
+
 # ── Stat calculators ────────────────────────────────────────────────────────
 
 def calc_qb_stats(name: str, raw: dict) -> dict | None:
@@ -167,6 +196,9 @@ def calc_qb_stats(name: str, raw: dict) -> dict | None:
     cmp_pct  = raw["cmp"] / raw["att"]
     ypa      = raw["pass_yds"] / raw["att"]
     ypg      = raw["pass_yds"] / app
+    rating   = _passer_rating(raw["cmp"], raw["att"], raw["pass_yds"], raw["pass_td"], raw["int"])
+    fpts     = _passing_fantasy_pts(raw["pass_yds"], raw["pass_td"], raw["int"])
+    fppg     = fpts / app
 
     return {
         "name": name, "athlete_id": raw.get("athlete_id"),
@@ -181,6 +213,8 @@ def calc_qb_stats(name: str, raw: dict) -> dict | None:
         "pass_td": raw["pass_td"],
         "int": raw["int"],
         "sacks": raw["sacks"], "sack_yds": raw["sack_yds"],
+        "_rating": rating, "rating": f"{rating:.1f}",
+        "_fppg": fppg, "fppg": f"{fppg:.1f}",
     }
 
 
@@ -191,6 +225,9 @@ def calc_rushing_stats(name: str, raw: dict) -> dict | None:
 
     ypc = raw["rush_yds"] / raw["car"]
     ypg = raw["rush_yds"] / app
+    rush_val = _rush_value_per_carry(raw["rush_yds"], raw["rush_td"], raw["car"])
+    fpts = _rushing_fantasy_pts(raw["rush_yds"], raw["rush_td"])
+    fppg = fpts / app
 
     return {
         "name": name, "athlete_id": raw.get("athlete_id"),
@@ -202,6 +239,8 @@ def calc_rushing_stats(name: str, raw: dict) -> dict | None:
         "_ypc": ypc, "ypc": f"{ypc:.1f}",
         "_ypg": ypg, "ypg": f"{ypg:.1f}",
         "rush_td": raw["rush_td"],
+        "_rush_val": rush_val,
+        "_fppg": fppg, "fppg": f"{fppg:.1f}",
     }
 
 
@@ -213,6 +252,9 @@ def calc_receiving_stats(name: str, raw: dict) -> dict | None:
     ypc = raw["rec_yds"] / raw["rec"] if raw["rec"] else 0.0
     ypg = raw["rec_yds"] / app
     catch_pct = raw["rec"] / raw["tgts"] if raw["tgts"] else None
+    rec_val = _rec_value_per_target(raw["rec_yds"], raw["rec_td"], raw["tgts"], raw["rec"])
+    fpts = _receiving_fantasy_pts(raw["rec_yds"], raw["rec_td"], raw["rec"])
+    fppg = fpts / app
 
     return {
         "name": name, "athlete_id": raw.get("athlete_id"),
@@ -226,6 +268,8 @@ def calc_receiving_stats(name: str, raw: dict) -> dict | None:
         "_ypc": ypc, "ypc": f"{ypc:.1f}",
         "_ypg": ypg, "ypg": f"{ypg:.1f}",
         "rec_td": raw["rec_td"],
+        "_rec_val": rec_val,
+        "_fppg": fppg, "fppg": f"{fppg:.1f}",
     }
 
 
@@ -234,6 +278,114 @@ _CALCULATORS = {
     "rushing": calc_rushing_stats,
     "receiving": calc_receiving_stats,
 }
+
+
+# ── Composite "+" ratings ────────────────────────────────────────────────────
+#
+# Same idea as the basketball tracker's Nick+: 100 = average of the
+# comparison pool, higher is always better, shrunk toward the pool average
+# based on sample size so a small-sample outlier doesn't look like a star.
+#
+# QB+ is built on NFL passer rating — the standard, public, non-proprietary
+# formula the league itself uses (0-158.3 scale), computed here from
+# AGGREGATED totals rather than averaging each game's reported rating,
+# which is the statistically correct way to combine it across games.
+#
+# Rush+ and Rec+ do NOT have an equivalent well-established single-number
+# public formula the way passer rating or Hollinger's Game Score do, so
+# these are our own straightforward construction: yards per opportunity
+# (carry / target) with a flat bonus per touchdown, on the reasoning that
+# a broken-off long touchdown from a normal-looking carry should count for
+# more than the yardage line alone shows. Treat Rush+/Rec+ as directional,
+# not authoritative, the way you'd treat any homemade stat.
+
+def _passer_rating(cmp_: int, att: int, yds: int, td: int, ints: int) -> float:
+    """Standard NFL passer rating formula, each of the four components
+    clamped to [0, 2.375] per the official spec."""
+    if att == 0:
+        return 0.0
+    a = max(0.0, min(2.375, ((cmp_ / att) - 0.3) * 5))
+    b = max(0.0, min(2.375, ((yds / att) - 3) * 0.25))
+    c = max(0.0, min(2.375, (td / att) * 20))
+    d = max(0.0, min(2.375, 2.375 - (ints / att * 25)))
+    return (a + b + c + d) / 6 * 100
+
+
+_TD_BONUS_YDS = 20   # flat yardage-equivalent credit per touchdown in Rush+/Rec+
+
+
+def _rush_value_per_carry(rush_yds: int, rush_td: int, car: int) -> float:
+    if car == 0:
+        return 0.0
+    return (rush_yds + _TD_BONUS_YDS * rush_td) / car
+
+
+def _rec_value_per_target(rec_yds: int, rec_td: int, tgts: int, rec: int) -> float:
+    denom = tgts if tgts > 0 else rec   # fall back to per-reception if targets weren't reported
+    if denom == 0:
+        return 0.0
+    return (rec_yds + _TD_BONUS_YDS * rec_td) / denom
+
+
+_VALUE_KEY = {"qb": "_rating", "rushing": "_rush_val", "receiving": "_rec_val"}
+_PLUS_LABEL = {"qb": "QB+", "rushing": "Rush+", "receiving": "Rec+"}
+_K_CREDIBILITY = {"qb": 100.0, "rushing": 60.0, "receiving": 40.0}   # volume for 50% credibility
+
+
+def _plus_volume(category: str, row: dict) -> float:
+    """The 'sample size' used for shrinkage credibility — attempts for QB,
+    carries for rushing, and targets-or-receptions for receiving (falls
+    back to receptions if targets weren't reported that game)."""
+    if category == "qb":
+        return row.get("att", 0)
+    if category == "rushing":
+        return row.get("car", 0)
+    return row.get("tgts", 0) or row.get("rec", 0)
+
+
+def _weighted_mean(pairs: list[tuple[float, float]]) -> float | None:
+    total_w = sum(w for _, w in pairs if w > 0)
+    if total_w <= 0:
+        return None
+    return sum(v * w for v, w in pairs if w > 0) / total_w
+
+
+def compute_pool_baseline(category: str, pool_rows: list[dict]) -> dict | None:
+    """Volume-weighted average of the category's underlying value stat
+    across a pool of player rows. None if the pool is empty/degenerate."""
+    value_key = _VALUE_KEY[category]
+    avg = _weighted_mean([(r[value_key], _plus_volume(category, r)) for r in pool_rows])
+    if avg is None:
+        return None
+    return {"value": avg}
+
+
+def plus_score(category: str, row: dict, baseline: dict | None) -> int | None:
+    """The '+' score for one player row. None if there's no usable baseline
+    or the player has no volume in this category."""
+    if not baseline or baseline["value"] is None or baseline["value"] <= 0:
+        return None
+    volume = _plus_volume(category, row)
+    if volume <= 0:
+        return None
+    k = _K_CREDIBILITY[category]
+    credibility = volume / (volume + k)
+    value_key = _VALUE_KEY[category]
+    shrunk = credibility * row[value_key] + (1 - credibility) * baseline["value"]
+    return round(100 * shrunk / baseline["value"])
+
+
+def annotate_plus(rows: list[dict], category: str, pool_rows: list[dict] | None = None) -> list[dict]:
+    """Attach 'plus' (int|None) and 'plus_disp' (display string) to each row
+    in place. pool_rows defaults to `rows` itself; pass a separate pool when
+    scoring rows that aren't the comparison set (e.g. one player's season
+    lines vs. everyone you've watched in that category)."""
+    baseline = compute_pool_baseline(category, pool_rows if pool_rows is not None else rows)
+    for r in rows:
+        p = plus_score(category, r, baseline)
+        r["plus"] = p
+        r["plus_disp"] = str(p) if p is not None else "—"
+    return rows
 
 
 # ── Leaderboard ────────────────────────────────────────────────────────────────

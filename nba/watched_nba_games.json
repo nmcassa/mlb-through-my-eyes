@@ -3904,5 +3904,75 @@
     "home_score": "65",
     "league": "college",
     "added_at": "2026-08-13T19:36:32.388664"
+  },
+  "401585459": {
+    "game_id": "401585459",
+    "date": "2024-02-26",
+    "away": "Miami Heat",
+    "home": "Sacramento Kings",
+    "away_score": "121",
+    "home_score": "110",
+    "league": "nba",
+    "added_at": "2026-08-14T00:30:07.613619"
+  },
+  "401654759": {
+    "game_id": "401654759",
+    "date": "2024-04-20",
+    "away": "Phoenix Suns",
+    "home": "Minnesota Timberwolves",
+    "away_score": "95",
+    "home_score": "120",
+    "league": "nba",
+    "added_at": "2026-08-14T18:58:34.322003"
+  },
+  "401655088": {
+    "game_id": "401655088",
+    "date": "2024-04-23",
+    "away": "Phoenix Suns",
+    "home": "Minnesota Timberwolves",
+    "away_score": "93",
+    "home_score": "105",
+    "league": "nba",
+    "added_at": "2026-08-14T19:29:30.526031"
+  },
+  "400915666": {
+    "game_id": "400915666",
+    "date": "2017-02-09",
+    "away": "Oregon Ducks",
+    "home": "UCLA Bruins",
+    "away_score": "79",
+    "home_score": "82",
+    "league": "college",
+    "added_at": "2026-08-15T22:23:02.946270"
+  },
+  "301217018": {
+    "game_id": "301217018",
+    "date": "2010-12-17",
+    "away": "Miami Heat",
+    "home": "New York Knicks",
+    "away_score": "113",
+    "home_score": "91",
+    "league": "nba",
+    "added_at": "2026-08-15T23:38:15.414805"
+  },
+  "400489738": {
+    "game_id": "400489738",
+    "date": "2014-02-27",
+    "away": "New York Knicks",
+    "home": "Miami Heat",
+    "away_score": "82",
+    "home_score": "108",
+    "league": "nba",
+    "added_at": "2026-08-22T23:33:11.096979"
+  },
+  "400278782": {
+    "game_id": "400278782",
+    "date": "2013-03-27",
+    "away": "Miami Heat",
+    "home": "Chicago Bulls",
+    "away_score": "97",
+    "home_score": "101",
+    "league": "nba",
+    "added_at": "2026-08-22T23:45:34.683054"
   }
 }

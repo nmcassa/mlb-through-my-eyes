@@ -756,16 +756,19 @@ _CATEGORY_ICONS  = {"qb": "🎯", "rushing": "🏃", "receiving": "🙌"}
 
 _SORT_COLS_QB = [
     ("Name", "name", False), ("Team", "team", False), ("Appearances", "app", True),
+    ("QB+", "plus", True), ("FPPG", "_fppg", True),
     ("Comp%", "_cmp_pct", True), ("YDS/ATT", "_ypa", True), ("Pass YDS", "pass_yds", True),
     ("Pass TD", "pass_td", True), ("INT", "int", False), ("YDS/G", "_ypg", True),
 ]
 _SORT_COLS_RUSHING = [
     ("Name", "name", False), ("Team", "team", False), ("Appearances", "app", True),
+    ("Rush+", "plus", True), ("FPPG", "_fppg", True),
     ("Carries", "car", True), ("Rush YDS", "rush_yds", True), ("YDS/Carry", "_ypc", True),
     ("Rush TD", "rush_td", True), ("YDS/G", "_ypg", True),
 ]
 _SORT_COLS_RECEIVING = [
     ("Name", "name", False), ("Team", "team", False), ("Appearances", "app", True),
+    ("Rec+", "plus", True), ("FPPG", "_fppg", True),
     ("Receptions", "rec", True), ("Targets", "tgts", True), ("Rec YDS", "rec_yds", True),
     ("YDS/Catch", "_ypc", True), ("Rec TD", "rec_td", True), ("YDS/G", "_ypg", True),
 ]
@@ -783,45 +786,48 @@ def _choose_stat_category() -> str | None:
     return {"1": "qb", "2": "rushing", "3": "receiving"}.get(cmd)
 
 
+_PLUS_LABEL = {"qb": "QB+", "rushing": "Rush+", "receiving": "Rec+"}
+
+
 def _print_player_row(category: str, r: dict):
     if category == "qb":
-        col = "{:<20}  {:<3}  {:<18}  {:>4}  {:>6}  {:>7}  {:>9}  {:>7}  {:>4}  {:>6}"
+        col = "{:<20}  {:<3}  {:<18}  {:>4}  {:>5}  {:>6}  {:>6}  {:>7}  {:>9}  {:>7}  {:>4}  {:>6}"
         print("  " + col.format(
-            r["name"][:20], _league_icon(r.get("league")), r["team"][:18], r["app"],
+            r["name"][:20], _league_icon(r.get("league")), r["team"][:18], r["app"], r["plus_disp"], r["fppg"],
             r["cmp_pct"], r["ypa"], r["pass_yds"], r["pass_td"], r["int"], r["ypg"],
         ))
     elif category == "rushing":
-        col = "{:<20}  {:<3}  {:<18}  {:>4}  {:>7}  {:>8}  {:>9}  {:>7}  {:>6}"
+        col = "{:<20}  {:<3}  {:<18}  {:>4}  {:>6}  {:>6}  {:>7}  {:>8}  {:>9}  {:>7}  {:>6}"
         print("  " + col.format(
-            r["name"][:20], _league_icon(r.get("league")), r["team"][:18], r["app"],
+            r["name"][:20], _league_icon(r.get("league")), r["team"][:18], r["app"], r["plus_disp"], r["fppg"],
             r["car"], r["rush_yds"], r["ypc"], r["rush_td"], r["ypg"],
         ))
     else:
-        col = "{:<20}  {:<3}  {:<18}  {:>4}  {:>10}  {:>7}  {:>7}  {:>9}  {:>7}  {:>6}"
+        col = "{:<20}  {:<3}  {:<18}  {:>4}  {:>5}  {:>6}  {:>10}  {:>7}  {:>7}  {:>9}  {:>7}  {:>6}"
         print("  " + col.format(
-            r["name"][:20], _league_icon(r.get("league")), r["team"][:18], r["app"],
+            r["name"][:20], _league_icon(r.get("league")), r["team"][:18], r["app"], r["plus_disp"], r["fppg"],
             r["rec"], r["tgts"], r["rec_yds"], r["ypc"], r["rec_td"], r["ypg"],
         ))
 
 
 def _player_col_header(category: str) -> str:
     if category == "qb":
-        col = "{:<20}  {:<3}  {:<18}  {:>4}  {:>6}  {:>7}  {:>9}  {:>7}  {:>4}  {:>6}"
-        return col.format("Name", "Lg", "Team", "App", "Comp%", "YDS/AT", "Pass YDS", "Pass TD", "INT", "YDS/G")
+        col = "{:<20}  {:<3}  {:<18}  {:>4}  {:>5}  {:>6}  {:>6}  {:>7}  {:>9}  {:>7}  {:>4}  {:>6}"
+        return col.format("Name", "Lg", "Team", "App", "QB+", "FPPG", "Comp%", "YDS/AT", "Pass YDS", "Pass TD", "INT", "YDS/G")
     if category == "rushing":
-        col = "{:<20}  {:<3}  {:<18}  {:>4}  {:>7}  {:>8}  {:>9}  {:>7}  {:>6}"
-        return col.format("Name", "Lg", "Team", "App", "Carries", "Rush YDS", "YDS/Car", "Rush TD", "YDS/G")
-    col = "{:<20}  {:<3}  {:<18}  {:>4}  {:>10}  {:>7}  {:>7}  {:>9}  {:>7}  {:>6}"
-    return col.format("Name", "Lg", "Team", "App", "Receptions", "Targets", "Rec YDS", "YDS/Cat", "Rec TD", "YDS/G")
+        col = "{:<20}  {:<3}  {:<18}  {:>4}  {:>6}  {:>6}  {:>7}  {:>8}  {:>9}  {:>7}  {:>6}"
+        return col.format("Name", "Lg", "Team", "App", "Rush+", "FPPG", "Carries", "Rush YDS", "YDS/Car", "Rush TD", "YDS/G")
+    col = "{:<20}  {:<3}  {:<18}  {:>4}  {:>5}  {:>6}  {:>10}  {:>7}  {:>7}  {:>9}  {:>7}  {:>6}"
+    return col.format("Name", "Lg", "Team", "App", "Rec+", "FPPG", "Receptions", "Targets", "Rec YDS", "YDS/Cat", "Rec TD", "YDS/G")
 
 
 _CSV_FIELDS = {
-    "qb": (["Name", "League", "Team", "App", "Comp%", "YDS/ATT", "Pass YDS", "Pass TD", "INT", "Sacks", "YDS/G"],
-           ["name", "league", "team", "app", "cmp_pct", "ypa", "pass_yds", "pass_td", "int", "sacks", "ypg"]),
-    "rushing": (["Name", "League", "Team", "App", "Carries", "Rush YDS", "YDS/Carry", "Rush TD", "YDS/G"],
-                ["name", "league", "team", "app", "car", "rush_yds", "ypc", "rush_td", "ypg"]),
-    "receiving": (["Name", "League", "Team", "App", "Receptions", "Targets", "Rec YDS", "YDS/Catch", "Rec TD", "YDS/G"],
-                  ["name", "league", "team", "app", "rec", "tgts", "rec_yds", "ypc", "rec_td", "ypg"]),
+    "qb": (["Name", "League", "Team", "App", "QB+", "FPPG", "Comp%", "YDS/ATT", "Pass YDS", "Pass TD", "INT", "Sacks", "YDS/G"],
+           ["name", "league", "team", "app", "plus_disp", "fppg", "cmp_pct", "ypa", "pass_yds", "pass_td", "int", "sacks", "ypg"]),
+    "rushing": (["Name", "League", "Team", "App", "Rush+", "FPPG", "Carries", "Rush YDS", "YDS/Carry", "Rush TD", "YDS/G"],
+                ["name", "league", "team", "app", "plus_disp", "fppg", "car", "rush_yds", "ypc", "rush_td", "ypg"]),
+    "receiving": (["Name", "League", "Team", "App", "Rec+", "FPPG", "Receptions", "Targets", "Rec YDS", "YDS/Catch", "Rec TD", "YDS/G"],
+                  ["name", "league", "team", "app", "plus_disp", "fppg", "rec", "tgts", "rec_yds", "ypc", "rec_td", "ypg"]),
 }
 
 
@@ -870,6 +876,7 @@ def _show_players(watched: dict):
             category=category,
         )
         rows = player_summary.player_leaderboard(players_raw, category, min_volume=min_min)
+        player_summary.annotate_plus(rows, category)   # pool = this qualifying leaderboard
 
         sorted_rows = _sort_rows(rows, sort_col, sort_rev)
         visible, page, total_pages = _paginate(sorted_rows, page, page_size)
@@ -879,6 +886,7 @@ def _show_players(watched: dict):
         sort_label = next(l for l, k, _ in sort_cols if k == sort_col)
         fl = _filters_label(season_filter, team_filter, min_min=min_min, league_filter=league_filter)
         print(f"\n  {len(rows)} players  |  sorted by {sort_label}  |  {_page_label(page, total_pages)}{fl}\n")
+        print(f"  {_PLUS_LABEL[category]}: 100 = average of these players, weighted by volume. Higher is better.")
         print(f"  Only players with {cat_label.lower()} stats appear here.\n")
 
         if not rows:
@@ -974,6 +982,15 @@ def screen_player_search(watched: dict):
             input("\nPress Enter to continue...")
             continue
 
+        # Plus-score baselines: everyone qualifying across your ENTIRE
+        # watched history in each category, so a player's score means
+        # "compared to everyone you've watched" consistently.
+        baselines = {}
+        for category in ("qb", "rushing", "receiving"):
+            pool_raw  = player_summary.filter_and_aggregate(all_pools[category], category=category)
+            pool_rows = player_summary.player_leaderboard(pool_raw, category)
+            baselines[category] = player_summary.compute_pool_baseline(category, pool_rows)
+
         if len(matches) == 1:
             name = matches[0]
         else:
@@ -990,10 +1007,10 @@ def screen_player_search(watched: dict):
                 continue
             name = matches[int(sel) - 1]
 
-        _show_player_seasons(name, all_pools)
+        _show_player_seasons(name, all_pools, baselines)
 
 
-def _show_player_seasons(name: str, all_pools: dict):
+def _show_player_seasons(name: str, all_pools: dict, baselines: dict):
     """Render a per-season table for one player, one section per stat
     category (QB / Rushing / Receiving) they have games in — a dual-threat
     player can appear in more than one section."""
@@ -1006,6 +1023,9 @@ def _show_player_seasons(name: str, all_pools: dict):
         for category in ("qb", "rushing", "receiving"):
             player_data = all_pools[category].get(name)
             rows = player_summary.player_season_rows(name, player_data["games"], category) if player_data else []
+            for r in rows:
+                p = player_summary.plus_score(category, r, baselines.get(category))
+                r["plus"], r["plus_disp"] = p, (str(p) if p is not None else "—")
             rows_by_category[category] = rows
             if rows:
                 any_rows = True
@@ -1017,7 +1037,8 @@ def _show_player_seasons(name: str, all_pools: dict):
                 rows = rows_by_category[category]
                 if not rows:
                     continue
-                print(f"\n  {_CATEGORY_ICONS[category]} {_CATEGORY_LABELS[category]}\n")
+                print(f"\n  {_CATEGORY_ICONS[category]} {_CATEGORY_LABELS[category]}   "
+                      f"({_PLUS_LABEL[category]}: 100 = avg of everyone you've watched)\n")
                 print("  " + _season_col_header(category))
                 print("  " + "-" * (len(_season_col_header(category)) + 2))
                 for r in rows:
@@ -1043,32 +1064,32 @@ def _show_player_seasons(name: str, all_pools: dict):
 
 def _season_col_header(category: str) -> str:
     if category == "qb":
-        col = "{:<16}  {:<3}  {:<18}  {:>4}  {:>6}  {:>7}  {:>9}  {:>7}  {:>4}  {:>6}"
-        return col.format("Season", "Lg", "Team", "App", "Comp%", "YDS/AT", "Pass YDS", "Pass TD", "INT", "YDS/G")
+        col = "{:<16}  {:<3}  {:<18}  {:>4}  {:>5}  {:>6}  {:>6}  {:>7}  {:>9}  {:>7}  {:>4}  {:>6}"
+        return col.format("Season", "Lg", "Team", "App", "QB+", "FPPG", "Comp%", "YDS/AT", "Pass YDS", "Pass TD", "INT", "YDS/G")
     if category == "rushing":
-        col = "{:<16}  {:<3}  {:<18}  {:>4}  {:>7}  {:>8}  {:>9}  {:>7}  {:>6}"
-        return col.format("Season", "Lg", "Team", "App", "Carries", "Rush YDS", "YDS/Car", "Rush TD", "YDS/G")
-    col = "{:<16}  {:<3}  {:<18}  {:>4}  {:>10}  {:>7}  {:>7}  {:>9}  {:>7}  {:>6}"
-    return col.format("Season", "Lg", "Team", "App", "Receptions", "Targets", "Rec YDS", "YDS/Cat", "Rec TD", "YDS/G")
+        col = "{:<16}  {:<3}  {:<18}  {:>4}  {:>6}  {:>6}  {:>7}  {:>8}  {:>9}  {:>7}  {:>6}"
+        return col.format("Season", "Lg", "Team", "App", "Rush+", "FPPG", "Carries", "Rush YDS", "YDS/Car", "Rush TD", "YDS/G")
+    col = "{:<16}  {:<3}  {:<18}  {:>4}  {:>5}  {:>6}  {:>10}  {:>7}  {:>7}  {:>9}  {:>7}  {:>6}"
+    return col.format("Season", "Lg", "Team", "App", "Rec+", "FPPG", "Receptions", "Targets", "Rec YDS", "YDS/Cat", "Rec TD", "YDS/G")
 
 
 def _print_season_row(category: str, r: dict, icon: str):
     if category == "qb":
-        col = "{:<16}  {:<3}  {:<18}  {:>4}  {:>6}  {:>7}  {:>9}  {:>7}  {:>4}  {:>6}"
+        col = "{:<16}  {:<3}  {:<18}  {:>4}  {:>5}  {:>6}  {:>6}  {:>7}  {:>9}  {:>7}  {:>4}  {:>6}"
         print("  " + col.format(
-            r["season"], icon, r["team"][:18], r["app"],
+            r["season"], icon, r["team"][:18], r["app"], r["plus_disp"], r["fppg"],
             r["cmp_pct"], r["ypa"], r["pass_yds"], r["pass_td"], r["int"], r["ypg"],
         ))
     elif category == "rushing":
-        col = "{:<16}  {:<3}  {:<18}  {:>4}  {:>7}  {:>8}  {:>9}  {:>7}  {:>6}"
+        col = "{:<16}  {:<3}  {:<18}  {:>4}  {:>6}  {:>6}  {:>7}  {:>8}  {:>9}  {:>7}  {:>6}"
         print("  " + col.format(
-            r["season"], icon, r["team"][:18], r["app"],
+            r["season"], icon, r["team"][:18], r["app"], r["plus_disp"], r["fppg"],
             r["car"], r["rush_yds"], r["ypc"], r["rush_td"], r["ypg"],
         ))
     else:
-        col = "{:<16}  {:<3}  {:<18}  {:>4}  {:>10}  {:>7}  {:>7}  {:>9}  {:>7}  {:>6}"
+        col = "{:<16}  {:<3}  {:<18}  {:>4}  {:>5}  {:>6}  {:>10}  {:>7}  {:>7}  {:>9}  {:>7}  {:>6}"
         print("  " + col.format(
-            r["season"], icon, r["team"][:18], r["app"],
+            r["season"], icon, r["team"][:18], r["app"], r["plus_disp"], r["fppg"],
             r["rec"], r["tgts"], r["rec_yds"], r["ypc"], r["rec_td"], r["ypg"],
         ))
 

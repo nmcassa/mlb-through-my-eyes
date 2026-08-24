@@ -2,27 +2,30 @@
 """
 awards.py
 Fan Awards report — scans for watched-games JSON files from ANY sport
-tracker in this project (MLB, NBA, college basketball, or a future one) and
-hands out trophies based on how much of the real schedule you watched.
+tracker in this project (MLB, NBA, college basketball, NFL, college
+football, or a future one) and hands out trophies based on how much of the
+real schedule you watched.
 
 Deliberately lives outside any single sport's files: it doesn't hardcode
-MLB/NBA/college internals directly. Instead each sport plugs in through a
-small adapter in LEAGUES below. Sport support modules (mlb.py, espn_nba.py,
-espn_cbb.py, nba_dates.py) are located dynamically under the scan root —
-they don't need to live next to this file (see _import_from_root below).
+MLB/NBA/college/NFL internals directly. Instead each sport plugs in through
+a small adapter in LEAGUES below. Sport support modules (mlb.py,
+espn_nba.py, espn_cbb.py, espn_nfl.py, espn_cfb.py, nba_dates.py,
+nfl_dates.py) are located dynamically under the scan root — they don't
+need to live next to this file (see _import_from_root below).
 
-Note on the NBA watched-games file: it can hold BOTH NBA and college
-basketball games (the NBA tracker tags each game with a "league" key,
-"nba" or "college"). discover_watched_files() below splits a single file
-into separate per-league buckets on that tag, so a game type_str "nba" file
-can still contribute both an "nba" bucket and a "college" bucket. Games
-saved before college support existed have no "league" key and default to
-"nba".
+Note on the "college" tag ambiguity: both the NBA tracker and the NFL
+tracker tag their college games with the same "league": "college" key —
+one means college basketball, the other college football. There's nothing
+in the tag itself to tell them apart, so discover_watched_files() below
+disambiguates by which FILE the tag came from: a "college" game inside an
+nba-tracker file becomes sport="college" (basketball); inside an
+nfl-tracker file it becomes sport="cfb" (football). Untagged records
+(saved before college support existed) default to the file's own sport.
 
 Trophies:
   Season Attendance   — Gold (100%) / Silver (75%+) / Bronze (50%+) of a
                          team's REGULAR season games, per team per season.
-                         Applies to all three leagues.
+                         Applies to all five leagues.
   Playoff Series       — MLB & NBA only. One trophy per playoff SERIES you
                          watched every game of (not "every playoff game the
                          team played" — a team's postseason can span several
@@ -34,21 +37,26 @@ Trophies:
                          API's own game-type codes); NBA round names are
                          approximate ordinal labels ("Round 1", "Round 2",
                          ...) since the schedule endpoint used here doesn't
-                         reliably expose real round names — see the
-                         docstring on _round_label_nba() for why.
-  March Madness %      — College only, and handled differently on purpose:
-                         the NCAA Tournament is single-elimination, so
-                         "watched every game of a series" doesn't apply.
-                         Instead this reports, per season, what % of a
-                         fixed 67-game field (the tournament's size since
-                         2011) you watched — the numerator is every watched
-                         college POSTSEASON game (conference tournament +
-                         NCAA Tournament combined, deduped across teams so
-                         the same game isn't double-counted).
+                         reliably expose real round names.
+                         NOT computed for football (NFL/college football)
+                         — single-elimination playoff brackets don't really
+                         have a "series" to watch every game of the way a
+                         best-of-7 does, so this is skipped for both
+                         football leagues by design (has_series=False).
+  March Madness %      — College basketball only, and handled differently
+                         on purpose: the NCAA Tournament is
+                         single-elimination, so "watched every game of a
+                         series" doesn't apply. Instead this reports, per
+                         season, what % of a fixed 67-game field (the
+                         tournament's size since 2011) you watched — the
+                         numerator is every watched college POSTSEASON game
+                         (conference tournament + NCAA Tournament combined,
+                         deduped across teams so the same game isn't
+                         double-counted).
   Iron Fan             — every game, regular + playoff/postseason combined,
-                         for one team's season. All three leagues.
+                         for one team's season. All five leagues.
   Wire to Wire          — watched a team's regular-season opener AND finale.
-                         All three leagues.
+                         All five leagues.
   Century Club          — 100+ total games logged across everything.
   Multi-Sport Fan        — logged games in more than one league.
 
@@ -71,7 +79,10 @@ from collections import defaultdict
 mlb = None
 espn_nba = None
 espn_cbb = None
+espn_nfl = None
+espn_cfb = None
 nba_dates = None
+nfl_dates = None
 
 PLAYOFF_TYPES_MLB = {"F", "D", "L", "W"}   # wild card / division / league / WS
 # First team to reach this many wins clinches the series — used to confirm
@@ -109,10 +120,17 @@ def _import_from_root(module_name: str, root: str):
 def discover_watched_files(root: str = ".") -> list[dict]:
     """
     Find watched-games JSON files under `root` (recursive). Returns a list
-    of {"path", "sport", "data"}. A single NBA-tracker file can produce TWO
-    entries here — one sport="nba", one sport="college" — split by each
-    game record's "league" tag (defaulting to "nba" if untagged, for files
-    saved before college support existed).
+    of {"path", "sport", "data"}. A single tracker file can produce
+    multiple entries here, split by each game record's "league" tag:
+      - an NBA-tracker file ("nba" in the filename) splits into
+        sport="nba" and/or sport="college" (college BASKETBALL).
+      - an NFL-tracker file ("nfl" in the filename) splits into
+        sport="nfl" and/or sport="cfb" (college FOOTBALL).
+    Both trackers use the same "college" tag internally, which is why the
+    split has to happen per-file rather than globally — the file it came
+    from is what disambiguates college hoops from college football.
+    Untagged records (saved before college support existed) default to
+    the file's own sport ("nba" or "nfl").
     """
     found = []
     for path in sorted(glob.glob(os.path.join(root, "**", "*.json"), recursive=True)):
@@ -133,18 +151,28 @@ def discover_watched_files(root: str = ".") -> list[dict]:
         if not {"game_id", "date", "away", "home"}.issubset(sample.keys()):
             continue   # doesn't look like a watched-games record
 
-        default_sport = "nba" if "nba" in base.lower() else "mlb"
+        base_lower = base.lower()
+        if "nfl" in base_lower:
+            default_sport, college_bucket = "nfl", "cfb"
+        elif "nba" in base_lower:
+            default_sport, college_bucket = "nba", "college"
+        else:
+            default_sport, college_bucket = "mlb", None
 
         by_league: dict[str, dict] = defaultdict(dict)
         for gid, g in data.items():
-            league = g.get("league", default_sport)
-            if league not in ("nba", "college", "mlb"):
-                league = default_sport
-            by_league[league][gid] = g
+            tag = g.get("league", default_sport)
+            if tag == "college" and college_bucket:
+                sport = college_bucket
+            elif tag == default_sport:
+                sport = default_sport
+            else:
+                sport = default_sport   # unrecognized tag — fall back to the file's own sport
+            by_league[sport][gid] = g
 
-        for league, subset in by_league.items():
-            label = f"{path} [{league}]" if len(by_league) > 1 else path
-            found.append({"path": label, "sport": league, "data": subset})
+        for sport, subset in by_league.items():
+            label = f"{path} [{sport}]" if len(by_league) > 1 else path
+            found.append({"path": label, "sport": sport, "data": subset})
 
     return found
 
@@ -281,17 +309,97 @@ def _cbb_team_games(team_id, team_name: str, season: str) -> dict:
     return _espn_team_games(espn_cbb, team_id, team_name, season)
 
 
+# ── NFL / college football adapters ──────────────────────────────────────────
+# No Playoff Series trophies for either — has_series=False in build_leagues
+# below, per request. Otherwise these plug in exactly like the basketball
+# pair above.
+
+def _football_team_games(module, team_id, team_name: str, season: str) -> dict:
+    """Same idea as _espn_team_games(), but WITHOUT the season-end-year
+    conversion — football seasons are already labeled by the year they
+    START in (e.g. '2024'), which is what the API itself expects, unlike
+    the NBA/college-hoops '2023-24' hyphenated label."""
+    reg  = module.fetch_team_schedule(team_id, season, season_types=["2"])
+    post = module.fetch_team_schedule(team_id, season, season_types=["3"])
+    out = {}
+    for kind, games in (("regular", reg), ("playoff", post)):
+        for g in games:
+            gid = str(g["game_id"])
+            team_is_home = g.get("home_name") == team_name
+            opponent = g.get("away_name") if team_is_home else g.get("home_name")
+            out[gid] = {
+                "kind": kind,
+                "date": g.get("game_date", ""),
+                "opponent": opponent,
+                "round": None,
+                "away_score": g.get("away_score", ""),
+                "home_score": g.get("home_score", ""),
+                "team_is_home": team_is_home,
+                "game_type": None,
+            }
+    return out
+
+
+def _nfl_find_team_id(name: str):
+    key = ("nfl", name)
+    if key in _team_id_cache:
+        return _team_id_cache[key]
+    tid = None
+    try:
+        results = espn_nfl.find_teams(name)
+    except Exception:
+        results = []
+    for t in results:
+        if t.get("name") == name:
+            tid = t["id"]
+            break
+    if tid is None and results:
+        tid = results[0]["id"]
+    _team_id_cache[key] = tid
+    return tid
+
+
+def _nfl_team_games(team_id, team_name: str, season: str) -> dict:
+    return _football_team_games(espn_nfl, team_id, team_name, season)
+
+
+def _cfb_find_team_id(name: str):
+    key = ("cfb", name)
+    if key in _team_id_cache:
+        return _team_id_cache[key]
+    tid = None
+    try:
+        results = espn_cfb.find_teams(name)
+    except Exception:
+        results = []
+    for t in results:
+        if t.get("name") == name:
+            tid = t["id"]
+            break
+    if tid is None and results:
+        tid = results[0]["id"]
+    _team_id_cache[key] = tid
+    return tid
+
+
+def _cfb_team_games(team_id, team_name: str, season: str) -> dict:
+    return _football_team_games(espn_cfb, team_id, team_name, season)
+
+
 LEAGUES = {}   # populated by build_leagues()
 
 
 def build_leagues(root: str) -> dict:
     """Locate and import each sport's support module(s) from under `root`,
     then build the adapter table. Call once per run, before compute_awards."""
-    global mlb, espn_nba, espn_cbb, nba_dates, LEAGUES
+    global mlb, espn_nba, espn_cbb, espn_nfl, espn_cfb, nba_dates, nfl_dates, LEAGUES
     mlb       = _import_from_root("mlb", root)
     espn_nba  = _import_from_root("espn_nba", root)
     espn_cbb  = _import_from_root("espn_cbb", root)
+    espn_nfl  = _import_from_root("espn_nfl", root)
+    espn_cfb  = _import_from_root("espn_cfb", root)
     nba_dates = _import_from_root("nba_dates", root)
+    nfl_dates = _import_from_root("nfl_dates", root)
 
     LEAGUES = {
         "mlb": {
@@ -317,6 +425,22 @@ def build_leagues(root: str) -> dict:
             "season_of":    nba_dates.season_label if nba_dates else None,
             "find_team_id": _cbb_find_team_id if espn_cbb else None,
             "team_games":   _cbb_team_games if espn_cbb else None,
+        },
+        "nfl": {
+            "available":    espn_nfl is not None and nfl_dates is not None,
+            "icon":         "🏈",
+            "has_series":   False,   # no playoff-series trophies for football, by request
+            "season_of":    nfl_dates.season_label if nfl_dates else None,
+            "find_team_id": _nfl_find_team_id if espn_nfl else None,
+            "team_games":   _nfl_team_games if espn_nfl else None,
+        },
+        "cfb": {
+            "available":    espn_cfb is not None and nfl_dates is not None,
+            "icon":         "🏈",
+            "has_series":   False,   # no playoff-series trophies for football, by request
+            "season_of":    nfl_dates.season_label if nfl_dates else None,
+            "find_team_id": _cfb_find_team_id if espn_cfb else None,
+            "team_games":   _cfb_team_games if espn_cfb else None,
         },
     }
     return LEAGUES
@@ -538,8 +662,8 @@ def compute_awards(files: list[dict]) -> dict:
 _TIER_ICON  = {"gold": "🥇", "silver": "🥈", "bronze": "🥉"}
 _TIER_LABEL = {"gold": "Gold — 100%", "silver": "Silver — 75%+", "bronze": "Bronze — 50%+"}
 _TIER_RANK  = {"gold": 3, "silver": 2, "bronze": 1}
-_SPORT_ICON = {"mlb": "⚾", "nba": "🏀", "college": "🎓"}
-_SPORT_NAME = {"mlb": "MLB", "nba": "NBA", "college": "College"}
+_SPORT_ICON = {"mlb": "⚾", "nba": "🏀", "college": "🎓", "nfl": "🏈", "cfb": "🏈"}
+_SPORT_NAME = {"mlb": "MLB", "nba": "NBA", "college": "College Bball", "nfl": "NFL", "cfb": "College FB"}
 
 
 def print_report(results: dict):
