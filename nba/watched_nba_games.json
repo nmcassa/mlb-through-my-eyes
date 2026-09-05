@@ -3974,5 +3974,185 @@
     "home_score": "101",
     "league": "nba",
     "added_at": "2026-08-22T23:45:34.683054"
+  },
+  "401705656": {
+    "game_id": "401705656",
+    "date": "2025-03-31",
+    "away": "Sacramento Kings",
+    "home": "Indiana Pacers",
+    "away_score": "109",
+    "home_score": "111",
+    "league": "nba",
+    "added_at": "2026-08-24T19:18:15.406222"
+  },
+  "401704884": {
+    "game_id": "401704884",
+    "date": "2024-12-02",
+    "away": "Los Angeles Lakers",
+    "home": "Minnesota Timberwolves",
+    "away_score": "80",
+    "home_score": "109",
+    "league": "nba",
+    "added_at": "2026-08-24T19:49:50.521442"
+  },
+  "401704883": {
+    "game_id": "401704883",
+    "date": "2024-12-02",
+    "away": "Brooklyn Nets",
+    "home": "Chicago Bulls",
+    "away_score": "102",
+    "home_score": "128",
+    "league": "nba",
+    "added_at": "2026-08-24T20:12:52.250006"
+  },
+  "401704940": {
+    "game_id": "401704940",
+    "date": "2024-12-20",
+    "away": "Milwaukee Bucks",
+    "home": "Cleveland Cavaliers",
+    "away_score": "101",
+    "home_score": "124",
+    "league": "nba",
+    "added_at": "2026-08-24T21:21:00.766995"
+  },
+  "401584866": {
+    "game_id": "401584866",
+    "date": "2023-11-22",
+    "away": "Dallas Mavericks",
+    "home": "Los Angeles Lakers",
+    "away_score": "104",
+    "home_score": "101",
+    "league": "nba",
+    "added_at": "2026-08-24T23:32:38.513878"
+  },
+  "401616477": {
+    "game_id": "401616477",
+    "date": "2023-12-08",
+    "away": "Chicago Bulls",
+    "home": "San Antonio Spurs",
+    "away_score": "121",
+    "home_score": "112",
+    "league": "nba",
+    "added_at": "2026-08-26T21:48:52.241834"
+  },
+  "401705651": {
+    "game_id": "401705651",
+    "date": "2025-03-30",
+    "away": "Charlotte Hornets",
+    "home": "New Orleans Pelicans",
+    "away_score": "94",
+    "home_score": "98",
+    "league": "nba",
+    "added_at": "2026-08-26T23:24:20.427107"
+  },
+  "401705654": {
+    "game_id": "401705654",
+    "date": "2025-03-30",
+    "away": "Houston Rockets",
+    "home": "Phoenix Suns",
+    "away_score": "148",
+    "home_score": "109",
+    "league": "nba",
+    "added_at": "2026-08-26T23:32:33.170523"
+  },
+  "401705618": {
+    "game_id": "401705618",
+    "date": "2025-03-25",
+    "away": "Oklahoma City Thunder",
+    "home": "Sacramento Kings",
+    "away_score": "121",
+    "home_score": "105",
+    "league": "nba",
+    "added_at": "2026-08-26T23:44:02.600709"
+  },
+  "400828804": {
+    "game_id": "400828804",
+    "date": "2016-03-04",
+    "away": "Washington Wizards",
+    "home": "Cleveland Cavaliers",
+    "away_score": "83",
+    "home_score": "108",
+    "league": "nba",
+    "added_at": "2026-08-26T23:56:07.033267"
+  },
+  "401585227": {
+    "game_id": "401585227",
+    "date": "2024-01-20",
+    "away": "Oklahoma City Thunder",
+    "home": "Minnesota Timberwolves",
+    "away_score": "102",
+    "home_score": "97",
+    "league": "nba",
+    "added_at": "2026-08-27T22:23:55.540918"
+  },
+  "401705617": {
+    "game_id": "401705617",
+    "date": "2025-03-25",
+    "away": "Cleveland Cavaliers",
+    "home": "Portland Trail Blazers",
+    "away_score": "122",
+    "home_score": "111",
+    "league": "nba",
+    "added_at": "2026-08-30T22:06:20.861719"
+  },
+  "401704817": {
+    "game_id": "401704817",
+    "date": "2024-11-18",
+    "away": "Golden State Warriors",
+    "home": "LA Clippers",
+    "away_score": "99",
+    "home_score": "102",
+    "league": "nba",
+    "added_at": "2026-08-31T19:11:53.313528"
+  },
+  "401704816": {
+    "game_id": "401704816",
+    "date": "2024-11-18",
+    "away": "Atlanta Hawks",
+    "home": "Sacramento Kings",
+    "away_score": "109",
+    "home_score": "108",
+    "league": "nba",
+    "added_at": "2026-08-31T19:32:59.431643"
+  },
+  "401704815": {
+    "game_id": "401704815",
+    "date": "2024-11-18",
+    "away": "Orlando Magic",
+    "home": "Phoenix Suns",
+    "away_score": "109",
+    "home_score": "99",
+    "league": "nba",
+    "added_at": "2026-09-02T19:35:39.178833"
+  },
+  "401704811": {
+    "game_id": "401704811",
+    "date": "2024-11-18",
+    "away": "Philadelphia 76ers",
+    "home": "Miami Heat",
+    "away_score": "89",
+    "home_score": "106",
+    "league": "nba",
+    "added_at": "2026-09-02T21:52:05.118464"
+  },
+  "401704643": {
+    "game_id": "401704643",
+    "date": "2024-10-25",
+    "away": "Brooklyn Nets",
+    "home": "Orlando Magic",
+    "away_score": "101",
+    "home_score": "116",
+    "league": "nba",
+    "added_at": "2026-09-03T23:44:03.682853"
+  },
+  "401655090": {
+    "game_id": "401655090",
+    "date": "2024-04-28",
+    "away": "Minnesota Timberwolves",
+    "home": "Phoenix Suns",
+    "away_score": "122",
+    "home_score": "116",
+    "league": "nba",
+    "added_at": "2026-09-04T23:02:15.510683"
   }
 }
