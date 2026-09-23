@@ -1258,5 +1258,275 @@
     "home_score": "",
     "league": "college",
     "added_at": "2026-09-04T22:48:55.758826"
+  },
+  "401856636": {
+    "game_id": "401856636",
+    "date": "2026-09-05",
+    "away": "Baylor Bears",
+    "home": "Auburn Tigers",
+    "away_score": "",
+    "home_score": "",
+    "league": "college",
+    "added_at": "2026-09-05T18:20:52.015303"
+  },
+  "401858433": {
+    "game_id": "401858433",
+    "date": "2026-09-05",
+    "away": "Boise State Broncos",
+    "home": "Oregon Ducks",
+    "away_score": "27",
+    "home_score": "34",
+    "league": "college",
+    "added_at": "2026-09-05T19:07:13.451669"
+  },
+  "401858428": {
+    "game_id": "401858428",
+    "date": "2026-09-05",
+    "away": "Western Michigan Broncos",
+    "home": "Michigan Wolverines",
+    "away_score": "12",
+    "home_score": "13",
+    "league": "college",
+    "added_at": "2026-09-05T22:22:27.291443"
+  },
+  "401677182": {
+    "game_id": "401677182",
+    "date": "2025-01-01",
+    "away": "Texas Longhorns",
+    "home": "Arizona State Sun Devils",
+    "away_score": "39",
+    "home_score": "31",
+    "league": "college",
+    "added_at": "2026-09-05T22:23:01.354254"
+  },
+  "401856660": {
+    "game_id": "401856660",
+    "date": "2026-09-05",
+    "away": "Clemson Tigers",
+    "home": "LSU Tigers",
+    "away_score": "",
+    "home_score": "",
+    "league": "college",
+    "added_at": "2026-09-05T23:14:34.934628"
+  },
+  "401856661": {
+    "game_id": "401856661",
+    "date": "2026-09-06",
+    "away": "Louisville Cardinals",
+    "home": "Ole Miss Rebels",
+    "away_score": "38",
+    "home_score": "41",
+    "league": "college",
+    "added_at": "2026-09-06T22:38:48.506962"
+  },
+  "401858212": {
+    "game_id": "401858212",
+    "date": "2026-09-07",
+    "away": "SMU Mustangs",
+    "home": "Florida State Seminoles",
+    "away_score": "",
+    "home_score": "",
+    "league": "college",
+    "added_at": "2026-09-07T23:30:53.620032"
+  },
+  "401872656": {
+    "game_id": "401872656",
+    "date": "2026-09-09",
+    "away": "New England Patriots",
+    "home": "Seattle Seahawks",
+    "away_score": "10",
+    "home_score": "13",
+    "league": "nfl",
+    "added_at": "2026-09-09T22:26:44.065581"
+  },
+  "401872660": {
+    "game_id": "401872660",
+    "date": "2026-09-13",
+    "away": "Buffalo Bills",
+    "home": "Houston Texans",
+    "away_score": "36",
+    "home_score": "31",
+    "league": "nfl",
+    "added_at": "2026-09-15T18:45:45.562741"
+  },
+  "401856682": {
+    "game_id": "401856682",
+    "date": "2026-09-12",
+    "away": "Ohio State Buckeyes",
+    "home": "Texas Longhorns",
+    "away_score": "23",
+    "home_score": "24",
+    "league": "college",
+    "added_at": "2026-09-15T18:46:11.414051"
+  },
+  "401872928": {
+    "game_id": "401872928",
+    "date": "2026-09-13",
+    "away": "Miami Dolphins",
+    "home": "Las Vegas Raiders",
+    "away_score": "13",
+    "home_score": "27",
+    "league": "nfl",
+    "added_at": "2026-09-15T18:59:40.922334"
+  },
+  "401856782": {
+    "game_id": "401856782",
+    "date": "2026-09-12",
+    "away": "Oregon Ducks",
+    "home": "Oklahoma State Cowboys",
+    "away_score": "31",
+    "home_score": "39",
+    "league": "college",
+    "added_at": "2026-09-15T19:10:10.309136"
+  },
+  "401872661": {
+    "game_id": "401872661",
+    "date": "2026-09-13",
+    "away": "Chicago Bears",
+    "home": "Carolina Panthers",
+    "away_score": "59",
+    "home_score": "37",
+    "league": "nfl",
+    "added_at": "2026-09-15T19:26:16.674112"
+  },
+  "401872659": {
+    "game_id": "401872659",
+    "date": "2026-09-13",
+    "away": "Baltimore Ravens",
+    "home": "Indianapolis Colts",
+    "away_score": "41",
+    "home_score": "23",
+    "league": "nfl",
+    "added_at": "2026-09-15T23:17:56.852888"
+  },
+  "401858217": {
+    "game_id": "401858217",
+    "date": "2026-09-12",
+    "away": "Duke Blue Devils",
+    "home": "Illinois Fighting Illini",
+    "away_score": "31",
+    "home_score": "27",
+    "league": "college",
+    "added_at": "2026-09-16T18:38:11.840149"
+  },
+  "401872932": {
+    "game_id": "401872932",
+    "date": "2026-09-17",
+    "away": "Detroit Lions",
+    "home": "Buffalo Bills",
+    "away_score": "31",
+    "home_score": "41",
+    "league": "nfl",
+    "added_at": "2026-09-18T17:49:45.625414"
+  },
+  "401858226": {
+    "game_id": "401858226",
+    "date": "2026-09-18",
+    "away": "Miami Hurricanes",
+    "home": "Wake Forest Demon Deacons",
+    "away_score": "33",
+    "home_score": "20",
+    "league": "college",
+    "added_at": "2026-09-18T23:15:10.787593"
+  },
+  "401856811": {
+    "game_id": "401856811",
+    "date": "2026-09-18",
+    "away": "Houston Cougars",
+    "home": "Texas Tech Red Raiders",
+    "away_score": "26",
+    "home_score": "28",
+    "league": "college",
+    "added_at": "2026-09-19T11:21:47.455643"
+  },
+  "401858229": {
+    "game_id": "401858229",
+    "date": "2026-09-19",
+    "away": "North Carolina Tar Heels",
+    "home": "Clemson Tigers",
+    "away_score": "20",
+    "home_score": "28",
+    "league": "college",
+    "added_at": "2026-09-19T16:57:18.095882"
+  },
+  "401858230": {
+    "game_id": "401858230",
+    "date": "2026-09-19",
+    "away": "SMU Mustangs",
+    "home": "Louisville Cardinals",
+    "away_score": "31",
+    "home_score": "41",
+    "league": "college",
+    "added_at": "2026-09-19T18:17:08.979084"
+  },
+  "401856688": {
+    "game_id": "401856688",
+    "date": "2026-09-19",
+    "away": "LSU Tigers",
+    "home": "Ole Miss Rebels",
+    "away_score": "24",
+    "home_score": "32",
+    "league": "college",
+    "added_at": "2026-09-19T22:31:47.460034"
+  },
+  "401220403": {
+    "game_id": "401220403",
+    "date": "2021-02-07",
+    "away": "Kansas City Chiefs",
+    "home": "Tampa Bay Buccaneers",
+    "away_score": "9",
+    "home_score": "31",
+    "league": "nfl",
+    "added_at": "2026-09-19T22:51:59.738542"
+  },
+  "401856802": {
+    "game_id": "401856802",
+    "date": "2026-09-19",
+    "away": "West Virginia Mountaineers",
+    "home": "Virginia Cavaliers",
+    "away_score": "38",
+    "home_score": "27",
+    "league": "college",
+    "added_at": "2026-09-19T23:05:08.538089"
+  },
+  "401858232": {
+    "game_id": "401858232",
+    "date": "2026-09-19",
+    "away": "Virginia Tech Hokies",
+    "home": "Maryland Terrapins",
+    "away_score": "35",
+    "home_score": "26",
+    "league": "college",
+    "added_at": "2026-09-19T23:35:31.115261"
+  },
+  "401872941": {
+    "game_id": "401872941",
+    "date": "2026-09-20",
+    "away": "Las Vegas Raiders",
+    "home": "Los Angeles Chargers",
+    "away_score": "",
+    "home_score": "",
+    "league": "nfl",
+    "added_at": "2026-09-20T18:07:14.004023"
+  },
+  "401872947": {
+    "game_id": "401872947",
+    "date": "2026-09-21",
+    "away": "New York Giants",
+    "home": "Los Angeles Rams",
+    "away_score": "6",
+    "home_score": "28",
+    "league": "nfl",
+    "added_at": "2026-09-21T23:17:50.604523"
+  },
+  "401872936": {
+    "game_id": "401872936",
+    "date": "2026-09-20",
+    "away": "Green Bay Packers",
+    "home": "New York Jets",
+    "away_score": "20",
+    "home_score": "17",
+    "league": "nfl",
+    "added_at": "2026-09-22T20:33:26.698304"
   }
 }

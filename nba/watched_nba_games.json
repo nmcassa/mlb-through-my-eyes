@@ -4154,5 +4154,65 @@
     "home_score": "116",
     "league": "nba",
     "added_at": "2026-09-04T23:02:15.510683"
+  },
+  "401307416": {
+    "game_id": "401307416",
+    "date": "2021-03-18",
+    "away": "Charlotte Hornets",
+    "home": "Los Angeles Lakers",
+    "away_score": "105",
+    "home_score": "116",
+    "league": "nba",
+    "added_at": "2026-09-08T21:14:51.906796"
+  },
+  "401265785": {
+    "game_id": "401265785",
+    "date": "2020-12-11",
+    "away": "New York Knicks",
+    "home": "Detroit Pistons",
+    "away_score": "90",
+    "home_score": "84",
+    "league": "nba",
+    "added_at": "2026-09-22T00:19:09.960032"
+  },
+  "401265788": {
+    "game_id": "401265788",
+    "date": "2020-12-11",
+    "away": "Sacramento Kings",
+    "home": "Portland Trail Blazers",
+    "away_score": "102",
+    "home_score": "127",
+    "league": "nba",
+    "added_at": "2026-09-22T00:30:09.225998"
+  },
+  "401265787": {
+    "game_id": "401265787",
+    "date": "2020-12-11",
+    "away": "LA Clippers",
+    "home": "Los Angeles Lakers",
+    "away_score": "81",
+    "home_score": "87",
+    "league": "nba",
+    "added_at": "2026-09-22T12:20:24.169036"
+  },
+  "401705308": {
+    "game_id": "401705308",
+    "date": "2025-02-08",
+    "away": "Indiana Pacers",
+    "home": "Los Angeles Lakers",
+    "away_score": "117",
+    "home_score": "124",
+    "league": "nba",
+    "added_at": "2026-09-22T13:39:39.461242"
+  },
+  "401359978": {
+    "game_id": "401359978",
+    "date": "2021-11-08",
+    "away": "Charlotte Hornets",
+    "home": "Los Angeles Lakers",
+    "away_score": "123",
+    "home_score": "126",
+    "league": "nba",
+    "added_at": "2026-09-22T23:12:44.222379"
   }
 }
