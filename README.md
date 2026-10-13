@@ -1,5 +1,11 @@
 # mlb-through-my-eyes
 
+## Disclaimer
+
+This is a *horrific* and *terrible* code base. I am working on this with the impression that no one else will see it and therefore no one else will use it. At this point there are dumps of my whole history (\*.json) and the code is *disgustly* AI generated with immense overlap between the files in each dir. This is because I just wanted a quick and easy solution to something. If you stumble upon this and want to work on this, please be my guest and open a branch but I am sorry.
+
+## main
+
 Hello, 
 
 Inspired partial by the rategame.io app, I love the idea of being able to log my games and look back on them. One thing that I have been wondering is: *if i only watch some of the games, how does my perspective of a player differ from their true performance*
