@@ -60,6 +60,35 @@ def fetch_season_schedule(
     return [g for g in schedule if g.get("game_type") in game_types]
 
 
+def fetch_games_by_date(
+    date: str,
+    team_id: int | None = None,
+    game_types: list[str] | None = None,
+) -> list[dict]:
+    """
+    Fetch all games played on a single date (YYYY-MM-DD), optionally
+    filtered to one team. Unlike fetch_season_schedule, team_id is optional
+    here since a date alone is usually enough to narrow things down.
+    game_types: list of type codes e.g. ['R', 'F', 'D', 'L', 'W'].
+                Defaults to None (no filtering — include everything played
+                that day, since postseason/spring games on a given date are
+                often exactly what someone browsing by date wants).
+    Raises RuntimeError on API failure.
+    """
+    try:
+        kwargs = dict(start_date=date, end_date=date, sportId=1)
+        if team_id is not None:
+            kwargs["team"] = team_id
+        schedule = statsapi.schedule(**kwargs)
+    except Exception as e:
+        raise RuntimeError(f"Failed to fetch schedule for {date}: {e}") from e
+
+    if game_types:
+        schedule = [g for g in schedule if g.get("game_type") in game_types]
+
+    return schedule
+
+
 def fetch_boxscore(game_id: int) -> str:
     """Return a formatted boxscore string for a single game."""
     return statsapi.boxscore(game_id)
