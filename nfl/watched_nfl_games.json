@@ -1528,5 +1528,95 @@
     "home_score": "17",
     "league": "nfl",
     "added_at": "2026-09-22T20:33:26.698304"
+  },
+  "401858234": {
+    "game_id": "401858234",
+    "date": "2026-09-25",
+    "away": "Clemson Tigers",
+    "home": "California Golden Bears",
+    "away_score": "",
+    "home_score": "",
+    "league": "college",
+    "added_at": "2026-09-26T00:55:10.605624"
+  },
+  "401856704": {
+    "game_id": "401856704",
+    "date": "2026-09-26",
+    "away": "Texas Longhorns",
+    "home": "Tennessee Volunteers",
+    "away_score": "20",
+    "home_score": "17",
+    "league": "college",
+    "added_at": "2026-09-26T15:18:08.795591"
+  },
+  "401872961": {
+    "game_id": "401872961",
+    "date": "2026-09-27",
+    "away": "Las Vegas Raiders",
+    "home": "New Orleans Saints",
+    "away_score": "35",
+    "home_score": "27",
+    "league": "nfl",
+    "added_at": "2026-09-27T21:17:33.759101"
+  },
+  "401872962": {
+    "game_id": "401872962",
+    "date": "2026-09-27",
+    "away": "Los Angeles Rams",
+    "home": "Denver Broncos",
+    "away_score": "26",
+    "home_score": "30",
+    "league": "nfl",
+    "added_at": "2026-09-27T22:55:58.198058"
+  },
+  "301031017": {
+    "game_id": "301031017",
+    "date": "2010-10-31",
+    "away": "Minnesota Vikings",
+    "home": "New England Patriots",
+    "away_score": "18",
+    "home_score": "28",
+    "league": "nfl",
+    "added_at": "2026-09-29T13:20:08.880244"
+  },
+  "401858256": {
+    "game_id": "401858256",
+    "date": "2026-10-10",
+    "away": "North Carolina Tar Heels",
+    "home": "Pittsburgh Panthers",
+    "away_score": "21",
+    "home_score": "17",
+    "league": "college",
+    "added_at": "2026-10-10T14:25:27.204233"
+  },
+  "401856717": {
+    "game_id": "401856717",
+    "date": "2026-10-10",
+    "away": "Texas Longhorns",
+    "home": "Oklahoma Sooners",
+    "away_score": "24",
+    "home_score": "27",
+    "league": "college",
+    "added_at": "2026-10-10T18:58:57.197329"
+  },
+  "401856712": {
+    "game_id": "401856712",
+    "date": "2026-10-10",
+    "away": "Georgia Bulldogs",
+    "home": "Alabama Crimson Tide",
+    "away_score": "20",
+    "home_score": "17",
+    "league": "college",
+    "added_at": "2026-10-10T22:14:53.299083"
+  },
+  "401872986": {
+    "game_id": "401872986",
+    "date": "2026-10-11",
+    "away": "Las Vegas Raiders",
+    "home": "New England Patriots",
+    "away_score": "17",
+    "home_score": "45",
+    "league": "nfl",
+    "added_at": "2026-10-11T15:41:53.913518"
   }
 }

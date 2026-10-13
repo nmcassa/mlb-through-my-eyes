@@ -3600,5 +3600,113 @@
     "away_score": 14,
     "home_score": 11,
     "added_at": "2026-09-22T23:25:51.487705"
+  },
+  "824060": {
+    "game_id": 824060,
+    "date": "2026-09-23",
+    "away": "Chicago White Sox",
+    "home": "Kansas City Royals",
+    "away_score": 4,
+    "home_score": 5,
+    "added_at": "2026-09-23T22:25:28.277482"
+  },
+  "824542": {
+    "game_id": 824542,
+    "date": "2026-09-27",
+    "away": "Colorado Rockies",
+    "home": "Chicago White Sox",
+    "away_score": 2,
+    "home_score": 4,
+    "added_at": "2026-09-27T21:17:58.803177"
+  },
+  "849845": {
+    "game_id": 849845,
+    "date": "2026-09-29",
+    "away": "Philadelphia Phillies",
+    "home": "Atlanta Braves",
+    "away_score": 3,
+    "home_score": 5,
+    "added_at": "2026-09-29T18:00:39.126374"
+  },
+  "849849": {
+    "game_id": 849849,
+    "date": "2026-09-29",
+    "away": "Chicago White Sox",
+    "home": "Houston Astros",
+    "away_score": 6,
+    "home_score": 3,
+    "added_at": "2026-09-29T19:24:08.096209"
+  },
+  "849851": {
+    "game_id": 849851,
+    "date": "2026-09-29",
+    "away": "Boston Red Sox",
+    "home": "New York Yankees",
+    "away_score": 0,
+    "home_score": 9,
+    "added_at": "2026-09-29T22:08:55.180173"
+  },
+  "849843": {
+    "game_id": 849843,
+    "date": "2026-09-29",
+    "away": "Chicago Cubs",
+    "home": "San Diego Padres",
+    "away_score": 0,
+    "home_score": 8,
+    "added_at": "2026-09-29T23:40:51.708958"
+  },
+  "849846": {
+    "game_id": 849846,
+    "date": "2026-09-30",
+    "away": "Chicago White Sox",
+    "home": "Houston Astros",
+    "away_score": 7,
+    "home_score": 3,
+    "added_at": "2026-09-30T19:25:41.998686"
+  },
+  "849848": {
+    "game_id": 849848,
+    "date": "2026-09-30",
+    "away": "Boston Red Sox",
+    "home": "New York Yankees",
+    "away_score": 2,
+    "home_score": 9,
+    "added_at": "2026-09-30T23:07:23.016271"
+  },
+  "849842": {
+    "game_id": 849842,
+    "date": "2026-09-30",
+    "away": "Chicago Cubs",
+    "home": "San Diego Padres",
+    "away_score": 1,
+    "home_score": 4,
+    "added_at": "2026-10-01T00:00:31.517384"
+  },
+  "849834": {
+    "game_id": 849834,
+    "date": "2026-10-05",
+    "away": "Chicago White Sox",
+    "home": "Cleveland Guardians",
+    "away_score": 4,
+    "home_score": 3,
+    "added_at": "2026-10-05T19:12:33.399612"
+  },
+  "849819": {
+    "game_id": 849819,
+    "date": "2026-10-06",
+    "away": "Los Angeles Dodgers",
+    "home": "Atlanta Braves",
+    "away_score": 3,
+    "home_score": 1,
+    "added_at": "2026-10-06T20:25:58.551630"
+  },
+  "849822": {
+    "game_id": 849822,
+    "date": "2026-10-07",
+    "away": "Los Angeles Dodgers",
+    "home": "Atlanta Braves",
+    "away_score": 4,
+    "home_score": 1,
+    "added_at": "2026-10-07T20:04:28.360959"
   }
 }
