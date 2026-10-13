@@ -53,7 +53,7 @@ def collect_player_game_stats(watched: dict) -> dict:
 
       players[name] = {
           "athlete_id": ...,
-          "games": [ { "game_id", "season", "team", "league", "min", "pts",
+          "games": [ { "game_id", "date", "season", "team", "league", "min", "pts",
                        "reb", "oreb", "dreb", "ast", "stl", "blk", "tov",
                        "pf", "fgm", "fga", "3pm", "3pa", "ftm", "fta" } ],
       }
@@ -95,6 +95,7 @@ def collect_player_game_stats(watched: dict) -> dict:
                 players.setdefault(name, {"athlete_id": athlete_id, "games": []})
                 players[name]["games"].append({
                     "game_id": gid,
+                    "date":    game["date"],
                     "season":  season,
                     "team":    team_name,
                     "league":  league,
@@ -132,6 +133,8 @@ def _aggregate(games: list[dict]) -> dict:
     acc["teams"] = {}
     acc["leagues"] = {}       # league -> count, so a combined row can note "NBA + College"
     acc["game_scores"] = []   # per-game Game Score, kept for reference/debugging
+    acc["latest_team"] = None   # team from the player's most recent game (by date)
+    acc["latest_date"] = ""
     for g in games:
         for k in _COUNTING_KEYS:
             acc[k] += g.get(k, 0)
@@ -140,10 +143,19 @@ def _aggregate(games: list[dict]) -> dict:
         league = g.get("league", "nba")
         acc["leagues"][league] = acc["leagues"].get(league, 0) + 1
         acc["game_scores"].append(_game_score(g))
+        # ISO dates (YYYY-MM-DD) sort correctly as strings. ">=" so that on a
+        # tie (same date) the later record wins rather than the first one.
+        g_date = g.get("date") or ""
+        if acc["latest_team"] is None or g_date >= acc["latest_date"]:
+            acc["latest_team"] = g["team"]
+            acc["latest_date"] = g_date
     return acc
 
 
 def _primary_team(teams_dict: dict) -> str:
+    """Team with the most watched games. Only a fallback now — summaries show
+    the LATEST team (see _aggregate's "latest_team") so traded players are
+    listed with the team they most recently played for."""
     if not teams_dict:
         return "—"
     return max(teams_dict, key=teams_dict.get)
@@ -245,7 +257,7 @@ def calc_player_stats(name: str, raw: dict) -> dict:
     return {
         "name":       name,
         "athlete_id": raw.get("athlete_id"),
-        "team":       _primary_team(raw.get("teams", {})),
+        "team":       raw.get("latest_team") or _primary_team(raw.get("teams", {})),
         "league":     _primary_league(raw.get("leagues", {})),
         "app":        app,
         "min":        raw["min"],
