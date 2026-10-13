@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import csv
 import os
+import shutil
 from datetime import datetime
 
 import espn_nba
@@ -508,26 +509,62 @@ def _filter_prompt(
 
 # ── Sort / pagination helpers ─────────────────────────────────────────────────
 
-def _sort_prompt(cols: list[tuple[str, str, bool]], total_pages: int = 1) -> object:
+def _term_width() -> int:
+    return shutil.get_terminal_size((100, 24)).columns
+
+
+def _print_sort_options(cols: list[tuple[str, str, bool]]) -> None:
+    """Print the numbered sort options in as many columns as fit the terminal
+    (row-major, so numbering still reads left-to-right) instead of one per line."""
+    labels = [f"[{i}] {label}" for i, (label, _, _) in enumerate(cols, 1)]
+    width    = max(len(l) for l in labels) + 3
+    per_row  = max(1, min(len(labels), (_term_width() - 4) // width))
+    print("\n  Sort by:")
+    for start in range(0, len(labels), per_row):
+        chunk = labels[start:start + per_row]
+        print("    " + "".join(l.ljust(width) for l in chunk).rstrip())
+
+
+def _print_actions(actions: list[str]) -> None:
+    """Print the action hints packed onto as few lines as the terminal allows."""
+    limit = _term_width() - 4
+    line  = ""
+    for a in actions:
+        candidate = a if not line else f"{line}   {a}"
+        if line and len(candidate) > limit:
+            print("    " + line)
+            line = a
+        else:
+            line = candidate
+    if line:
+        print("    " + line)
+
+
+def _sort_prompt(cols: list[tuple[str, str, bool]], total_pages: int = 1,
+                 toggle_label: str | None = None) -> object:
     """
-    Display the action menu and return one of:
+    Display the (condensed) action menu and return one of:
       (sort_key, reverse)     — user picked a sort column
       "csv"                   — export to CSV
       ("page", +1|-1)         — scroll to next/previous page
       ("pagesize", None)      — change rows-per-page
       "filter"                — open filter menu
+      "toggle"                — flip the table view (only if toggle_label given)
       None                    — go back
       False                   — invalid input (re-prompt)
     """
-    print("\n  Sort by:")
-    for i, (label, _, _) in enumerate(cols, 1):
-        print(f"    [{i}] {label}")
+    _print_sort_options(cols)
+
+    actions = []
     if total_pages > 1:
-        print("    [n] Next page   [p] Previous page")
-    print("    [z] Rows per page")
-    print("    [f] Filters")
-    print("    [c] Export to CSV")
-    print("    [q] Back")
+        actions += ["[n] Next", "[p] Prev"]
+    actions += ["[z] Rows/page", "[f] Filters"]
+    if toggle_label:
+        actions.append(f"[v] {toggle_label}")
+    actions += ["[c] CSV", "[q] Back"]
+    print()
+    _print_actions(actions)
+
     cmd = input("\n  > ").strip().lower()
     if cmd == "q":
         return None
@@ -535,6 +572,8 @@ def _sort_prompt(cols: list[tuple[str, str, bool]], total_pages: int = 1) -> obj
         return "csv"
     if cmd == "f":
         return "filter"
+    if cmd == "v" and toggle_label:
+        return "toggle"
     if cmd == "z":
         return ("pagesize", None)
     if cmd == "n" and total_pages > 1:
@@ -728,6 +767,8 @@ def summary(watched: dict):
 
 # ── Screen: Player Summary ────────────────────────────────────────────────────
 
+# Two views of the same player rows: per-game averages (default) and raw
+# counting-stat totals across the watched games. Toggle with [v] on the screen.
 _PLAYER_SORT_COLS = [
     ("Name",         "name",     False),
     ("Team",         "team",     False),
@@ -746,6 +787,35 @@ _PLAYER_SORT_COLS = [
     ("GmSc/48",      "_gmsc",    True),
 ]
 
+_PLAYER_SORT_COLS_TOTALS = [
+    ("Name",         "name",     False),
+    ("Team",         "team",     False),
+    ("Appearances",  "app",      True),
+    ("Nick+",        "nickplus", True),
+    ("Minutes",      "min",      True),
+    ("PTS",          "pts",      True),
+    ("REB",          "reb",      True),
+    ("AST",          "ast",      True),
+    ("STL",          "stl",      True),
+    ("BLK",          "blk",      True),
+    ("TOV",          "tov",      False),
+    ("FGM",          "fgm",      True),
+    ("3PM",          "3pm",      True),
+    ("FTM",          "ftm",      True),
+    ("GmSc/48",      "_gmsc",    True),
+]
+
+# When the view is toggled, keep the current sort "equivalent" (PPG <-> PTS,
+# FG% <-> FGM, ...) so the table doesn't silently jump to an unrelated column.
+_SORT_KEY_SWAP = {
+    "_ppg": "pts", "_rpg": "reb", "_apg": "ast", "_spg": "stl", "_bpg": "blk",
+    "_topg": "tov", "_fg_pct": "fgm", "_tp_pct": "3pm", "_ft_pct": "ftm",
+}
+_SORT_KEY_SWAP.update({v: k for k, v in list(_SORT_KEY_SWAP.items())})
+
+_VIEW_PER_GAME = "per_game"
+_VIEW_TOTALS   = "totals"
+
 
 def _show_players(watched: dict):
     season_filter: str | None = None
@@ -753,6 +823,7 @@ def _show_players(watched: dict):
     min_min:       float | None = None
     league_filter: str | None = None
 
+    view = _VIEW_PER_GAME
     sort_col, sort_rev = "nickplus", True
     page, page_size    = 0, 25
 
@@ -786,22 +857,37 @@ def _show_players(watched: dict):
         rows = player_summary.player_leaderboard(players_raw, min_min=min_min)
         player_summary.annotate_nick_plus(rows)   # pool = this qualifying leaderboard
 
+        sort_cols = _PLAYER_SORT_COLS_TOTALS if view == _VIEW_TOTALS else _PLAYER_SORT_COLS
         sorted_rows = _sort_rows(rows, sort_col, sort_rev)
         visible, page, total_pages = _paginate(sorted_rows, page, page_size)
 
         clear()
         print_header("Player Summary")
-        sort_label = next(l for l, k, _ in _PLAYER_SORT_COLS if k == sort_col)
+        sort_label = next((l for l, k, _ in sort_cols if k == sort_col), sort_col)
+        view_label = "counting stats" if view == _VIEW_TOTALS else "per game"
         fl = _filters_label(season_filter, team_filter, min_min=min_min, league_filter=league_filter)
-        print(f"\n  {len(rows)} players  |  sorted by {sort_label}  |  {_page_label(page, total_pages)}{fl}\n")
+        print(f"\n  {len(rows)} players  |  {view_label}  |  sorted by {sort_label}  |  {_page_label(page, total_pages)}{fl}\n")
         print("  Nick+: 100 = average of these players, weighted by how much you've watched them. Higher is better.\n")
 
         if not rows:
             print("  No players match current filters.")
+        elif view == _VIEW_TOTALS:
+            col = "{:<20}  {:<3}  {:<18}  {:>4}  {:>6}  {:>6}  {:>5}  {:>5}  {:>5}  {:>5}  {:>5}  {:>5}  {:>8}  {:>8}  {:>8}"
+            header = col.format("Name", "Lg", "Team", "App", "Nick+", "MIN", "PTS", "REB", "AST", "STL", "BLK", "TOV", "FG", "3P", "FT")
+            print("  " + header)
+            print("  " + "-" * len(header))
+            for r in visible:
+                print("  " + col.format(
+                    r["name"][:20], _league_icon(r.get("league")), r["team"][:18],
+                    r["app"], r["nick+"], f"{r['min']:.0f}",
+                    r["pts"], r["reb"], r["ast"], r["stl"], r["blk"], r["tov"],
+                    f"{r['fgm']}-{r['fga']}", f"{r['3pm']}-{r['3pa']}", f"{r['ftm']}-{r['fta']}",
+                ))
         else:
             col = "{:<20}  {:<3}  {:<18}  {:>4}  {:>6}  {:>6}  {:>5}  {:>5}  {:>5}  {:>5}  {:>5}  {:>5}  {:>5}  {:>5}  {:>5}"
-            print(col.format("Name", "Lg", "Team", "App", "Nick+", "MIN", "PPG", "RPG", "APG", "SPG", "BPG", "TOPG", "FG%", "3P%", "FT%"))
-            print("  " + "-" * 128)
+            header = col.format("Name", "Lg", "Team", "App", "Nick+", "MIN", "PPG", "RPG", "APG", "SPG", "BPG", "TOPG", "FG%", "3P%", "FT%")
+            print("  " + header)
+            print("  " + "-" * len(header))
             for r in visible:
                 print("  " + col.format(
                     r["name"][:20], _league_icon(r.get("league")), r["team"][:18],
@@ -809,21 +895,35 @@ def _show_players(watched: dict):
                     r["ppg"], r["rpg"], r["apg"], r["spg"], r["bpg"], r["topg"],
                     r["fg_pct"], r["tp_pct"], r["ft_pct"],
                 ))
-            if total_pages > 1:
-                print(f"\n  Press [n]/[p] to scroll pages.")
 
-        result = _sort_prompt(_PLAYER_SORT_COLS, total_pages)
+        toggle_label = "Per-game view" if view == _VIEW_TOTALS else "Counting stats"
+        result = _sort_prompt(sort_cols, total_pages, toggle_label=toggle_label)
         if result is None:
             return
+        if result == "toggle":
+            view = _VIEW_PER_GAME if view == _VIEW_TOTALS else _VIEW_TOTALS
+            sort_col = _SORT_KEY_SWAP.get(sort_col, sort_col)
+            page = 0
+            continue
         if result == "csv":
-            _dump_csv(
-                "nba_player_summary.csv",
-                ["Name", "League", "Team", "App", "Nick+", "MIN", "PPG", "RPG", "APG", "SPG", "BPG", "TOPG",
-                 "FGM", "FGA", "FG%", "3PM", "3PA", "3P%", "FTM", "FTA", "FT%", "GmSc48"],
-                visible,
-                ["name", "league", "team", "app", "nick+", "min", "ppg", "rpg", "apg", "spg", "bpg", "topg",
-                 "fgm", "fga", "fg_pct", "3pm", "3pa", "tp_pct", "ftm", "fta", "ft_pct", "gmsc"],
-            )
+            if view == _VIEW_TOTALS:
+                _dump_csv(
+                    "nba_player_summary_totals.csv",
+                    ["Name", "League", "Team", "App", "Nick+", "MIN", "PTS", "REB", "OREB", "DREB", "AST", "STL",
+                     "BLK", "TOV", "PF", "FGM", "FGA", "FG%", "3PM", "3PA", "3P%", "FTM", "FTA", "FT%", "GmSc48"],
+                    visible,
+                    ["name", "league", "team", "app", "nick+", "min", "pts", "reb", "oreb", "dreb", "ast", "stl",
+                     "blk", "tov", "pf", "fgm", "fga", "fg_pct", "3pm", "3pa", "tp_pct", "ftm", "fta", "ft_pct", "gmsc"],
+                )
+            else:
+                _dump_csv(
+                    "nba_player_summary.csv",
+                    ["Name", "League", "Team", "App", "Nick+", "MIN", "PPG", "RPG", "APG", "SPG", "BPG", "TOPG",
+                     "FGM", "FGA", "FG%", "3PM", "3PA", "3P%", "FTM", "FTA", "FT%", "GmSc48"],
+                    visible,
+                    ["name", "league", "team", "app", "nick+", "min", "ppg", "rpg", "apg", "spg", "bpg", "topg",
+                     "fgm", "fga", "fg_pct", "3pm", "3pa", "tp_pct", "ftm", "fta", "ft_pct", "gmsc"],
+                )
             continue
         if result == "filter":
             new_sf, new_tf, new_min, new_lf = _filter_prompt(

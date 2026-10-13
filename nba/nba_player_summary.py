@@ -261,6 +261,10 @@ def calc_player_stats(name: str, raw: dict) -> dict:
         "league":     _primary_league(raw.get("leagues", {})),
         "app":        app,
         "min":        raw["min"],
+        # Raw counting totals (for the "counting stats" view of the summary)
+        "pts": raw["pts"], "reb": raw["reb"], "oreb": raw["oreb"], "dreb": raw["dreb"],
+        "ast": raw["ast"], "stl": raw["stl"], "blk": raw["blk"], "tov": raw["tov"],
+        "pf":  raw["pf"],
         "_mpg": mpg,   "mpg": f"{mpg:.1f}",
         "_ppg": ppg,   "ppg": f"{ppg:.1f}",
         "_rpg": rpg,   "rpg": f"{rpg:.1f}",
