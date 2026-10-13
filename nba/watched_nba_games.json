@@ -4214,5 +4214,125 @@
     "home_score": "126",
     "league": "nba",
     "added_at": "2026-09-22T23:12:44.222379"
+  },
+  "401914102": {
+    "game_id": "401914102",
+    "date": "2026-10-05",
+    "away": "Minnesota Timberwolves",
+    "home": "Milwaukee Bucks",
+    "away_score": "116",
+    "home_score": "97",
+    "league": "nba",
+    "added_at": "2026-10-06T13:05:55.144506"
+  },
+  "401901820": {
+    "game_id": "401901820",
+    "date": "2026-10-06",
+    "away": "Brooklyn Nets",
+    "home": "Charlotte Hornets",
+    "away_score": "124",
+    "home_score": "90",
+    "league": "nba",
+    "added_at": "2026-10-06T23:26:15.106310"
+  },
+  "400277752": {
+    "game_id": "400277752",
+    "date": "2012-11-03",
+    "away": "Portland Trail Blazers",
+    "home": "Houston Rockets",
+    "away_score": "95",
+    "home_score": "85",
+    "league": "nba",
+    "added_at": "2026-10-11T08:13:51.685726"
+  },
+  "301106030": {
+    "game_id": "301106030",
+    "date": "2010-11-06",
+    "away": "Orlando Magic",
+    "home": "Charlotte Bobcats",
+    "away_score": "91",
+    "home_score": "88",
+    "league": "nba",
+    "added_at": "2026-10-11T08:21:01.835333"
+  },
+  "300418019": {
+    "game_id": "300418019",
+    "date": "2010-04-18",
+    "away": "Charlotte Bobcats",
+    "home": "Orlando Magic",
+    "away_score": "89",
+    "home_score": "98",
+    "league": "nba",
+    "added_at": "2026-10-11T08:25:28.040657"
+  },
+  "300421019": {
+    "game_id": "300421019",
+    "date": "2010-04-21",
+    "away": "Charlotte Bobcats",
+    "home": "Orlando Magic",
+    "away_score": "77",
+    "home_score": "92",
+    "league": "nba",
+    "added_at": "2026-10-11T08:35:18.178665"
+  },
+  "300424030": {
+    "game_id": "300424030",
+    "date": "2010-04-24",
+    "away": "Orlando Magic",
+    "home": "Charlotte Bobcats",
+    "away_score": "90",
+    "home_score": "86",
+    "league": "nba",
+    "added_at": "2026-10-11T08:35:22.198546"
+  },
+  "300426030": {
+    "game_id": "300426030",
+    "date": "2010-04-26",
+    "away": "Orlando Magic",
+    "home": "Charlotte Bobcats",
+    "away_score": "99",
+    "home_score": "90",
+    "league": "nba",
+    "added_at": "2026-10-11T08:35:25.380478"
+  },
+  "401901821": {
+    "game_id": "401901821",
+    "date": "2026-10-11",
+    "away": "Milwaukee Bucks",
+    "home": "Charlotte Hornets",
+    "away_score": "90",
+    "home_score": "105",
+    "league": "nba",
+    "added_at": "2026-10-12T20:40:30.711630"
+  },
+  "400578711": {
+    "game_id": "400578711",
+    "date": "2014-12-23",
+    "away": "Chicago Bulls",
+    "home": "Washington Wizards",
+    "away_score": "99",
+    "home_score": "91",
+    "league": "nba",
+    "added_at": "2026-10-12T23:08:18.452863"
+  },
+  "400578712": {
+    "game_id": "400578712",
+    "date": "2014-12-23",
+    "away": "LA Clippers",
+    "home": "Atlanta Hawks",
+    "away_score": "104",
+    "home_score": "107",
+    "league": "nba",
+    "added_at": "2026-10-12T23:08:31.421499"
+  },
+  "400975207": {
+    "game_id": "400975207",
+    "date": "2017-12-20",
+    "away": "Miami Heat",
+    "home": "Boston Celtics",
+    "away_score": "90",
+    "home_score": "89",
+    "league": "nba",
+    "added_at": "2026-10-13T12:17:19.499077"
   }
 }
