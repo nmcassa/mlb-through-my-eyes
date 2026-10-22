@@ -49,9 +49,10 @@ def collect_player_game_stats(watched: dict) -> dict:
     """
     Fetch box score data for every watched game (NBA or college, per each
     game's "league" tag) and store per-player, per-game stats. Returns a
-    dict keyed by player name:
+    dict keyed by ESPN athlete ID:
 
-      players[name] = {
+      players[player_key] = {
+          "name": ...,
           "athlete_id": ...,
           "games": [ { "game_id", "date", "season", "team", "league", "min", "pts",
                        "reb", "oreb", "dreb", "ast", "stl", "blk", "tov",
@@ -60,9 +61,8 @@ def collect_player_game_stats(watched: dict) -> dict:
 
     All filtering/aggregation happens downstream from these raw records, so
     no re-fetch is needed when the user changes season/team/league filters.
-    A player who appears in both leagets (e.g. college then NBA) collects
-    into the SAME entry under their name — that's what lets career-wide
-    aggregation combine both.
+    A player who appears in both leagues with the same ESPN athlete ID
+    collects into the same entry, allowing career-wide aggregation.
     """
     players: dict[str, dict] = {}
 
@@ -92,8 +92,10 @@ def collect_player_game_stats(watched: dict) -> dict:
                 if s.get("min", 0) <= 0:
                     continue   # DNP — didn't actually play
 
-                players.setdefault(name, {"athlete_id": athlete_id, "games": []})
-                players[name]["games"].append({
+                player_key = f"espn:{athlete_id}"
+                players.setdefault(player_key, {"name": name, "athlete_id": athlete_id, "games": []})
+                players[player_key]["name"] = name
+                players[player_key]["games"].append({
                     "game_id": gid,
                     "date":    game["date"],
                     "season":  season,
@@ -183,7 +185,7 @@ def filter_and_aggregate(
                    from that league. Leave unset to combine both leagues —
                    e.g. a player's full career including college.
 
-    Returns an aggregated dict keyed by player name in the shape
+    Returns an aggregated dict keyed by player identity in the shape
     calc_player_stats() expects.
     """
     def keep(g: dict) -> bool:
@@ -196,12 +198,13 @@ def filter_and_aggregate(
         return True
 
     out: dict[str, dict] = {}
-    for name, data in players.items():
+    for player_key, data in players.items():
         matching = [g for g in data["games"] if keep(g)]
         if matching:
             agg = _aggregate(matching)
+            agg["name"] = data.get("name", player_key)
             agg["athlete_id"] = data.get("athlete_id")
-            out[name] = agg
+            out[player_key] = agg
 
     return out
 
@@ -291,10 +294,10 @@ def player_leaderboard(players_raw: dict, min_min: float | None = None) -> list[
     """
     threshold = min_min if min_min is not None else MIN_LEADERBOARD_MINUTES
     rows = []
-    for name, raw in players_raw.items():
+    for player_key, raw in players_raw.items():
         if raw["min"] < threshold:
             continue
-        row = calc_player_stats(name, raw)
+        row = calc_player_stats(raw.get("name", player_key), raw)
         if row:
             rows.append(row)
     return rows
@@ -313,7 +316,7 @@ def _group_by_season_team_league(games: list[dict]) -> dict[tuple[str, str, str]
     return groups
 
 
-def player_season_rows(name: str, games: list[dict]) -> list[dict]:
+def player_season_rows(name: str, games: list[dict], athlete_id=None) -> list[dict]:
     """
     One row per (season, team, league) this player was watched in, oldest
     to newest — so a mid-season trade shows as two rows for that season,
@@ -328,6 +331,7 @@ def player_season_rows(name: str, games: list[dict]) -> list[dict]:
     rows = []
     for season, team, league in sorted(groups):
         agg = _aggregate(groups[(season, team, league)])
+        agg["athlete_id"] = athlete_id
         row = calc_player_stats(name, agg)
         if row:
             row["season"] = season
@@ -341,6 +345,7 @@ def player_season_rows(name: str, games: list[dict]) -> list[dict]:
                 continue
             league_games = [g for g in games if g.get("league", "nba") == league]
             agg = _aggregate(league_games)
+            agg["athlete_id"] = athlete_id
             row = calc_player_stats(name, agg)
             if row:
                 row["season"] = f"ALL ({_LEAGUE_DISPLAY[league]})"
@@ -349,6 +354,7 @@ def player_season_rows(name: str, games: list[dict]) -> list[dict]:
 
     if len(groups) > 1:
         total_agg = _aggregate(games)
+        total_agg["athlete_id"] = athlete_id
         total_row = calc_player_stats(name, total_agg)
         if total_row:
             total_row["season"] = "ALL (Career)"

@@ -972,10 +972,14 @@ def screen_player_search(watched: dict):
             return
 
         q = query.lower()
-        all_names = set()
+        all_players = {}
         for pool in all_pools.values():
-            all_names.update(pool.keys())
-        matches = sorted(n for n in all_names if q in n.lower())
+            all_players.update(pool)
+        matches = sorted(
+            (key, data["name"])
+            for key, data in all_players.items()
+            if q in data["name"].lower()
+        )
 
         if not matches:
             print(f"\n  No players matching '{query}' found in your watched games (with QB/rushing/receiving stats).")
@@ -992,25 +996,30 @@ def screen_player_search(watched: dict):
             baselines[category] = player_summary.compute_pool_baseline(category, pool_rows)
 
         if len(matches) == 1:
-            name = matches[0]
+            player_key, name = matches[0]
         else:
             clear()
             print_header("Search Player")
             print(f"\n  {len(matches)} players match '{query}':\n")
-            for i, n in enumerate(matches, 1):
-                print(f"    [{i}] {n}")
+            for i, (key, n) in enumerate(matches, 1):
+                teams = sorted({
+                    game["team"]
+                    for pool in all_pools.values()
+                    for game in pool.get(key, {}).get("games", [])
+                })
+                print(f"    [{i}] {n} — {', '.join(teams)}")
             print("    [q] Back")
             sel = input("\n  > ").strip().lower()
             if sel == "q":
                 continue
             if not sel.isdigit() or not (1 <= int(sel) <= len(matches)):
                 continue
-            name = matches[int(sel) - 1]
+            player_key, name = matches[int(sel) - 1]
 
-        _show_player_seasons(name, all_pools, baselines)
+        _show_player_seasons(player_key, name, all_pools, baselines)
 
 
-def _show_player_seasons(name: str, all_pools: dict, baselines: dict):
+def _show_player_seasons(player_key: str, name: str, all_pools: dict, baselines: dict):
     """Render a per-season table for one player, one section per stat
     category (QB / Rushing / Receiving) they have games in — a dual-threat
     player can appear in more than one section."""
@@ -1021,8 +1030,10 @@ def _show_player_seasons(name: str, all_pools: dict, baselines: dict):
         any_rows = False
         rows_by_category = {}
         for category in ("qb", "rushing", "receiving"):
-            player_data = all_pools[category].get(name)
-            rows = player_summary.player_season_rows(name, player_data["games"], category) if player_data else []
+            player_data = all_pools[category].get(player_key)
+            rows = player_summary.player_season_rows(
+                name, player_data["games"], category, player_data.get("athlete_id")
+            ) if player_data else []
             for r in rows:
                 p = player_summary.plus_score(category, r, baselines.get(category))
                 r["plus"], r["plus_disp"] = p, (str(p) if p is not None else "—")

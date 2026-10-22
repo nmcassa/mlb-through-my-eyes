@@ -47,7 +47,7 @@ def collect_player_game_stats(watched: dict) -> dict:
     Fetch box score data for every watched game (NFL or college, per each
     game's "league" tag) and split into three per-player, per-game pools:
 
-      {"qb": {name: {"athlete_id":..., "games":[...]}, ...},
+      {"qb": {player_key: {"name":..., "athlete_id":..., "games":[...]}, ...},
        "rushing": {...},
        "receiving": {...}}
 
@@ -83,10 +83,12 @@ def collect_player_game_stats(watched: dict) -> dict:
                     name = p.get("name", athlete_id)
                     s    = p.get("stats", {})
                     pool = pools[category]
-                    pool.setdefault(name, {"athlete_id": athlete_id, "games": []})
+                    player_key = f"espn:{athlete_id}"
+                    pool.setdefault(player_key, {"name": name, "athlete_id": athlete_id, "games": []})
+                    pool[player_key]["name"] = name
                     record = {"game_id": gid, "season": season, "team": team_name, "league": league}
                     record.update(s)
-                    pool[name]["games"].append(record)
+                    pool[player_key]["games"].append(record)
 
     return pools
 
@@ -136,7 +138,7 @@ def filter_and_aggregate(
     category: str = "qb",
 ) -> dict:
     """Apply season/team/league filters in memory. Returns an aggregated
-    dict keyed by player name, in the shape calc_*_stats() expects."""
+    dict keyed by player identity, in the shape calc_*_stats() expects."""
     def keep(g: dict) -> bool:
         if season_filter and g["season"] != season_filter:
             return False
@@ -147,12 +149,13 @@ def filter_and_aggregate(
         return True
 
     out: dict[str, dict] = {}
-    for name, data in pool.items():
+    for player_key, data in pool.items():
         matching = [g for g in data["games"] if keep(g)]
         if matching:
             agg = _aggregate(category, matching)
+            agg["name"] = data.get("name", player_key)
             agg["athlete_id"] = data.get("athlete_id")
-            out[name] = agg
+            out[player_key] = agg
 
     return out
 
@@ -401,10 +404,10 @@ def player_leaderboard(pool_raw: dict, category: str, min_volume: float | None =
     key = _MIN_KEY[category]
     calc = _CALCULATORS[category]
     rows = []
-    for name, raw in pool_raw.items():
+    for player_key, raw in pool_raw.items():
         if raw.get(key, 0) < threshold:
             continue
-        row = calc(name, raw)
+        row = calc(raw.get("name", player_key), raw)
         if row:
             rows.append(row)
     return rows
@@ -420,7 +423,7 @@ def _group_by_season_team_league(games: list[dict]) -> dict[tuple[str, str, str]
     return groups
 
 
-def player_season_rows(name: str, games: list[dict], category: str) -> list[dict]:
+def player_season_rows(name: str, games: list[dict], category: str, athlete_id=None) -> list[dict]:
     """
     One row per (season, team, league) for this player in this stat
     category, oldest to newest. If a player has games in more than one
@@ -434,6 +437,7 @@ def player_season_rows(name: str, games: list[dict], category: str) -> list[dict
     rows = []
     for season, team, league in sorted(groups):
         agg = _aggregate(category, groups[(season, team, league)])
+        agg["athlete_id"] = athlete_id
         row = calc(name, agg)
         if row:
             row["season"] = season
@@ -447,6 +451,7 @@ def player_season_rows(name: str, games: list[dict], category: str) -> list[dict
                 continue
             league_games = [g for g in games if g.get("league", "nfl") == league]
             agg = _aggregate(category, league_games)
+            agg["athlete_id"] = athlete_id
             row = calc(name, agg)
             if row:
                 row["season"] = f"ALL ({_LEAGUE_DISPLAY[league]})"
@@ -455,6 +460,7 @@ def player_season_rows(name: str, games: list[dict], category: str) -> list[dict
 
     if len(groups) > 1:
         total_agg = _aggregate(category, games)
+        total_agg["athlete_id"] = athlete_id
         total_row = calc(name, total_agg)
         if total_row:
             total_row["season"] = "ALL (Career)"
