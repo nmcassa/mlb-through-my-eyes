@@ -179,13 +179,13 @@ def discover_watched_files(root: str = ".") -> list[dict]:
 
 # ── MLB adapter ────────────────────────────────────────────────────────────
 
-def _mlb_find_team_id(name: str):
-    key = ("mlb", name)
+def _find_team_id(sport: str, module, name: str):
+    key = (sport, name)
     if key in _team_id_cache:
         return _team_id_cache[key]
     tid = None
     try:
-        results = mlb.find_teams(name)
+        results = module.find_teams(name)
     except Exception:
         results = []
     for t in results:
@@ -196,6 +196,10 @@ def _mlb_find_team_id(name: str):
         tid = results[0]["id"]
     _team_id_cache[key] = tid
     return tid
+
+
+def _mlb_find_team_id(name: str):
+    return _find_team_id("mlb", mlb, name)
 
 
 def _mlb_team_games(team_id, team_name: str, season: str) -> dict:
@@ -229,22 +233,7 @@ def _mlb_team_games(team_id, team_name: str, season: str) -> dict:
 # ── NBA adapter ────────────────────────────────────────────────────────────
 
 def _nba_find_team_id(name: str):
-    key = ("nba", name)
-    if key in _team_id_cache:
-        return _team_id_cache[key]
-    tid = None
-    try:
-        results = espn_nba.find_teams(name)
-    except Exception:
-        results = []
-    for t in results:
-        if t.get("name") == name:
-            tid = t["id"]
-            break
-    if tid is None and results:
-        tid = results[0]["id"]
-    _team_id_cache[key] = tid
-    return tid
+    return _find_team_id("nba", espn_nba, name)
 
 
 def _season_end_year(season_label: str) -> str:
@@ -253,14 +242,13 @@ def _season_end_year(season_label: str) -> str:
     return str(int(start) + 1)
 
 
-def _espn_team_games(module, team_id, team_name: str, season_label: str) -> dict:
-    """Shared by NBA and college — same endpoint shape, same parsed fields.
+def _espn_team_games(module, team_id, team_name: str, api_season: str) -> dict:
+    """Shared by ESPN sports — same endpoint shape, same parsed fields.
     "round" is left None here (filled in later, per-series, in
     _build_playoff_series — the schedule endpoint doesn't reliably expose
     real round names, unlike MLB's explicit game_type)."""
-    param = _season_end_year(season_label)
-    reg  = module.fetch_team_schedule(team_id, param, season_types=["2"])
-    post = module.fetch_team_schedule(team_id, param, season_types=["3"])
+    reg  = module.fetch_team_schedule(team_id, api_season, season_types=["2"])
+    post = module.fetch_team_schedule(team_id, api_season, season_types=["3"])
     out = {}
     for kind, games in (("regular", reg), ("playoff", post)):
         for g in games:
@@ -281,32 +269,17 @@ def _espn_team_games(module, team_id, team_name: str, season_label: str) -> dict
 
 
 def _nba_team_games(team_id, team_name: str, season: str) -> dict:
-    return _espn_team_games(espn_nba, team_id, team_name, season)
+    return _espn_team_games(espn_nba, team_id, team_name, _season_end_year(season))
 
 
 # ── College adapter ────────────────────────────────────────────────────────
 
 def _cbb_find_team_id(name: str):
-    key = ("college", name)
-    if key in _team_id_cache:
-        return _team_id_cache[key]
-    tid = None
-    try:
-        results = espn_cbb.find_teams(name)
-    except Exception:
-        results = []
-    for t in results:
-        if t.get("name") == name:
-            tid = t["id"]
-            break
-    if tid is None and results:
-        tid = results[0]["id"]
-    _team_id_cache[key] = tid
-    return tid
+    return _find_team_id("college", espn_cbb, name)
 
 
 def _cbb_team_games(team_id, team_name: str, season: str) -> dict:
-    return _espn_team_games(espn_cbb, team_id, team_name, season)
+    return _espn_team_games(espn_cbb, team_id, team_name, _season_end_year(season))
 
 
 # ── NFL / college football adapters ──────────────────────────────────────────
@@ -319,44 +292,11 @@ def _football_team_games(module, team_id, team_name: str, season: str) -> dict:
     conversion — football seasons are already labeled by the year they
     START in (e.g. '2024'), which is what the API itself expects, unlike
     the NBA/college-hoops '2023-24' hyphenated label."""
-    reg  = module.fetch_team_schedule(team_id, season, season_types=["2"])
-    post = module.fetch_team_schedule(team_id, season, season_types=["3"])
-    out = {}
-    for kind, games in (("regular", reg), ("playoff", post)):
-        for g in games:
-            gid = str(g["game_id"])
-            team_is_home = g.get("home_name") == team_name
-            opponent = g.get("away_name") if team_is_home else g.get("home_name")
-            out[gid] = {
-                "kind": kind,
-                "date": g.get("game_date", ""),
-                "opponent": opponent,
-                "round": None,
-                "away_score": g.get("away_score", ""),
-                "home_score": g.get("home_score", ""),
-                "team_is_home": team_is_home,
-                "game_type": None,
-            }
-    return out
+    return _espn_team_games(module, team_id, team_name, season)
 
 
 def _nfl_find_team_id(name: str):
-    key = ("nfl", name)
-    if key in _team_id_cache:
-        return _team_id_cache[key]
-    tid = None
-    try:
-        results = espn_nfl.find_teams(name)
-    except Exception:
-        results = []
-    for t in results:
-        if t.get("name") == name:
-            tid = t["id"]
-            break
-    if tid is None and results:
-        tid = results[0]["id"]
-    _team_id_cache[key] = tid
-    return tid
+    return _find_team_id("nfl", espn_nfl, name)
 
 
 def _nfl_team_games(team_id, team_name: str, season: str) -> dict:
@@ -364,22 +304,7 @@ def _nfl_team_games(team_id, team_name: str, season: str) -> dict:
 
 
 def _cfb_find_team_id(name: str):
-    key = ("cfb", name)
-    if key in _team_id_cache:
-        return _team_id_cache[key]
-    tid = None
-    try:
-        results = espn_cfb.find_teams(name)
-    except Exception:
-        results = []
-    for t in results:
-        if t.get("name") == name:
-            tid = t["id"]
-            break
-    if tid is None and results:
-        tid = results[0]["id"]
-    _team_id_cache[key] = tid
-    return tid
+    return _find_team_id("cfb", espn_cfb, name)
 
 
 def _cfb_team_games(team_id, team_name: str, season: str) -> dict:
