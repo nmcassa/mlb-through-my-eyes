@@ -22,8 +22,12 @@ parsing in _parse_athlete_row() / fetch_boxscore_data() below.
 from __future__ import annotations
 
 import sys
+from pathlib import Path
 
 import nba_dates
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+import espn_common
 
 try:
     import requests
@@ -36,13 +40,7 @@ _TIMEOUT = 15
 
 
 def _get(path: str, **params) -> dict:
-    url = f"{BASE}/{path}"
-    try:
-        resp = requests.get(url, params=params, timeout=_TIMEOUT)
-        resp.raise_for_status()
-        return resp.json()
-    except requests.RequestException as e:
-        raise RuntimeError(f"ESPN API request failed ({url}): {e}") from e
+    return espn_common.get(requests, BASE, path, _TIMEOUT, **params)
 
 
 # ── Teams ──────────────────────────────────────────────────────────────────
@@ -52,22 +50,7 @@ def find_teams(query: str) -> list[dict]:
     Look up NBA teams by name/city/abbreviation fragment (e.g. 'Celtics',
     'Boston', 'BOS'). Returns a list of {"id", "name", "abbreviation"}.
     """
-    data = _get("teams", limit=50)
-    q = query.lower()
-    out = []
-    leagues = data.get("sports", [{}])[0].get("leagues", [{}])
-    teams = leagues[0].get("teams", []) if leagues else []
-    for entry in teams:
-        t = entry.get("team", {})
-        haystack = " ".join(str(t.get(k, "")) for k in
-                             ("displayName", "shortDisplayName", "name", "location", "abbreviation")).lower()
-        if q in haystack:
-            out.append({
-                "id": t.get("id"),
-                "name": t.get("displayName", "?"),
-                "abbreviation": t.get("abbreviation", "?"),
-            })
-    return out
+    return espn_common.find_teams(_get, query, 50)
 
 
 # ── Schedule ───────────────────────────────────────────────────────────────
@@ -95,30 +78,11 @@ def _score_value(competitor: dict) -> str:
     a bare string/number — bug fix for a crash + garbled display that
     happened when this was assumed to already be a string.
     """
-    score = competitor.get("score", "")
-    if isinstance(score, dict):
-        return str(score.get("displayValue") or score.get("value") or "")
-    return str(score) if score not in (None, "") else ""
+    return espn_common.score_value(competitor)
 
 
 def _parse_schedule_event(ev: dict) -> dict:
-    comp = (ev.get("competitions") or [{}])[0]
-    competitors = comp.get("competitors", [])
-    away = next((c for c in competitors if c.get("homeAway") == "away"), {})
-    home = next((c for c in competitors if c.get("homeAway") == "home"), {})
-    status = comp.get("status", {}).get("type", {})
-    completed = bool(status.get("completed"))
-
-    return {
-        "game_id":    ev.get("id"),
-        "game_date":  nba_dates.espn_date_to_local(ev.get("date") or ""),
-        "away_name":  away.get("team", {}).get("displayName", "?"),
-        "home_name":  home.get("team", {}).get("displayName", "?"),
-        "away_score": _score_value(away) if completed else "",
-        "home_score": _score_value(home) if completed else "",
-        "status":     status.get("shortDetail") or status.get("description") or "",
-        "completed":  completed,
-    }
+    return espn_common.parse_schedule_event(ev, nba_dates.espn_date_to_local)
 
 
 def fetch_team_schedule(team_id: str, season: str, season_types: list[str] | None = None) -> list[dict]:
@@ -136,30 +100,9 @@ def fetch_team_schedule(team_id: str, season: str, season_types: list[str] | Non
 
     Raises RuntimeError on API failure.
     """
-    if season_types is None:
-        season_types = ["2"]
-
-    codes_to_try = list(season_types)
-    if "3" in codes_to_try:
-        codes_to_try += [c for c in _PLAY_IN_PROBE_CODES if c not in codes_to_try]
-
-    games = []
-    seen_ids = set()
-    for st in codes_to_try:
-        try:
-            data = _get(f"teams/{team_id}/schedule", season=season, seasontype=st)
-        except RuntimeError:
-            if st in season_types:
-                raise   # a code the user actually asked for should still error loudly
-            continue    # a probe code failing is fine — it may just not exist
-        for ev in data.get("events", []):
-            gid = ev.get("id")
-            if not gid or gid in seen_ids:
-                continue
-            seen_ids.add(gid)
-            games.append(_parse_schedule_event(ev))
-    games.sort(key=lambda g: g["game_date"])
-    return games
+    return espn_common.fetch_team_schedule(
+        _get, _parse_schedule_event, team_id, season, season_types, tuple(_PLAY_IN_PROBE_CODES)
+    )
 
 
 def fetch_games_by_date(date: str, team_id: str | None = None) -> list[dict]:
@@ -176,33 +119,12 @@ def fetch_games_by_date(date: str, team_id: str | None = None) -> list[dict]:
 
     Raises RuntimeError on API failure.
     """
-    espn_date = date.replace("-", "")
-    data = _get("scoreboard", dates=espn_date, limit=100)
-
-    games = [_parse_schedule_event(ev) for ev in data.get("events", [])]
-
-    if team_id is not None:
-        team_id = str(team_id)
-        events_by_id = {ev.get("id"): ev for ev in data.get("events", [])}
-        kept = []
-        for g in games:
-            ev = events_by_id.get(g["game_id"])
-            ids = _event_team_ids(ev) if ev else {}
-            if str(ids.get("away")) == team_id or str(ids.get("home")) == team_id:
-                kept.append(g)
-        games = kept
-
-    games.sort(key=lambda g: g["game_date"])
-    return games
+    return espn_common.fetch_games_by_date(_get, _parse_schedule_event, date, team_id, limit=100)
 
 
 def _event_team_ids(ev: dict) -> dict:
     """Map home/away -> team id for one scoreboard event, for team filtering."""
-    comp = (ev.get("competitions") or [{}])[0]
-    competitors = comp.get("competitors", [])
-    away = next((c for c in competitors if c.get("homeAway") == "away"), {})
-    home = next((c for c in competitors if c.get("homeAway") == "home"), {})
-    return {"away": away.get("team", {}).get("id"), "home": home.get("team", {}).get("id")}
+    return espn_common.event_team_ids(ev)
 
 
 # ── Boxscore ───────────────────────────────────────────────────────────────
