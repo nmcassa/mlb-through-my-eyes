@@ -1618,5 +1618,35 @@
     "home_score": "45",
     "league": "nfl",
     "added_at": "2026-10-11T15:41:53.913518"
+  },
+  "401856809": {
+    "game_id": "401856809",
+    "date": "2026-10-17",
+    "away": "Notre Dame Fighting Irish",
+    "home": "BYU Cougars",
+    "away_score": "",
+    "home_score": "",
+    "league": "college",
+    "added_at": "2026-10-17T22:14:26.682789"
+  },
+  "401858269": {
+    "game_id": "401858269",
+    "date": "2026-10-17",
+    "away": "Wake Forest Demon Deacons",
+    "home": "California Golden Bears",
+    "away_score": "41",
+    "home_score": "7",
+    "league": "college",
+    "added_at": "2026-10-18T12:10:40.609325"
+  },
+  "401873005": {
+    "game_id": "401873005",
+    "date": "2026-10-18",
+    "away": "Buffalo Bills",
+    "home": "Las Vegas Raiders",
+    "away_score": "",
+    "home_score": "",
+    "league": "nfl",
+    "added_at": "2026-10-18T18:31:56.176279"
   }
 }
