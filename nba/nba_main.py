@@ -991,7 +991,11 @@ def screen_player_search(watched: dict):
             return
 
         q = query.lower()
-        matches = sorted(n for n in all_players.keys() if q in n.lower())
+        matches = sorted(
+            (key, data["name"])
+            for key, data in all_players.items()
+            if q in data["name"].lower()
+        )
 
         if not matches:
             print(f"\n  No players matching '{query}' found in your watched games.")
@@ -1006,22 +1010,23 @@ def screen_player_search(watched: dict):
         baseline  = player_summary.compute_pool_baseline(pool_rows)
 
         if len(matches) == 1:
-            name = matches[0]
+            player_key, name = matches[0]
         else:
             clear()
             print_header("Search Player")
             print(f"\n  {len(matches)} players match '{query}':\n")
-            for i, n in enumerate(matches, 1):
-                print(f"    [{i}] {n}")
+            for i, (key, n) in enumerate(matches, 1):
+                teams = sorted({g["team"] for g in all_players[key]["games"]})
+                print(f"    [{i}] {n} — {', '.join(teams)}")
             print("    [q] Back")
             sel = input("\n  > ").strip().lower()
             if sel == "q":
                 continue
             if not sel.isdigit() or not (1 <= int(sel) <= len(matches)):
                 continue
-            name = matches[int(sel) - 1]
+            player_key, name = matches[int(sel) - 1]
 
-        _show_player_seasons(name, all_players.get(name), baseline)
+        _show_player_seasons(name, all_players.get(player_key), baseline)
 
 
 def _show_player_seasons(name: str, player_data: dict | None, baseline: dict | None):
@@ -1030,7 +1035,9 @@ def _show_player_seasons(name: str, player_data: dict | None, baseline: dict | N
         clear()
         print_header(f"Season Log — {name}")
 
-        rows = player_summary.player_season_rows(name, player_data["games"]) if player_data else []
+        rows = player_summary.player_season_rows(
+            name, player_data["games"], player_data.get("athlete_id")
+        ) if player_data else []
         for r in rows:
             n = player_summary.nick_plus(r, baseline)
             r["nickplus"], r["nick+"] = n, (str(n) if n is not None else "—")

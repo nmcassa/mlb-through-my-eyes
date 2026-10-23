@@ -30,14 +30,21 @@ applied in memory without re-fetching from ESPN.
 """
 from __future__ import annotations
 
+import sys
+from pathlib import Path
+
 import espn_nfl
 import espn_cfb
 import nfl_dates
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from player_stats_cache import PlayerStatsCache
 
 _LEAGUE_MODULES = {"nfl": espn_nfl, "college": espn_cfb}
 _LEAGUE_DISPLAY = {"nfl": "NFL", "college": "College"}
 _CATEGORIES = ("qb", "rushing", "receiving")
 _CATEGORY_TO_BOXSCORE_KEY = {"qb": "passing", "rushing": "rushing", "receiving": "receiving"}
+_CACHE = PlayerStatsCache(Path(__file__).with_name("player_stats_cache.jsonl"), 1)
 
 
 # ── Data collection ───────────────────────────────────────────────────────────
@@ -47,7 +54,7 @@ def collect_player_game_stats(watched: dict) -> dict:
     Fetch box score data for every watched game (NFL or college, per each
     game's "league" tag) and split into three per-player, per-game pools:
 
-      {"qb": {name: {"athlete_id":..., "games":[...]}, ...},
+      {"qb": {player_key: {"name":..., "athlete_id":..., "games":[...]}, ...},
        "rushing": {...},
        "receiving": {...}}
 
@@ -66,29 +73,41 @@ def collect_player_game_stats(watched: dict) -> dict:
         module = _LEAGUE_MODULES.get(league, espn_nfl)
         season = nfl_dates.season_label(game["date"])
         icon   = "🎓" if league == "college" else "🏈"
-        print(f"  Fetching game {i}/{total}: {icon} {game['date']}  {game['away']} @ {game['home']}...")
-        try:
-            data = module.fetch_boxscore_data(game["game_id"])
-        except RuntimeError as e:
-            print(f"    Warning: {e} — skipping.")
-            continue
+        key = f"{league}:{game['game_id']}"
+        cached = _CACHE.get(key)
+        if cached is None:
+            print(f"  Fetching game {i}/{total}: {icon} {game['date']}  {game['away']} @ {game['home']}...")
+            try:
+                data = module.fetch_boxscore_data(game["game_id"])
+            except RuntimeError as e:
+                print(f"    Warning: {e} — skipping.")
+                continue
+            cached = _parse_game(gid, season, league, game, data)
+            _CACHE.put(key, cached)
 
-        for side in ("away", "home"):
-            team_name = game["away"] if side == "away" else game["home"]
-            side_data = data.get(side, {})
-
-            for category in _CATEGORIES:
-                box_key = _CATEGORY_TO_BOXSCORE_KEY[category]
-                for athlete_id, p in side_data.get(box_key, {}).items():
-                    name = p.get("name", athlete_id)
-                    s    = p.get("stats", {})
-                    pool = pools[category]
-                    pool.setdefault(name, {"athlete_id": athlete_id, "games": []})
-                    record = {"game_id": gid, "season": season, "team": team_name, "league": league}
-                    record.update(s)
-                    pool[name]["games"].append(record)
+        for category in _CATEGORIES:
+            for player in cached[category]:
+                pool = pools[category]
+                target = pool.setdefault(player["key"], {"name": player["name"], "athlete_id": player["athlete_id"], "games": []})
+                target["name"] = player["name"]
+                target["games"].append(player["game"])
 
     return pools
+
+
+def _parse_game(gid: str, season: str, league: str, game: dict, data: dict) -> dict:
+    parsed = {category: [] for category in _CATEGORIES}
+    for side in ("away", "home"):
+        team_name = game[side]
+        side_data = data.get(side, {})
+        for category in _CATEGORIES:
+            box_key = _CATEGORY_TO_BOXSCORE_KEY[category]
+            for athlete_id, player in side_data.get(box_key, {}).items():
+                row = {"game_id": gid, "season": season, "team": team_name, "league": league}
+                row.update(player.get("stats", {}))
+                parsed[category].append({"key": f"espn:{athlete_id}", "name": player.get("name", athlete_id),
+                                         "athlete_id": athlete_id, "game": row})
+    return parsed
 
 
 # ── In-memory filtering & aggregation ────────────────────────────────────────
@@ -136,7 +155,7 @@ def filter_and_aggregate(
     category: str = "qb",
 ) -> dict:
     """Apply season/team/league filters in memory. Returns an aggregated
-    dict keyed by player name, in the shape calc_*_stats() expects."""
+    dict keyed by player identity, in the shape calc_*_stats() expects."""
     def keep(g: dict) -> bool:
         if season_filter and g["season"] != season_filter:
             return False
@@ -147,12 +166,13 @@ def filter_and_aggregate(
         return True
 
     out: dict[str, dict] = {}
-    for name, data in pool.items():
+    for player_key, data in pool.items():
         matching = [g for g in data["games"] if keep(g)]
         if matching:
             agg = _aggregate(category, matching)
+            agg["name"] = data.get("name", player_key)
             agg["athlete_id"] = data.get("athlete_id")
-            out[name] = agg
+            out[player_key] = agg
 
     return out
 
@@ -401,10 +421,10 @@ def player_leaderboard(pool_raw: dict, category: str, min_volume: float | None =
     key = _MIN_KEY[category]
     calc = _CALCULATORS[category]
     rows = []
-    for name, raw in pool_raw.items():
+    for player_key, raw in pool_raw.items():
         if raw.get(key, 0) < threshold:
             continue
-        row = calc(name, raw)
+        row = calc(raw.get("name", player_key), raw)
         if row:
             rows.append(row)
     return rows
@@ -420,7 +440,7 @@ def _group_by_season_team_league(games: list[dict]) -> dict[tuple[str, str, str]
     return groups
 
 
-def player_season_rows(name: str, games: list[dict], category: str) -> list[dict]:
+def player_season_rows(name: str, games: list[dict], category: str, athlete_id=None) -> list[dict]:
     """
     One row per (season, team, league) for this player in this stat
     category, oldest to newest. If a player has games in more than one
@@ -434,6 +454,7 @@ def player_season_rows(name: str, games: list[dict], category: str) -> list[dict
     rows = []
     for season, team, league in sorted(groups):
         agg = _aggregate(category, groups[(season, team, league)])
+        agg["athlete_id"] = athlete_id
         row = calc(name, agg)
         if row:
             row["season"] = season
@@ -447,6 +468,7 @@ def player_season_rows(name: str, games: list[dict], category: str) -> list[dict
                 continue
             league_games = [g for g in games if g.get("league", "nfl") == league]
             agg = _aggregate(category, league_games)
+            agg["athlete_id"] = athlete_id
             row = calc(name, agg)
             if row:
                 row["season"] = f"ALL ({_LEAGUE_DISPLAY[league]})"
@@ -455,6 +477,7 @@ def player_season_rows(name: str, games: list[dict], category: str) -> list[dict
 
     if len(groups) > 1:
         total_agg = _aggregate(category, games)
+        total_agg["athlete_id"] = athlete_id
         total_row = calc(name, total_agg)
         if total_row:
             total_row["season"] = "ALL (Career)"

@@ -714,10 +714,15 @@ def screen_player_search(watched: dict):
             return
 
         q = query.lower()
-        matches = sorted({
-            n for n in list(all_pitchers.keys()) + list(all_batters.keys())
-            if q in n.lower()
-        })
+        player_keys = set(all_pitchers) | set(all_batters)
+        matches = sorted(
+            (
+                key,
+                (all_pitchers.get(key) or all_batters.get(key))["name"],
+            )
+            for key in player_keys
+            if q in (all_pitchers.get(key) or all_batters.get(key))["name"].lower()
+        )
 
         if not matches:
             print(f"\n  No players matching '{query}' found in your watched games.")
@@ -736,28 +741,30 @@ def screen_player_search(watched: dict):
         )
 
         if len(matches) == 1:
-            name = matches[0]
+            player_key, name = matches[0]
         else:
             clear()
             print_header("Search Player")
             print(f"\n  {len(matches)} players match '{query}':\n")
-            for i, n in enumerate(matches, 1):
+            for i, (key, n) in enumerate(matches, 1):
                 roles = []
-                if n in all_pitchers:
+                if key in all_pitchers:
                     roles.append("P")
-                if n in all_batters:
+                if key in all_batters:
                     roles.append("B")
-                print(f"    [{i}] {n}  ({'/'.join(roles)})")
+                data = all_pitchers.get(key) or all_batters.get(key)
+                teams = sorted({g["team"] for g in data["games"]})
+                print(f"    [{i}] {n} — {', '.join(teams)}  ({'/'.join(roles)})")
             print("    [q] Back")
             sel = input("\n  > ").strip().lower()
             if sel == "q":
                 continue
             if not sel.isdigit() or not (1 <= int(sel) <= len(matches)):
                 continue
-            name = matches[int(sel) - 1]
+            player_key, name = matches[int(sel) - 1]
 
         _show_player_seasons(
-            name, all_pitchers.get(name), all_batters.get(name),
+            name, all_pitchers.get(player_key), all_batters.get(player_key),
             pitch_baseline, bat_baseline,
         )
 
@@ -774,8 +781,8 @@ def _show_player_seasons(
         clear()
         print_header(f"Season Log — {name}")
 
-        pitch_rows = player_summary.pitcher_season_rows(name, pitcher_data["games"]) if pitcher_data else []
-        bat_rows   = player_summary.batter_season_rows(name, batter_data["games"])   if batter_data  else []
+        pitch_rows = player_summary.pitcher_season_rows(name, pitcher_data["games"], pitcher_data.get("person_id")) if pitcher_data else []
+        bat_rows   = player_summary.batter_season_rows(name, batter_data["games"], batter_data.get("person_id")) if batter_data else []
         for r in pitch_rows:
             n = player_summary.nick_plus_pitcher(r, pitch_baseline)
             r["nickplus"], r["nick+"] = n, (str(n) if n is not None else "—")

@@ -15,7 +15,16 @@ applied in memory without re-fetching from the API.
 """
 from __future__ import annotations
 
+import sys
+from pathlib import Path
+
 import mlb
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from player_stats_cache import PlayerStatsCache
+
+
+_CACHE = PlayerStatsCache(Path(__file__).with_name("player_stats_cache.jsonl"), 1)
 
 
 # ── IP helpers ────────────────────────────────────────────────────────────────
@@ -39,12 +48,14 @@ def outs_to_ip(outs: int) -> str:
 def collect_player_game_stats(watched: dict) -> tuple[dict, dict]:
     """
     Fetch boxscore data for every watched game and store per-player, per-game
-    stats. Returns two dicts keyed by player name:
+    stats. Returns two dicts keyed by MLB player ID:
 
-      pitchers[name] = {
+      pitchers[player_key] = {
+          "name": ...,
           "games": [ { "game_id", "season", "team", outs, er, h, bb, k, hr } ],
       }
-      batters[name] = {
+      batters[player_key] = {
+          "name": ...,
           "games": [ { "game_id", "season", "team", ab, h, bb, hbp, sf, tb, pa } ],
       }
 
@@ -60,87 +71,70 @@ def collect_player_game_stats(watched: dict) -> tuple[dict, dict]:
     for i, gid in enumerate(game_ids, 1):
         game   = watched[gid]
         season = game["date"][:4]
-        print(f"  Fetching game {i}/{total}: {game['date']}  {game['away']} @ {game['home']}...")
-        try:
-            data = mlb.fetch_boxscore_data(int(game["game_id"]))
-        except RuntimeError as e:
-            print(f"    Warning: {e} — skipping.")
-            continue
+        cached = _CACHE.get(str(game["game_id"]))
+        if cached is None:
+            print(f"  Fetching game {i}/{total}: {game['date']}  {game['away']} @ {game['home']}...")
+            try:
+                data = mlb.fetch_boxscore_data(int(game["game_id"]))
+            except RuntimeError as e:
+                print(f"    Warning: {e} — skipping.")
+                continue
+            cached = _parse_game(gid, season, game, data)
+            _CACHE.put(str(game["game_id"]), cached)
 
-        for side in ("away", "home"):
-            team_name = game["away"] if side == "away" else game["home"]
-            players   = data.get(side, {}).get("players", {})
-
-            for pid, p in players.items():
-                name          = p.get("person", {}).get("fullName", pid)
-                game_batting  = p.get("stats", {}).get("batting",  {})
-                game_pitching = p.get("stats", {}).get("pitching", {})
-
-                # ── Pitching ──────────────────────────────────────────────
-                if game_pitching.get("inningsPitched") not in (None, "", "0.0", 0):
-                    person_id = int(pid[2:]) if pid.startswith("ID") else None
-                    pitchers.setdefault(name, {"person_id": person_id, "games": []})
-                    pitchers[name]["games"].append({
-                        "game_id": gid,
-                        "season":  season,
-                        "team":    team_name,
-                        "outs":    ip_to_outs(game_pitching.get("inningsPitched", 0)),
-                        "er":      int(game_pitching.get("earnedRuns",  0)),
-                        "h":       int(game_pitching.get("hits",        0)),
-                        "bb":      int(game_pitching.get("baseOnBalls", 0)),
-                        "k":       int(game_pitching.get("strikeOuts",  0)),
-                        "hr":      int(game_pitching.get("homeRuns",    0)),
-                        # Additional counting stats — free to collect since we
-                        # already have the boxscore in hand, no extra API calls.
-                        "w":       int(game_pitching.get("wins",        0) or 0),
-                        "l":       int(game_pitching.get("losses",      0) or 0),
-                        "sv":      int(game_pitching.get("saves",       0) or 0),
-                        "hld":     int(game_pitching.get("holds",       0) or 0),
-                        "bs":      int(game_pitching.get("blownSaves",  0) or 0),
-                        "hbp":     int(game_pitching.get("hitBatsmen",  0) or 0),
-                        "bk":      int(game_pitching.get("balks",       0) or 0),
-                        "wp":      int(game_pitching.get("wildPitches", 0) or 0),
-                    })
-
-                # ── Batting ───────────────────────────────────────────────
-                ab = int(game_batting.get("atBats", 0))
-                if ab > 0:
-                    bb  = int(game_batting.get("baseOnBalls", 0))
-                    hbp = int(game_batting.get("hitByPitch",  0))
-                    sf  = int(game_batting.get("sacFlies",    0))
-                    h   = int(game_batting.get("hits",        0))
-                    dbl = int(game_batting.get("doubles",     0))
-                    trp = int(game_batting.get("triples",     0))
-                    hr  = int(game_batting.get("homeRuns",    0))
-                    tb  = (h - dbl - trp - hr) + 2*dbl + 3*trp + 4*hr
-
-                    person_id = int(pid[2:]) if pid.startswith("ID") else None
-                    batters.setdefault(name, {"person_id": person_id, "games": []})
-                    batters[name]["games"].append({
-                        "game_id": gid,
-                        "season":  season,
-                        "team":    team_name,
-                        "ab":      ab,
-                        "h":       h,
-                        "bb":      bb,
-                        "hbp":     hbp,
-                        "sf":      sf,
-                        "tb":      tb,
-                        "pa":      ab + bb + hbp + sf,
-                        # Additional counting stats — free to collect since we
-                        # already have the boxscore in hand, no extra API calls.
-                        "r":       int(game_batting.get("runs",                0) or 0),
-                        "2b":      dbl,
-                        "3b":      trp,
-                        "hr":      hr,
-                        "rbi":     int(game_batting.get("rbi",                 0) or 0),
-                        "so":      int(game_batting.get("strikeOuts",          0) or 0),
-                        "sb":      int(game_batting.get("stolenBases",         0) or 0),
-                        "cs":      int(game_batting.get("caughtStealing",      0) or 0),
-                        "gidp":    int(game_batting.get("groundIntoDoublePlay",0) or 0),
-                    })
+        for player in cached["pitchers"]:
+            target = pitchers.setdefault(player["key"], {"name": player["name"], "person_id": player["person_id"], "games": []})
+            target["name"] = player["name"]
+            target["games"].append(player["game"])
+        for player in cached["batters"]:
+            target = batters.setdefault(player["key"], {"name": player["name"], "person_id": player["person_id"], "games": []})
+            target["name"] = player["name"]
+            target["games"].append(player["game"])
 
     return pitchers, batters
+
+
+def _parse_game(gid: str, season: str, game: dict, data: dict) -> dict:
+    parsed = {"pitchers": [], "batters": []}
+    for side in ("away", "home"):
+        team_name = game[side]
+        for pid, player in data.get(side, {}).get("players", {}).items():
+            person = player.get("person", {})
+            name = person.get("fullName", pid)
+            person_id = person.get("id")
+            if person_id is None and pid.startswith("ID"):
+                try:
+                    person_id = int(pid[2:])
+                except ValueError:
+                    pass
+            key = f"mlb:{person_id}" if person_id is not None else f"mlb-key:{pid}"
+            batting = player.get("stats", {}).get("batting", {})
+            pitching = player.get("stats", {}).get("pitching", {})
+            if pitching.get("inningsPitched") not in (None, "", "0.0", 0):
+                row = {"game_id": gid, "season": season, "team": team_name,
+                       "outs": ip_to_outs(pitching.get("inningsPitched", 0)),
+                       "er": int(pitching.get("earnedRuns", 0)), "h": int(pitching.get("hits", 0)),
+                       "bb": int(pitching.get("baseOnBalls", 0)), "k": int(pitching.get("strikeOuts", 0)),
+                       "hr": int(pitching.get("homeRuns", 0)), "w": int(pitching.get("wins", 0) or 0),
+                       "l": int(pitching.get("losses", 0) or 0), "sv": int(pitching.get("saves", 0) or 0),
+                       "hld": int(pitching.get("holds", 0) or 0), "bs": int(pitching.get("blownSaves", 0) or 0),
+                       "hbp": int(pitching.get("hitBatsmen", 0) or 0), "bk": int(pitching.get("balks", 0) or 0),
+                       "wp": int(pitching.get("wildPitches", 0) or 0)}
+                parsed["pitchers"].append({"key": key, "name": name, "person_id": person_id, "game": row})
+            ab = int(batting.get("atBats", 0))
+            if ab > 0:
+                bb, hbp, sf = int(batting.get("baseOnBalls", 0)), int(batting.get("hitByPitch", 0)), int(batting.get("sacFlies", 0))
+                hits, doubles = int(batting.get("hits", 0)), int(batting.get("doubles", 0))
+                triples, homers = int(batting.get("triples", 0)), int(batting.get("homeRuns", 0))
+                row = {"game_id": gid, "season": season, "team": team_name, "ab": ab, "h": hits, "bb": bb,
+                       "hbp": hbp, "sf": sf, "tb": hits + doubles + 2 * triples + 3 * homers,
+                       "pa": ab + bb + hbp + sf, "r": int(batting.get("runs", 0) or 0), "2b": doubles,
+                       "3b": triples, "hr": homers, "rbi": int(batting.get("rbi", 0) or 0),
+                       "so": int(batting.get("strikeOuts", 0) or 0), "sb": int(batting.get("stolenBases", 0) or 0),
+                       "cs": int(batting.get("caughtStealing", 0) or 0),
+                       "gidp": int(batting.get("groundIntoDoublePlay", 0) or 0)}
+                parsed["batters"].append({"key": key, "name": name, "person_id": person_id, "game": row})
+    return parsed
 
 
 # ── In-memory filtering & aggregation ────────────────────────────────────────
@@ -221,7 +215,7 @@ def filter_and_aggregate(
                    team for that game matches. This means only players
                    who actually played for that team appear.
 
-    Returns aggregated (pitchers_raw, batters_raw) dicts keyed by player name,
+    Returns aggregated (pitchers_raw, batters_raw) dicts keyed by player identity,
     in the same shape that calc_pitching_stats / calc_batting_stats expect.
     """
     def keep(g: dict) -> bool:
@@ -232,20 +226,22 @@ def filter_and_aggregate(
         return True
 
     filtered_pitchers: dict[str, dict] = {}
-    for name, data in pitchers.items():
+    for player_key, data in pitchers.items():
         matching = [g for g in data["games"] if keep(g)]
         if matching:
-            agg = _aggregate_pitcher(name, matching)
+            agg = _aggregate_pitcher(data.get("name", player_key), matching)
+            agg["name"] = data.get("name", player_key)
             agg["person_id"] = data.get("person_id")
-            filtered_pitchers[name] = agg
+            filtered_pitchers[player_key] = agg
 
     filtered_batters: dict[str, dict] = {}
-    for name, data in batters.items():
+    for player_key, data in batters.items():
         matching = [g for g in data["games"] if keep(g)]
         if matching:
-            agg = _aggregate_batter(name, matching)
+            agg = _aggregate_batter(data.get("name", player_key), matching)
+            agg["name"] = data.get("name", player_key)
             agg["person_id"] = data.get("person_id")
-            filtered_batters[name] = agg
+            filtered_batters[player_key] = agg
 
     return filtered_pitchers, filtered_batters
 
@@ -343,10 +339,10 @@ def pitching_leaderboard(pitchers_raw: dict, ip_min: float | None = None) -> lis
     """
     outs_threshold = int(ip_min * 3) if ip_min is not None else MIN_PITCHER_OUTS
     rows = []
-    for name, raw in pitchers_raw.items():
+    for player_key, raw in pitchers_raw.items():
         if raw["outs"] < outs_threshold:
             continue
-        rows.append(calc_pitching_stats(name, raw))
+        rows.append(calc_pitching_stats(raw.get("name", player_key), raw))
     return rows
 
 
@@ -357,10 +353,10 @@ def batting_leaderboard(batters_raw: dict, pa_min: int | None = None) -> list[di
     """
     threshold = pa_min if pa_min is not None else MIN_BATTER_PA
     rows = []
-    for name, raw in batters_raw.items():
+    for player_key, raw in batters_raw.items():
         if raw["pa"] < threshold:
             continue
-        rows.append(calc_batting_stats(name, raw))
+        rows.append(calc_batting_stats(raw.get("name", player_key), raw))
     return rows
 
 
@@ -376,7 +372,7 @@ def _group_by_season_team(games: list[dict]) -> dict[tuple[str, str], list[dict]
     return groups
 
 
-def pitcher_season_rows(name: str, games: list[dict]) -> list[dict]:
+def pitcher_season_rows(name: str, games: list[dict], person_id=None) -> list[dict]:
     """
     One row per (season, team) this pitcher was watched on, oldest to
     newest, sorted by team within a season — so a mid-season trade shows as
@@ -389,12 +385,14 @@ def pitcher_season_rows(name: str, games: list[dict]) -> list[dict]:
     rows = []
     for season, team in sorted(groups):
         agg = _aggregate_pitcher(name, groups[(season, team)])
+        agg["person_id"] = person_id
         row = calc_pitching_stats(name, agg)
         row["season"] = season
         rows.append(row)
 
     if len(groups) > 1:
         total_agg = _aggregate_pitcher(name, games)
+        total_agg["person_id"] = person_id
         total_row = calc_pitching_stats(name, total_agg)
         total_row["season"] = "ALL (logged)"
         total_row["team"] = "ALL"
@@ -403,18 +401,20 @@ def pitcher_season_rows(name: str, games: list[dict]) -> list[dict]:
     return rows
 
 
-def batter_season_rows(name: str, games: list[dict]) -> list[dict]:
+def batter_season_rows(name: str, games: list[dict], person_id=None) -> list[dict]:
     """Same idea as pitcher_season_rows(), but for batting."""
     groups = _group_by_season_team(games)
     rows = []
     for season, team in sorted(groups):
         agg = _aggregate_batter(name, groups[(season, team)])
+        agg["person_id"] = person_id
         row = calc_batting_stats(name, agg)
         row["season"] = season
         rows.append(row)
 
     if len(groups) > 1:
         total_agg = _aggregate_batter(name, games)
+        total_agg["person_id"] = person_id
         total_row = calc_batting_stats(name, total_agg)
         total_row["season"] = "ALL (logged)"
         total_row["team"] = "ALL"
