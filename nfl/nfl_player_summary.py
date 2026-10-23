@@ -30,14 +30,21 @@ applied in memory without re-fetching from ESPN.
 """
 from __future__ import annotations
 
+import sys
+from pathlib import Path
+
 import espn_nfl
 import espn_cfb
 import nfl_dates
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from player_stats_cache import PlayerStatsCache
 
 _LEAGUE_MODULES = {"nfl": espn_nfl, "college": espn_cfb}
 _LEAGUE_DISPLAY = {"nfl": "NFL", "college": "College"}
 _CATEGORIES = ("qb", "rushing", "receiving")
 _CATEGORY_TO_BOXSCORE_KEY = {"qb": "passing", "rushing": "rushing", "receiving": "receiving"}
+_CACHE = PlayerStatsCache(Path(__file__).with_name("player_stats_cache.jsonl"), 1)
 
 
 # ── Data collection ───────────────────────────────────────────────────────────
@@ -66,31 +73,41 @@ def collect_player_game_stats(watched: dict) -> dict:
         module = _LEAGUE_MODULES.get(league, espn_nfl)
         season = nfl_dates.season_label(game["date"])
         icon   = "🎓" if league == "college" else "🏈"
-        print(f"  Fetching game {i}/{total}: {icon} {game['date']}  {game['away']} @ {game['home']}...")
-        try:
-            data = module.fetch_boxscore_data(game["game_id"])
-        except RuntimeError as e:
-            print(f"    Warning: {e} — skipping.")
-            continue
+        key = f"{league}:{game['game_id']}"
+        cached = _CACHE.get(key)
+        if cached is None:
+            print(f"  Fetching game {i}/{total}: {icon} {game['date']}  {game['away']} @ {game['home']}...")
+            try:
+                data = module.fetch_boxscore_data(game["game_id"])
+            except RuntimeError as e:
+                print(f"    Warning: {e} — skipping.")
+                continue
+            cached = _parse_game(gid, season, league, game, data)
+            _CACHE.put(key, cached)
 
-        for side in ("away", "home"):
-            team_name = game["away"] if side == "away" else game["home"]
-            side_data = data.get(side, {})
-
-            for category in _CATEGORIES:
-                box_key = _CATEGORY_TO_BOXSCORE_KEY[category]
-                for athlete_id, p in side_data.get(box_key, {}).items():
-                    name = p.get("name", athlete_id)
-                    s    = p.get("stats", {})
-                    pool = pools[category]
-                    player_key = f"espn:{athlete_id}"
-                    pool.setdefault(player_key, {"name": name, "athlete_id": athlete_id, "games": []})
-                    pool[player_key]["name"] = name
-                    record = {"game_id": gid, "season": season, "team": team_name, "league": league}
-                    record.update(s)
-                    pool[player_key]["games"].append(record)
+        for category in _CATEGORIES:
+            for player in cached[category]:
+                pool = pools[category]
+                target = pool.setdefault(player["key"], {"name": player["name"], "athlete_id": player["athlete_id"], "games": []})
+                target["name"] = player["name"]
+                target["games"].append(player["game"])
 
     return pools
+
+
+def _parse_game(gid: str, season: str, league: str, game: dict, data: dict) -> dict:
+    parsed = {category: [] for category in _CATEGORIES}
+    for side in ("away", "home"):
+        team_name = game[side]
+        side_data = data.get(side, {})
+        for category in _CATEGORIES:
+            box_key = _CATEGORY_TO_BOXSCORE_KEY[category]
+            for athlete_id, player in side_data.get(box_key, {}).items():
+                row = {"game_id": gid, "season": season, "team": team_name, "league": league}
+                row.update(player.get("stats", {}))
+                parsed[category].append({"key": f"espn:{athlete_id}", "name": player.get("name", athlete_id),
+                                         "athlete_id": athlete_id, "game": row})
+    return parsed
 
 
 # ── In-memory filtering & aggregation ────────────────────────────────────────

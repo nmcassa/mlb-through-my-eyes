@@ -32,15 +32,22 @@ applied in memory without re-fetching from ESPN.
 """
 from __future__ import annotations
 
+import sys
+from pathlib import Path
+
 import espn_nba
 import espn_cbb
 import nba_dates
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from player_stats_cache import PlayerStatsCache
 
 # Which module fetches box scores for each league tag. game.get("league")
 # defaults to "nba" wherever it's read below, for watched-games files saved
 # before college support existed (no "league" key on those records).
 _LEAGUE_MODULES = {"nba": espn_nba, "college": espn_cbb}
 _LEAGUE_DISPLAY = {"nba": "NBA", "college": "College"}
+_CACHE = PlayerStatsCache(Path(__file__).with_name("player_stats_cache.jsonl"), 1)
 
 
 # ── Data collection ───────────────────────────────────────────────────────────
@@ -75,51 +82,39 @@ def collect_player_game_stats(watched: dict) -> dict:
         module  = _LEAGUE_MODULES.get(league, espn_nba)
         season  = nba_dates.season_label(game["date"])
         icon    = "🎓" if league == "college" else "🏀"
-        print(f"  Fetching game {i}/{total}: {icon} {game['date']}  {game['away']} @ {game['home']}...")
-        try:
-            data = module.fetch_boxscore_data(game["game_id"])
-        except RuntimeError as e:
-            print(f"    Warning: {e} — skipping.")
-            continue
+        key = f"{league}:{game['game_id']}"
+        cached = _CACHE.get(key)
+        if cached is None:
+            print(f"  Fetching game {i}/{total}: {icon} {game['date']}  {game['away']} @ {game['home']}...")
+            try:
+                data = module.fetch_boxscore_data(game["game_id"])
+            except RuntimeError as e:
+                print(f"    Warning: {e} — skipping.")
+                continue
+            cached = _parse_game(gid, season, league, game, data)
+            _CACHE.put(key, cached)
 
-        for side in ("away", "home"):
-            team_name = game["away"] if side == "away" else game["home"]
-            side_data = data.get(side, {})
-
-            for athlete_id, p in side_data.get("players", {}).items():
-                name = p.get("name", athlete_id)
-                s    = p.get("stats", {})
-                if s.get("min", 0) <= 0:
-                    continue   # DNP — didn't actually play
-
-                player_key = f"espn:{athlete_id}"
-                players.setdefault(player_key, {"name": name, "athlete_id": athlete_id, "games": []})
-                players[player_key]["name"] = name
-                players[player_key]["games"].append({
-                    "game_id": gid,
-                    "date":    game["date"],
-                    "season":  season,
-                    "team":    team_name,
-                    "league":  league,
-                    "min":  s.get("min", 0.0),
-                    "pts":  s.get("pts", 0),
-                    "reb":  s.get("reb", 0),
-                    "oreb": s.get("oreb", 0),
-                    "dreb": s.get("dreb", 0),
-                    "ast":  s.get("ast", 0),
-                    "stl":  s.get("stl", 0),
-                    "blk":  s.get("blk", 0),
-                    "tov":  s.get("tov", 0),
-                    "pf":   s.get("pf", 0),
-                    "fgm":  s.get("fgm", 0),
-                    "fga":  s.get("fga", 0),
-                    "3pm":  s.get("3pm", 0),
-                    "3pa":  s.get("3pa", 0),
-                    "ftm":  s.get("ftm", 0),
-                    "fta":  s.get("fta", 0),
-                })
+        for player in cached:
+            target = players.setdefault(player["key"], {"name": player["name"], "athlete_id": player["athlete_id"], "games": []})
+            target["name"] = player["name"]
+            target["games"].append(player["game"])
 
     return players
+
+
+def _parse_game(gid: str, season: str, league: str, game: dict, data: dict) -> list[dict]:
+    parsed = []
+    for side in ("away", "home"):
+        team_name = game[side]
+        for athlete_id, player in data.get(side, {}).get("players", {}).items():
+            stats = player.get("stats", {})
+            if stats.get("min", 0) <= 0:
+                continue
+            row = {"game_id": gid, "date": game["date"], "season": season, "team": team_name, "league": league}
+            row.update({key: stats.get(key, 0) for key in _COUNTING_KEYS})
+            parsed.append({"key": f"espn:{athlete_id}", "name": player.get("name", athlete_id),
+                           "athlete_id": athlete_id, "game": row})
+    return parsed
 
 
 # ── In-memory filtering & aggregation ────────────────────────────────────────
