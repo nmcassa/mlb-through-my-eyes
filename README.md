@@ -101,25 +101,6 @@ Loading stats for players is low, we have to load boxscores from each game indiv
 
 The API counts games as 0-0 when they are canceled. It would just be better to filter these out when adding games
 
-## Telegram game entry
-
-The long-polling Telegram bot lets one authorized chat add watched games while this project is running on an internet-connected computer.
-
-1. Message `@BotFather` in Telegram, create a bot, and copy its token.
-2. Send the new bot any message, then open `https://api.telegram.org/bot<TOKEN>/getUpdates` to find your numeric chat ID.
-3. Install the existing API dependency with `pip install MLB-StatsAPI`.
-4. From the project directory, set the environment variables and start the bot:
-
-```bash
-export TELEGRAM_BOT_TOKEN="your-token"
-export TELEGRAM_ALLOWED_CHAT_ID="your-chat-id"
-python src/telegram_bot.py
-```
-
-Send `/add Braves 2026-07-04`. If the date has a doubleheader, the bot lists both games; resend the command with its number, such as `/add Braves 2026-07-04 2`.
-
-By default the bot updates `watched_games.json` in its working directory. Set `WATCHED_GAMES_FILE` to use a different path. Keep the token private and leave the process running to receive messages.
-
 ## todo
 
 maybe Nick+ should just be per season instead of across all players?

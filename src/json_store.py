@@ -7,7 +7,7 @@ from __future__ import annotations
 import json
 import os
 
-WATCHED_FILE = os.environ.get("WATCHED_GAMES_FILE", "watched_games.json")
+WATCHED_FILE = "watched_games.json"
 
 
 def load_watched() -> dict:
