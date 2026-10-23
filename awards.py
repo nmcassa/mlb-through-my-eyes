@@ -398,11 +398,13 @@ def _build_playoff_series(sport: str, team_name: str, season: str, game_map: dic
     series_list.sort(key=lambda s: s[0])   # chronological, earliest series first
 
     trophies = []
-    for i, (_, opponent, glist) in enumerate(series_list, 1):
+    round_number = 0
+    for _, opponent, glist in series_list:
         scored = [(gid, v) for gid, v in glist
                   if v["away_score"] not in ("", None) and v["home_score"] not in ("", None)]
         if len(scored) < 2:
             continue   # not a real multi-game series
+        round_number += 1
 
         team_wins = opp_wins = 0
         for gid, v in scored:
@@ -431,7 +433,7 @@ def _build_playoff_series(sport: str, team_name: str, season: str, game_map: dic
         if watched_count != total_games:
             continue   # didn't watch every game of this (finished) series
 
-        round_label = scored[0][1].get("round") or f"Round {i}"
+        round_label = scored[0][1].get("round") or f"Round {round_number}"
         trophies.append({
             "sport": sport, "team": team_name, "opponent": opponent, "season": season,
             "record": f"{team_wins}-{opp_wins}", "round": round_label, "games": total_games,
@@ -443,13 +445,17 @@ def _build_playoff_series(sport: str, team_name: str, season: str, game_map: dic
 def _dedupe_series(playoff_series: list[dict]) -> list[dict]:
     """Each series gets built once per team (once from each side), so the
     same series shows up twice — once per perspective. Keep just one entry
-    per (sport, season, round, {team, opponent} pair), preferring whichever
-    team name sorts first alphabetically so the output is deterministic."""
+    per (sport, season, {team, opponent} pair). Prefer the lowest inferred
+    round, then whichever team name sorts first, so play-in games seen from
+    only one team's schedule cannot prevent the two perspectives matching."""
     best: dict[tuple, dict] = {}
     for s in playoff_series:
-        key = (s["sport"], s["season"], s["round"], frozenset([s["team"], s["opponent"]]))
+        key = (s["sport"], s["season"], frozenset([s["team"], s["opponent"]]))
         current = best.get(key)
-        if current is None or s["team"] < current["team"]:
+        round_number = int(s["round"].removeprefix("Round ")) if s["round"].startswith("Round ") else 0
+        current_round = (int(current["round"].removeprefix("Round "))
+                         if current and current["round"].startswith("Round ") else 0)
+        if current is None or (round_number, s["team"]) < (current_round, current["team"]):
             best[key] = s
     return list(best.values())
 
