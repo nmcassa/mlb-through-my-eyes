@@ -4464,5 +4464,95 @@
     "home_score": "93",
     "league": "college",
     "added_at": "2026-10-23T23:46:42.324078"
+  },
+  "401909096": {
+    "game_id": "401909096",
+    "date": "2026-10-23",
+    "away": "Houston Rockets",
+    "home": "San Antonio Spurs",
+    "away_score": "114",
+    "home_score": "110",
+    "league": "nba",
+    "added_at": "2026-10-24T09:47:52.399240"
+  },
+  "401909850": {
+    "game_id": "401909850",
+    "date": "2026-10-23",
+    "away": "Memphis Grizzlies",
+    "home": "Golden State Warriors",
+    "away_score": "111",
+    "home_score": "108",
+    "league": "nba",
+    "added_at": "2026-10-24T10:06:17.445503"
+  },
+  "401909853": {
+    "game_id": "401909853",
+    "date": "2026-10-24",
+    "away": "Miami Heat",
+    "home": "Charlotte Hornets",
+    "away_score": "",
+    "home_score": "",
+    "league": "nba",
+    "added_at": "2026-10-24T18:58:28.285137"
+  },
+  "401909857": {
+    "game_id": "401909857",
+    "date": "2026-10-24",
+    "away": "Washington Wizards",
+    "home": "Chicago Bulls",
+    "away_score": "124",
+    "home_score": "120",
+    "league": "nba",
+    "added_at": "2026-10-24T23:34:46.961409"
+  },
+  "401909852": {
+    "game_id": "401909852",
+    "date": "2026-10-23",
+    "away": "Portland Trail Blazers",
+    "home": "Sacramento Kings",
+    "away_score": "128",
+    "home_score": "120",
+    "league": "nba",
+    "added_at": "2026-10-25T09:55:14.022818"
+  },
+  "401909864": {
+    "game_id": "401909864",
+    "date": "2026-10-25",
+    "away": "Toronto Raptors",
+    "home": "Minnesota Timberwolves",
+    "away_score": "94",
+    "home_score": "117",
+    "league": "nba",
+    "added_at": "2026-10-26T00:46:24.505935"
+  },
+  "401909866": {
+    "game_id": "401909866",
+    "date": "2026-10-25",
+    "away": "Detroit Pistons",
+    "home": "Philadelphia 76ers",
+    "away_score": "106",
+    "home_score": "93",
+    "league": "nba",
+    "added_at": "2026-10-26T01:01:57.664026"
+  },
+  "401909868": {
+    "game_id": "401909868",
+    "date": "2026-10-26",
+    "away": "Washington Wizards",
+    "home": "Charlotte Hornets",
+    "away_score": "103",
+    "home_score": "110",
+    "league": "nba",
+    "added_at": "2026-10-26T20:26:10.415910"
+  },
+  "401909869": {
+    "game_id": "401909869",
+    "date": "2026-10-26",
+    "away": "Minnesota Timberwolves",
+    "home": "Cleveland Cavaliers",
+    "away_score": "125",
+    "home_score": "127",
+    "league": "nba",
+    "added_at": "2026-10-26T23:02:05.740861"
   }
 }

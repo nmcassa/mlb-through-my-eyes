@@ -1,7 +1,12 @@
 filter by preseason, reg season, and playoffs
 
+i would like to by able to log a game as watched twice, the stats would double count in that case (any n number of times)
+
 game summary screen: show details about conference
 	ACC, SEC, B10, etc games watched win percentage...
+
+the ability to mark a certain subset of innings or quarters or half (in college basketball) would be nice, i watch partial games sometimes
+	and the ability to mark just one player, sometimes there are highlight videos for just one players performance
 
 json memory bug where game does not appear with score in View Watched Games and does not count towards stats in Game Summary
 

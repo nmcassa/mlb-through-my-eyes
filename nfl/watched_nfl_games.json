@@ -1648,5 +1648,25 @@
     "home_score": "",
     "league": "nfl",
     "added_at": "2026-10-18T18:31:56.176279"
+  },
+  "401858276": {
+    "game_id": "401858276",
+    "date": "2026-10-24",
+    "away": "Virginia Tech Hokies",
+    "home": "Clemson Tigers",
+    "away_score": "20",
+    "home_score": "16",
+    "league": "college",
+    "added_at": "2026-10-24T21:20:13.937467"
+  },
+  "401873021": {
+    "game_id": "401873021",
+    "date": "2026-10-25",
+    "away": "Los Angeles Rams",
+    "home": "Las Vegas Raiders",
+    "away_score": "",
+    "home_score": "",
+    "league": "nfl",
+    "added_at": "2026-10-25T18:29:26.694910"
   }
 }
