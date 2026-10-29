@@ -328,6 +328,39 @@ def _show_boxscore(game: dict, league: dict):
 
 # ── Screen: View Watched ──────────────────────────────────────────────────────
 
+def _refresh_missing_scores(watched: dict) -> int:
+    pending_by_group: dict[tuple[str, str], list[dict]] = {}
+    for game in watched.values():
+        if game.get("away_score") in ("", None) or game.get("home_score") in ("", None):
+            league_key = game.get("league", "nba")
+            pending_by_group.setdefault((league_key, game["date"]), []).append(game)
+
+    updated = 0
+    for (league_key, date), pending in pending_by_group.items():
+        league = LEAGUES.get(league_key, LEAGUES["nba"])
+        try:
+            fetched = league["module"].fetch_games_by_date(date)
+        except RuntimeError as e:
+            print(f"  Could not refresh {league['label']} scores for {date}: {e}")
+            continue
+        fetched_by_id = {str(game["game_id"]): game for game in fetched}
+        for game in pending:
+            current = fetched_by_id.get(str(game["game_id"]))
+            if current is None:
+                continue
+            away_score = current.get("away_score")
+            home_score = current.get("home_score")
+            if away_score in ("", None) or home_score in ("", None):
+                continue
+            game["away_score"] = away_score
+            game["home_score"] = home_score
+            updated += 1
+
+    if updated:
+        json_store.save_watched(watched)
+    return updated
+
+
 def view_watched(watched: dict):
     """List all watched games, grouped by year."""
     clear()
@@ -337,6 +370,8 @@ def view_watched(watched: dict):
         print("\n  No games watched yet. Browse a season to add some!")
         input("\nPress Enter to continue...")
         return
+
+    _refresh_missing_scores(watched)
 
     by_year: dict[str, list] = {}
     for g in watched.values():
@@ -656,6 +691,8 @@ def summary(watched: dict):
         print("\n  No games watched yet. Browse a season to add some!")
         input("\nPress Enter to continue...")
         return
+
+    _refresh_missing_scores(watched)
 
     season_filter: str | None = None
     team_filter:   str | None = None
