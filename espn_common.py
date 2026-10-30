@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from collections.abc import Callable
 
+from season_types import normalize_espn
+
 
 def get(requests_module, base: str, path: str, timeout: int, **params) -> dict:
     url = f"{base}/{path}"
@@ -52,13 +54,29 @@ def event_team_ids(event: dict) -> dict:
     }
 
 
-def parse_schedule_event(event: dict, date_converter: Callable[[str], str]) -> dict:
+def _event_season_type_code(event: dict) -> str | None:
+    for source in (event, (event.get("competitions") or [{}])[0]):
+        value = source.get("seasonType") or source.get("season_type") or source.get("season")
+        if isinstance(value, dict):
+            value = value.get("id") or value.get("type") or value.get("value")
+        if value not in (None, ""):
+            return str(value)
+    return None
+
+
+def parse_schedule_event(
+    event: dict,
+    date_converter: Callable[[str], str],
+    season_type_code: str | None = None,
+    postseason_context: bool = False,
+) -> dict:
     competition = (event.get("competitions") or [{}])[0]
     competitors = competition.get("competitors", [])
     away = next((item for item in competitors if item.get("homeAway") == "away"), {})
     home = next((item for item in competitors if item.get("homeAway") == "home"), {})
     status = competition.get("status", {}).get("type", {})
     completed = bool(status.get("completed"))
+    raw_code = str(season_type_code) if season_type_code is not None else _event_season_type_code(event)
     return {
         "game_id": event.get("id"),
         "game_date": date_converter(event.get("date") or ""),
@@ -68,6 +86,8 @@ def parse_schedule_event(event: dict, date_converter: Callable[[str], str]) -> d
         "home_score": score_value(home) if completed else "",
         "status": status.get("shortDetail") or status.get("description") or "",
         "completed": completed,
+        "season_type": normalize_espn(raw_code, postseason_context),
+        "season_type_code": raw_code,
     }
 
 
@@ -97,7 +117,7 @@ def fetch_team_schedule(
             if not game_id or game_id in seen_ids:
                 continue
             seen_ids.add(game_id)
-            games.append(parser(event))
+            games.append(parser(event, season_type, "3" in requested))
     games.sort(key=lambda game: game["game_date"])
     return games
 

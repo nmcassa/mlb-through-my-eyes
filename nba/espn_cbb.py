@@ -22,8 +22,12 @@ against a real completed game ID, same as espn_nba.py's diagnose helper.
 from __future__ import annotations
 
 import sys
+from pathlib import Path
 
 import nba_dates   # sport-agnostic date/season helpers, shared with the NBA tracker
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+import espn_common
 
 try:
     import requests
@@ -94,24 +98,10 @@ def _score_value(competitor: dict) -> str:
     return str(score) if score not in (None, "") else ""
 
 
-def _parse_schedule_event(ev: dict) -> dict:
-    comp = (ev.get("competitions") or [{}])[0]
-    competitors = comp.get("competitors", [])
-    away = next((c for c in competitors if c.get("homeAway") == "away"), {})
-    home = next((c for c in competitors if c.get("homeAway") == "home"), {})
-    status = comp.get("status", {}).get("type", {})
-    completed = bool(status.get("completed"))
-
-    return {
-        "game_id":    ev.get("id"),
-        "game_date":  nba_dates.espn_date_to_local(ev.get("date") or ""),
-        "away_name":  away.get("team", {}).get("displayName", "?"),
-        "home_name":  home.get("team", {}).get("displayName", "?"),
-        "away_score": _score_value(away) if completed else "",
-        "home_score": _score_value(home) if completed else "",
-        "status":     status.get("shortDetail") or status.get("description") or "",
-        "completed":  completed,
-    }
+def _parse_schedule_event(ev: dict, season_type_code=None, postseason_context=False) -> dict:
+    return espn_common.parse_schedule_event(
+        ev, nba_dates.espn_date_to_local, season_type_code, postseason_context
+    )
 
 
 def fetch_team_schedule(team_id: str, season: str, season_types: list[str] | None = None) -> list[dict]:
@@ -140,7 +130,7 @@ def fetch_team_schedule(team_id: str, season: str, season_types: list[str] | Non
             if not gid or gid in seen_ids:
                 continue
             seen_ids.add(gid)
-            games.append(_parse_schedule_event(ev))
+            games.append(_parse_schedule_event(ev, st, st == "3"))
     games.sort(key=lambda g: g["game_date"])
     return games
 

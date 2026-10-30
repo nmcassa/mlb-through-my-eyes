@@ -6,6 +6,10 @@ All calls to statsapi live here — nothing else in the project imports statsapi
 from __future__ import annotations
 
 import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from season_types import normalize_mlb
 
 try:
     import statsapi
@@ -57,7 +61,11 @@ def fetch_season_schedule(
     except Exception as e:
         raise RuntimeError(f"Failed to fetch schedule: {e}") from e
 
-    return [g for g in schedule if g.get("game_type") in game_types]
+    games = [g for g in schedule if g.get("game_type") in game_types]
+    for game in games:
+        game["season_type_code"] = game.get("game_type")
+        game["season_type"] = normalize_mlb(game.get("game_type"))
+    return games
 
 
 def fetch_games_by_date(
@@ -86,6 +94,9 @@ def fetch_games_by_date(
     if game_types:
         schedule = [g for g in schedule if g.get("game_type") in game_types]
 
+    for game in schedule:
+        game["season_type_code"] = game.get("game_type")
+        game["season_type"] = normalize_mlb(game.get("game_type"))
     return schedule
 
 
