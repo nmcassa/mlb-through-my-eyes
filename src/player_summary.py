@@ -21,7 +21,7 @@ from pathlib import Path
 import mlb
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from player_stats_cache import PlayerStatsCache
+from player_stats_cache import PlayerStatsCache, selected_player_keys
 
 
 _CACHE = PlayerStatsCache(Path(__file__).with_name("player_stats_cache.jsonl"), 1)
@@ -82,16 +82,37 @@ def collect_player_game_stats(watched: dict) -> tuple[dict, dict]:
             cached = _parse_game(gid, season, game, data)
             _CACHE.put(str(game["game_id"]), cached)
 
+        selected = selected_player_keys(game)
         for player in cached["pitchers"]:
+            if selected is not None and player["key"] not in selected:
+                continue
             target = pitchers.setdefault(player["key"], {"name": player["name"], "person_id": player["person_id"], "games": []})
             target["name"] = player["name"]
             target["games"].append(player["game"])
         for player in cached["batters"]:
+            if selected is not None and player["key"] not in selected:
+                continue
             target = batters.setdefault(player["key"], {"name": player["name"], "person_id": player["person_id"], "games": []})
             target["name"] = player["name"]
             target["games"].append(player["game"])
 
     return pitchers, batters
+
+
+def prepare_game_player_options(gid: str, game: dict, data: dict) -> list[dict]:
+    parsed = _parse_game(gid, game["date"][:4], game, data)
+    _CACHE.put(str(game["game_id"]), parsed)
+    options: dict[str, dict] = {}
+    for category, role in (("batters", "Batter"), ("pitchers", "Pitcher")):
+        for player in parsed[category]:
+            option = options.setdefault(player["key"], {
+                "key": player["key"],
+                "name": player["name"],
+                "team": player["game"]["team"],
+                "roles": [],
+            })
+            option["roles"].append(role)
+    return sorted(options.values(), key=lambda option: (option["team"], option["name"]))
 
 
 def _parse_game(gid: str, season: str, game: dict, data: dict) -> dict:

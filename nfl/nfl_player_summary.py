@@ -38,7 +38,7 @@ import espn_cfb
 import nfl_dates
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from player_stats_cache import PlayerStatsCache
+from player_stats_cache import PlayerStatsCache, selected_player_keys
 
 _LEAGUE_MODULES = {"nfl": espn_nfl, "college": espn_cfb}
 _LEAGUE_DISPLAY = {"nfl": "NFL", "college": "College"}
@@ -85,14 +85,35 @@ def collect_player_game_stats(watched: dict) -> dict:
             cached = _parse_game(gid, season, league, game, data)
             _CACHE.put(key, cached)
 
+        selected = selected_player_keys(game)
         for category in _CATEGORIES:
             for player in cached[category]:
+                if selected is not None and player["key"] not in selected:
+                    continue
                 pool = pools[category]
                 target = pool.setdefault(player["key"], {"name": player["name"], "athlete_id": player["athlete_id"], "games": []})
                 target["name"] = player["name"]
                 target["games"].append(player["game"])
 
     return pools
+
+
+def prepare_game_player_options(gid: str, game: dict, data: dict) -> list[dict]:
+    league = game.get("league", "nfl")
+    parsed = _parse_game(gid, nfl_dates.season_label(game["date"]), league, game, data)
+    _CACHE.put(f"{league}:{game['game_id']}", parsed)
+    options: dict[str, dict] = {}
+    role_labels = {"qb": "QB", "rushing": "Rushing", "receiving": "Receiving"}
+    for category in _CATEGORIES:
+        for player in parsed[category]:
+            option = options.setdefault(player["key"], {
+                "key": player["key"],
+                "name": player["name"],
+                "team": player["game"]["team"],
+                "roles": [],
+            })
+            option["roles"].append(role_labels[category])
+    return sorted(options.values(), key=lambda option: (option["team"], option["name"]))
 
 
 def _parse_game(gid: str, season: str, league: str, game: dict, data: dict) -> dict:

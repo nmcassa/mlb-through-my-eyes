@@ -8,12 +8,18 @@ from __future__ import annotations
 
 import csv
 import os
+import sys
 from datetime import datetime
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import mlb
 import player_summary
 import comparison
 import json_store
+from player_selection import CANCEL_SELECTION, choose_players
+from player_stats_cache import PLAYER_SUMMARY_KEYS_FIELD
 
 
 # ── Display helpers ───────────────────────────────────────────────────────────
@@ -211,7 +217,7 @@ def _game_select_loop(games: list, watched: dict, team_name: str, season: str):
                     del watched[gid]
                     print(f"\n  ✗ Removed: {game_label(game)}")
                 else:
-                    watched[gid] = {
+                    record = {
                         "game_id":    game["game_id"],
                         "date":       game["game_date"],
                         "away":       game["away_name"],
@@ -220,24 +226,34 @@ def _game_select_loop(games: list, watched: dict, team_name: str, season: str):
                         "home_score": game.get("home_score", ""),
                         "added_at":   datetime.now().isoformat(),
                     }
+                    selection = _show_boxscore(game, gid, record)
+                    if selection is CANCEL_SELECTION:
+                        input("  Press Enter to continue...")
+                        continue
+                    if selection is not None:
+                        record[PLAYER_SUMMARY_KEYS_FIELD] = selection
+                    watched[gid] = record
                     json_store.save_watched(watched)
                     print(f"\n  ★ Added:   {game_label(game)}")
-                    _show_boxscore(game)
+                    input("  Press Enter to continue...")
                     continue
                 json_store.save_watched(watched)
                 input("  Press Enter to continue...")
 
 
-def _show_boxscore(game: dict):
+def _show_boxscore(game: dict, gid: str, record: dict) -> list[str] | None | object:
     """Fetch and print the boxscore for a just-added game."""
     clear()
     print_header(game_label(game))
     print()
     try:
         print(mlb.fetch_boxscore(game["game_id"]))
+        data = mlb.fetch_boxscore_data(game["game_id"])
     except RuntimeError as e:
         print(f"  Could not load boxscore: {e}")
-    input("\n  Press Enter to continue...")
+        return None
+    options = player_summary.prepare_game_player_options(gid, record, data)
+    return choose_players(options)
 
 
 # ── Screen: View Watched ──────────────────────────────────────────────────────

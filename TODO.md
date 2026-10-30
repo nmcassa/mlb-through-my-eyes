@@ -5,5 +5,6 @@ i would like to by able to log a game as watched twice, the stats would double c
 game summary screen: show details about conference
 	ACC, SEC, B10, etc games watched win percentage...
 
-the ability to mark a certain subset of innings or quarters or half (in college basketball) would be nice, i watch partial games sometimes
-	and the ability to mark just one player, sometimes there are highlight videos for just one players performance
+	the ability to mark a certain subset of innings or quarters or half (in college basketball) would be nice, i watch partial games sometimes
+	BLOCKED: the current MLB/ESPN box-score APIs only provide full-game player totals. Exact partial-game player stats would require reconstructing statistics from play-by-play data.
+	DONE: the ability to select which players count in summaries for a logged game, for example when watching one player's highlights
