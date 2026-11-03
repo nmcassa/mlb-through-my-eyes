@@ -4,6 +4,16 @@ import json
 from pathlib import Path
 
 
+PLAYER_SUMMARY_KEYS_FIELD = "player_summary_player_keys"
+
+
+def selected_player_keys(game: dict) -> set[str] | None:
+    value = game.get(PLAYER_SUMMARY_KEYS_FIELD)
+    if value is None or not isinstance(value, list):
+        return None
+    return {str(key) for key in value}
+
+
 class PlayerStatsCache:
     def __init__(self, path: Path, schema: int):
         self.path = path

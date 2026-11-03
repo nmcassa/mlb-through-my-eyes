@@ -70,8 +70,10 @@ def _score_value(competitor: dict) -> str:
     return espn_common.score_value(competitor)
 
 
-def _parse_schedule_event(ev: dict) -> dict:
-    return espn_common.parse_schedule_event(ev, nfl_dates.espn_date_to_local)
+def _parse_schedule_event(ev: dict, season_type_code=None, postseason_context=False) -> dict:
+    return espn_common.parse_schedule_event(
+        ev, nfl_dates.espn_date_to_local, season_type_code, postseason_context
+    )
 
 
 def fetch_team_schedule(team_id: str, season: str, season_types: list[str] | None = None) -> list[dict]:

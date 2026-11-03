@@ -40,7 +40,7 @@ import espn_cbb
 import nba_dates
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from player_stats_cache import PlayerStatsCache
+from player_stats_cache import PlayerStatsCache, selected_player_keys
 
 # Which module fetches box scores for each league tag. game.get("league")
 # defaults to "nba" wherever it's read below, for watched-games files saved
@@ -94,12 +94,27 @@ def collect_player_game_stats(watched: dict) -> dict:
             cached = _parse_game(gid, season, league, game, data)
             _CACHE.put(key, cached)
 
+        selected = selected_player_keys(game)
         for player in cached:
+            if selected is not None and player["key"] not in selected:
+                continue
             target = players.setdefault(player["key"], {"name": player["name"], "athlete_id": player["athlete_id"], "games": []})
             target["name"] = player["name"]
             target["games"].append(player["game"])
 
     return players
+
+
+def prepare_game_player_options(gid: str, game: dict, data: dict) -> list[dict]:
+    league = game.get("league", "nba")
+    parsed = _parse_game(gid, nba_dates.season_label(game["date"]), league, game, data)
+    _CACHE.put(f"{league}:{game['game_id']}", parsed)
+    return sorted(({
+        "key": player["key"],
+        "name": player["name"],
+        "team": player["game"]["team"],
+        "roles": [],
+    } for player in parsed), key=lambda option: (option["team"], option["name"]))
 
 
 def _parse_game(gid: str, season: str, league: str, game: dict, data: dict) -> list[dict]:

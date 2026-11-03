@@ -8,12 +8,19 @@ from __future__ import annotations
 
 import csv
 import os
+import sys
 from datetime import datetime
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import mlb
 import player_summary
 import comparison
 import json_store
+from player_selection import CANCEL_SELECTION, choose_players
+from player_stats_cache import PLAYER_SUMMARY_KEYS_FIELD
+from season_types import SEASON_TYPE_LABELS, record_type, resolve_record_types
 
 
 # ── Display helpers ───────────────────────────────────────────────────────────
@@ -211,36 +218,79 @@ def _game_select_loop(games: list, watched: dict, team_name: str, season: str):
                     del watched[gid]
                     print(f"\n  ✗ Removed: {game_label(game)}")
                 else:
-                    watched[gid] = {
+                    record = {
                         "game_id":    game["game_id"],
                         "date":       game["game_date"],
                         "away":       game["away_name"],
                         "home":       game["home_name"],
                         "away_score": game.get("away_score", ""),
                         "home_score": game.get("home_score", ""),
+                        "season_type": game.get("season_type", "unknown"),
+                        "season_type_code": game.get("season_type_code"),
                         "added_at":   datetime.now().isoformat(),
                     }
+                    selection = _show_boxscore(game, gid, record)
+                    if selection is CANCEL_SELECTION:
+                        input("  Press Enter to continue...")
+                        continue
+                    if selection is not None:
+                        record[PLAYER_SUMMARY_KEYS_FIELD] = selection
+                    watched[gid] = record
                     json_store.save_watched(watched)
                     print(f"\n  ★ Added:   {game_label(game)}")
-                    _show_boxscore(game)
+                    input("  Press Enter to continue...")
                     continue
                 json_store.save_watched(watched)
                 input("  Press Enter to continue...")
 
 
-def _show_boxscore(game: dict):
+def _show_boxscore(game: dict, gid: str, record: dict) -> list[str] | None | object:
     """Fetch and print the boxscore for a just-added game."""
     clear()
     print_header(game_label(game))
     print()
     try:
         print(mlb.fetch_boxscore(game["game_id"]))
+        data = mlb.fetch_boxscore_data(game["game_id"])
     except RuntimeError as e:
         print(f"  Could not load boxscore: {e}")
-    input("\n  Press Enter to continue...")
+        return None
+    options = player_summary.prepare_game_player_options(gid, record, data)
+    return choose_players(options)
 
 
 # ── Screen: View Watched ──────────────────────────────────────────────────────
+
+def _refresh_missing_scores(watched: dict) -> int:
+    pending_by_date: dict[str, list[dict]] = {}
+    for game in watched.values():
+        if game.get("away_score") in ("", None) or game.get("home_score") in ("", None):
+            pending_by_date.setdefault(game["date"], []).append(game)
+
+    updated = 0
+    for date, pending in pending_by_date.items():
+        try:
+            fetched = mlb.fetch_games_by_date(date)
+        except RuntimeError as e:
+            print(f"  Could not refresh scores for {date}: {e}")
+            continue
+        fetched_by_id = {str(game["game_id"]): game for game in fetched}
+        for game in pending:
+            current = fetched_by_id.get(str(game["game_id"]))
+            if current is None:
+                continue
+            away_score = current.get("away_score")
+            home_score = current.get("home_score")
+            if away_score in ("", None) or home_score in ("", None):
+                continue
+            game["away_score"] = away_score
+            game["home_score"] = home_score
+            updated += 1
+
+    if updated:
+        json_store.save_watched(watched)
+    return updated
+
 
 def view_watched(watched: dict):
     """List all watched games, grouped by year."""
@@ -251,6 +301,8 @@ def view_watched(watched: dict):
         print("\n  No games watched yet. Browse a season to add some!")
         input("\nPress Enter to continue...")
         return
+
+    _refresh_missing_scores(watched)
 
     by_year: dict[str, list] = {}
     for g in watched.values():
@@ -326,6 +378,7 @@ def _apply_watched_filters(
     watched: dict,
     season_filter: str | None,
     team_filter: str | None,
+    season_type_filter: str | None = None,
 ) -> dict:
     """Return a subset of watched matching the active season and/or team filters."""
     out = {}
@@ -334,6 +387,8 @@ def _apply_watched_filters(
             continue
         if team_filter and team_filter not in (g["away"], g["home"]):
             continue
+        if season_type_filter and record_type(g) != season_type_filter:
+            continue
         out[gid] = g
     return out
 
@@ -341,6 +396,7 @@ def _apply_watched_filters(
 def _filters_label(
     season_filter: str | None,
     team_filter: str | None,
+    season_type_filter: str | None = None,
     ip_min: float | None = None,
     pa_min: int | None = None,
 ) -> str:
@@ -349,6 +405,8 @@ def _filters_label(
         parts.append(f"season={season_filter}")
     if team_filter:
         parts.append(f"team={team_filter}")
+    if season_type_filter:
+        parts.append(f"type={SEASON_TYPE_LABELS[season_type_filter]}")
     if ip_min is not None:
         parts.append(f"IP≥{ip_min:.1f}")
     if pa_min is not None:
@@ -364,7 +422,8 @@ def _filter_prompt(
     pa_min: int | None = None,
     show_ip: bool = False,
     show_pa: bool = False,
-) -> tuple[str | None, str | None, float | None, int | None]:
+    season_type_filter: str | None = None,
+) -> tuple[str | None, str | None, float | None, int | None, str | None]:
     """
     Interactive filter menu. Returns (season_filter, team_filter, ip_min, pa_min).
     season/team filters are applied per-game-record in memory (no re-fetch).
@@ -377,6 +436,7 @@ def _filter_prompt(
         print("\n  ── Active filters ──────────────────────────────")
         print(f"    Season : {season_filter or 'all'}")
         print(f"    Team   : {team_filter   or 'all'}")
+        print(f"    Type   : {SEASON_TYPE_LABELS[season_type_filter] if season_type_filter else 'all'}")
         if show_ip:
             print(f"    Min IP : {ip_min:.1f}" if ip_min is not None else "    Min IP : none")
         if show_pa:
@@ -385,6 +445,7 @@ def _filter_prompt(
         print("\n  ── Change filter ───────────────────────────────")
         print("    [1] Season")
         print("    [2] Team  (players on that team only)")
+        print("    [t] Season type")
         if show_ip:
             print("    [3] Min IP")
         if show_pa:
@@ -394,10 +455,10 @@ def _filter_prompt(
         cmd = input("\n  > ").strip().lower()
 
         if cmd == "q":
-            return season_filter, team_filter, ip_min, pa_min
+            return season_filter, team_filter, ip_min, pa_min, season_type_filter
 
         elif cmd == "x":
-            season_filter, team_filter, ip_min, pa_min = None, None, None, None
+            season_filter, team_filter, ip_min, pa_min, season_type_filter = None, None, None, None, None
             print("  Filters cleared.")
 
         elif cmd == "1":
@@ -449,6 +510,26 @@ def _filter_prompt(
                 pa_min = None if val == 0 else val
             except ValueError:
                 print("  Invalid number.")
+
+        elif cmd == "t":
+            scope = _apply_watched_filters(watched, season_filter, team_filter)
+            unresolved = [game for game in scope.values() if record_type(game) == "unknown"]
+            if unresolved:
+                print(f"\n  Resolving season types for {len(unresolved)} legacy game(s)...")
+                updated = resolve_record_types(unresolved, mlb.fetch_games_by_date)
+                if updated:
+                    json_store.save_watched(watched)
+                remaining = sum(record_type(game) == "unknown" for game in unresolved)
+                print(f"  Resolved {updated}; {remaining} remain unknown.")
+            options = list(SEASON_TYPE_LABELS.items())
+            print("\n    [0] All season types")
+            for i, (_, label) in enumerate(options, 1):
+                print(f"    [{i}] {label}")
+            pick = input("  > ").strip()
+            if pick == "0":
+                season_type_filter = None
+            elif pick.isdigit() and 1 <= int(pick) <= len(options):
+                season_type_filter = options[int(pick) - 1][0]
 
 
 # ── Sort / limit helpers ──────────────────────────────────────────────────────
@@ -572,15 +653,18 @@ def summary(watched: dict):
         input("\nPress Enter to continue...")
         return
 
+    _refresh_missing_scores(watched)
+
     # Filter state (season + team only; no IP for game summary)
     season_filter: str | None = None
     team_filter:   str | None = None
+    season_type_filter: str | None = None
 
     sort_col, sort_rev  = "pct", True
     page, page_size     = 0, 25
 
     while True:
-        active = _apply_watched_filters(watched, season_filter, team_filter)
+        active = _apply_watched_filters(watched, season_filter, team_filter, season_type_filter)
         scored = [
             g for g in active.values()
             if g.get("away_score", "") != "" and g.get("home_score", "") != ""
@@ -621,7 +705,7 @@ def summary(watched: dict):
         clear()
         print_header("Game Summary")
         sort_label = next(l for l, k, _ in _GAME_SORT_COLS if k == sort_col)
-        fl = _filters_label(season_filter, team_filter, None)
+        fl = _filters_label(season_filter, team_filter, season_type_filter)
         print(f"\n  {len(scored)} game(s)  |  {len(teams)} teams  |  sorted by {sort_label}  |  {_page_label(page, total_pages)}{fl}\n")
 
         if not scored:
@@ -663,8 +747,9 @@ def summary(watched: dict):
             )
             continue
         if result == "filter":
-            season_filter, team_filter, _, _ = _filter_prompt(
-                watched, season_filter, team_filter, None, show_ip=False
+            season_filter, team_filter, _, _, season_type_filter = _filter_prompt(
+                watched, season_filter, team_filter, None, show_ip=False,
+                season_type_filter=season_type_filter,
             )
             page = 0
             continue
@@ -903,6 +988,7 @@ def _show_pitching(watched: dict):
     season_filter: str | None  = None
     team_filter:   str | None  = None
     ip_min:        float | None = None
+    season_type_filter: str | None = None
 
     sort_col, sort_rev = "_era", False
     page, page_size    = 0, 25
@@ -914,11 +1000,12 @@ def _show_pitching(watched: dict):
     print_header("Pitcher Summary")
     print("\n  Set filters before loading (reduces games fetched).\n")
     print(f"  Watched games: {len(watched)}\n")
-    season_filter, team_filter, ip_min, _ = _filter_prompt(
-        watched, season_filter, team_filter, ip_min=ip_min, show_ip=True
+    season_filter, team_filter, ip_min, _, season_type_filter = _filter_prompt(
+        watched, season_filter, team_filter, ip_min=ip_min, show_ip=True,
+        season_type_filter=season_type_filter,
     )
 
-    fetch_watched = _apply_watched_filters(watched, season_filter, team_filter)
+    fetch_watched = _apply_watched_filters(watched, season_filter, team_filter, season_type_filter)
     clear()
     print_header("Pitcher Summary")
     print(f"\n  Fetching boxscore data for {len(fetch_watched)} game(s) (filtered from {len(watched)} total)...\n")
@@ -944,7 +1031,7 @@ def _show_pitching(watched: dict):
         clear()
         print_header("Pitcher Summary")
         sort_label = next(l for l, k, _ in _PITCH_SORT_COLS if k == sort_col)
-        fl = _filters_label(season_filter, team_filter, ip_min=ip_min)
+        fl = _filters_label(season_filter, team_filter, season_type_filter, ip_min=ip_min)
         print(f"\n  {len(rows)} pitchers  |  sorted by {sort_label}  |  {_page_label(page, total_pages)}{fl}\n")
         print("  Nick+: 100 = average of these pitchers, weighted by how much you've watched them. Higher is better.\n")
 
@@ -975,12 +1062,13 @@ def _show_pitching(watched: dict):
             )
             continue
         if result == "filter":
-            new_sf, new_tf, new_ip, _ = _filter_prompt(
-                watched, season_filter, team_filter, ip_min=ip_min, show_ip=True
+            new_sf, new_tf, new_ip, _, new_stf = _filter_prompt(
+                watched, season_filter, team_filter, ip_min=ip_min, show_ip=True,
+                season_type_filter=season_type_filter,
             )
-            if (new_sf, new_tf) != (season_filter, team_filter):
-                season_filter, team_filter, ip_min = new_sf, new_tf, new_ip
-                fetch_watched = _apply_watched_filters(watched, season_filter, team_filter)
+            if (new_sf, new_tf, new_stf) != (season_filter, team_filter, season_type_filter):
+                season_filter, team_filter, ip_min, season_type_filter = new_sf, new_tf, new_ip, new_stf
+                fetch_watched = _apply_watched_filters(watched, season_filter, team_filter, season_type_filter)
                 clear()
                 print_header("Pitcher Summary")
                 print(f"\n  Re-fetching boxscore data for {len(fetch_watched)} game(s)...\n")
@@ -991,7 +1079,7 @@ def _show_pitching(watched: dict):
                     input("\nPress Enter to continue...")
                     return
             else:
-                season_filter, team_filter, ip_min = new_sf, new_tf, new_ip
+                season_filter, team_filter, ip_min, season_type_filter = new_sf, new_tf, new_ip, new_stf
             page = 0
             continue
         if isinstance(result, tuple) and result[0] == "pagesize":
@@ -1011,6 +1099,7 @@ def _show_batting(watched: dict):
     season_filter: str | None = None
     team_filter:   str | None = None
     pa_min:        int | None = None
+    season_type_filter: str | None = None
 
     sort_col, sort_rev = "_ops", True
     page, page_size    = 0, 25
@@ -1020,11 +1109,12 @@ def _show_batting(watched: dict):
     print_header("Batter Summary")
     print("\n  Set filters before loading (reduces games fetched).\n")
     print(f"  Watched games: {len(watched)}\n")
-    season_filter, team_filter, _, pa_min = _filter_prompt(
-        watched, season_filter, team_filter, pa_min=pa_min, show_pa=True
+    season_filter, team_filter, _, pa_min, season_type_filter = _filter_prompt(
+        watched, season_filter, team_filter, pa_min=pa_min, show_pa=True,
+        season_type_filter=season_type_filter,
     )
 
-    fetch_watched = _apply_watched_filters(watched, season_filter, team_filter)
+    fetch_watched = _apply_watched_filters(watched, season_filter, team_filter, season_type_filter)
     clear()
     print_header("Batter Summary")
     print(f"\n  Fetching boxscore data for {len(fetch_watched)} game(s) (filtered from {len(watched)} total)...\n")
@@ -1050,7 +1140,7 @@ def _show_batting(watched: dict):
         clear()
         print_header("Batter Summary")
         sort_label = next(l for l, k, _ in _BAT_SORT_COLS if k == sort_col)
-        fl = _filters_label(season_filter, team_filter, pa_min=pa_min)
+        fl = _filters_label(season_filter, team_filter, season_type_filter, pa_min=pa_min)
         print(f"\n  {len(rows)} batters  |  sorted by {sort_label}  |  {_page_label(page, total_pages)}{fl}\n")
         print("  Nick+: 100 = average of these batters, weighted by how much you've watched them. Higher is better.\n")
 
@@ -1081,12 +1171,13 @@ def _show_batting(watched: dict):
             )
             continue
         if result == "filter":
-            new_sf, new_tf, _, new_pa = _filter_prompt(
-                watched, season_filter, team_filter, pa_min=pa_min, show_pa=True
+            new_sf, new_tf, _, new_pa, new_stf = _filter_prompt(
+                watched, season_filter, team_filter, pa_min=pa_min, show_pa=True,
+                season_type_filter=season_type_filter,
             )
-            if (new_sf, new_tf) != (season_filter, team_filter):
-                season_filter, team_filter, pa_min = new_sf, new_tf, new_pa
-                fetch_watched = _apply_watched_filters(watched, season_filter, team_filter)
+            if (new_sf, new_tf, new_stf) != (season_filter, team_filter, season_type_filter):
+                season_filter, team_filter, pa_min, season_type_filter = new_sf, new_tf, new_pa, new_stf
+                fetch_watched = _apply_watched_filters(watched, season_filter, team_filter, season_type_filter)
                 clear()
                 print_header("Batter Summary")
                 print(f"\n  Re-fetching boxscore data for {len(fetch_watched)} game(s)...\n")
@@ -1097,7 +1188,7 @@ def _show_batting(watched: dict):
                     input("\nPress Enter to continue...")
                     return
             else:
-                season_filter, team_filter, pa_min = new_sf, new_tf, new_pa
+                season_filter, team_filter, pa_min, season_type_filter = new_sf, new_tf, new_pa, new_stf
             page = 0
             continue
         if isinstance(result, tuple) and result[0] == "pagesize":
@@ -1180,6 +1271,7 @@ def _show_comp_pitching(watched: dict):
     season_filter: str | None  = None
     team_filter:   str | None  = None
     ip_min:        float | None = None
+    season_type_filter: str | None = None
     sort_col, sort_rev = "_w_era", False
     page, page_size    = 0, 8   # each row spans 3 printed lines, so keep pages short
 
@@ -1189,14 +1281,15 @@ def _show_comp_pitching(watched: dict):
     print("\n  Set filters before loading (reduces players fetched).\n")
     print(f"  Watched games: {len(watched)}")
     print(f"  Tip: set a Team filter to load only ~15-25 players instead of hundreds.\n")
-    season_filter, team_filter, ip_min, _ = _filter_prompt(
-        watched, season_filter, team_filter, ip_min=ip_min, show_ip=True
+    season_filter, team_filter, ip_min, _, season_type_filter = _filter_prompt(
+        watched, season_filter, team_filter, ip_min=ip_min, show_ip=True,
+        season_type_filter=season_type_filter,
     )
 
     # ── Step 2: fetch boxscore data for filtered games only ─────────────────
     # Pre-filter watched to games involving the selected team/season so we
     # don't fetch boxscores for hundreds of irrelevant games.
-    fetch_watched = _apply_watched_filters(watched, season_filter, team_filter)
+    fetch_watched = _apply_watched_filters(watched, season_filter, team_filter, season_type_filter)
     clear()
     print_header("Small Sample — Pitchers")
     print(f"\n  Fetching boxscore data for {len(fetch_watched)} game(s) (filtered from {len(watched)} total)...\n")
@@ -1226,7 +1319,7 @@ def _show_comp_pitching(watched: dict):
 
             clear()
             print_header("Small Sample — Pitchers")
-            fl = _filters_label(season_filter, team_filter, ip_min=ip_min)
+            fl = _filters_label(season_filter, team_filter, season_type_filter, ip_min=ip_min)
             print(f"\n  Fetching {ref_type} ref stats for {leaderboard_size} pitchers{fl}...\n")
             rows = comparison.build_pitcher_rows(pitchers_raw, ip_min=ip_min, season_filter=season_filter)
             need_ref_fetch = False
@@ -1257,7 +1350,7 @@ def _show_comp_pitching(watched: dict):
         clear()
         print_header("Small Sample — Pitchers")
         sort_label = next(l for l, k, _ in _COMP_PITCH_SORT_COLS if k == sort_col)
-        fl = _filters_label(season_filter, team_filter, ip_min=ip_min)
+        fl = _filters_label(season_filter, team_filter, season_type_filter, ip_min=ip_min)
         print(f"\n  {len(rows)} pitchers  |  ref: {ref_type}  |  sorted by {sort_label}  |  {_page_label(page, total_pages)}{fl}\n")
 
         if not rows:
@@ -1299,13 +1392,14 @@ def _show_comp_pitching(watched: dict):
             )
             continue
         if result == "filter":
-            new_sf, new_tf, new_ip, _ = _filter_prompt(
-                watched, season_filter, team_filter, ip_min=ip_min, show_ip=True
+            new_sf, new_tf, new_ip, _, new_stf = _filter_prompt(
+                watched, season_filter, team_filter, ip_min=ip_min, show_ip=True,
+                season_type_filter=season_type_filter,
             )
-            if (new_sf, new_tf, new_ip) != (season_filter, team_filter, ip_min):
-                season_filter, team_filter, ip_min = new_sf, new_tf, new_ip
+            if (new_sf, new_tf, new_ip, new_stf) != (season_filter, team_filter, ip_min, season_type_filter):
+                season_filter, team_filter, ip_min, season_type_filter = new_sf, new_tf, new_ip, new_stf
                 # Re-fetch boxscores for the new filter scope
-                fetch_watched = _apply_watched_filters(watched, season_filter, team_filter)
+                fetch_watched = _apply_watched_filters(watched, season_filter, team_filter, season_type_filter)
                 clear()
                 print_header("Small Sample — Pitchers")
                 print(f"\n  Re-fetching boxscore data for {len(fetch_watched)} game(s)...\n")
@@ -1335,6 +1429,7 @@ def _show_comp_batting(watched: dict):
     season_filter: str | None = None
     team_filter:   str | None = None
     pa_min:        int | None = None
+    season_type_filter: str | None = None
     sort_col, sort_rev = "_w_ops", True
     page, page_size    = 0, 8   # each row spans 3 printed lines, so keep pages short
 
@@ -1344,12 +1439,13 @@ def _show_comp_batting(watched: dict):
     print("\n  Set filters before loading (reduces players fetched).\n")
     print(f"  Watched games: {len(watched)}")
     print(f"  Tip: set a Team filter to load only ~15-25 players instead of hundreds.\n")
-    season_filter, team_filter, _, pa_min = _filter_prompt(
-        watched, season_filter, team_filter, pa_min=pa_min, show_pa=True
+    season_filter, team_filter, _, pa_min, season_type_filter = _filter_prompt(
+        watched, season_filter, team_filter, pa_min=pa_min, show_pa=True,
+        season_type_filter=season_type_filter,
     )
 
     # ── Step 2: fetch boxscore data for filtered games only ─────────────────
-    fetch_watched = _apply_watched_filters(watched, season_filter, team_filter)
+    fetch_watched = _apply_watched_filters(watched, season_filter, team_filter, season_type_filter)
     clear()
     print_header("Small Sample — Batters")
     print(f"\n  Fetching boxscore data for {len(fetch_watched)} game(s) (filtered from {len(watched)} total)...\n")
@@ -1375,7 +1471,7 @@ def _show_comp_batting(watched: dict):
 
             clear()
             print_header("Small Sample — Batters")
-            fl = _filters_label(season_filter, team_filter, pa_min=pa_min)
+            fl = _filters_label(season_filter, team_filter, season_type_filter, pa_min=pa_min)
             print(f"\n  Fetching {ref_type} ref stats for {leaderboard_size} batters{fl}...\n")
             rows = comparison.build_batter_rows(batters_raw, pa_min=pa_min, season_filter=season_filter)
             need_ref_fetch = False
@@ -1401,7 +1497,7 @@ def _show_comp_batting(watched: dict):
         clear()
         print_header("Small Sample — Batters")
         sort_label = next(l for l, k, _ in _COMP_BAT_SORT_COLS if k == sort_col)
-        fl = _filters_label(season_filter, team_filter, pa_min=pa_min)
+        fl = _filters_label(season_filter, team_filter, season_type_filter, pa_min=pa_min)
         print(f"\n  {len(rows)} batters  |  ref: {ref_type}  |  sorted by {sort_label}  |  {_page_label(page, total_pages)}{fl}\n")
 
         if not rows:
@@ -1441,12 +1537,13 @@ def _show_comp_batting(watched: dict):
             )
             continue
         if result == "filter":
-            new_sf, new_tf, _, new_pa = _filter_prompt(
-                watched, season_filter, team_filter, pa_min=pa_min, show_pa=True
+            new_sf, new_tf, _, new_pa, new_stf = _filter_prompt(
+                watched, season_filter, team_filter, pa_min=pa_min, show_pa=True,
+                season_type_filter=season_type_filter,
             )
-            if (new_sf, new_tf, new_pa) != (season_filter, team_filter, pa_min):
-                season_filter, team_filter, pa_min = new_sf, new_tf, new_pa
-                fetch_watched = _apply_watched_filters(watched, season_filter, team_filter)
+            if (new_sf, new_tf, new_pa, new_stf) != (season_filter, team_filter, pa_min, season_type_filter):
+                season_filter, team_filter, pa_min, season_type_filter = new_sf, new_tf, new_pa, new_stf
+                fetch_watched = _apply_watched_filters(watched, season_filter, team_filter, season_type_filter)
                 clear()
                 print_header("Small Sample — Batters")
                 print(f"\n  Re-fetching boxscore data for {len(fetch_watched)} game(s)...\n")
