@@ -1668,5 +1668,25 @@
     "home_score": "",
     "league": "nfl",
     "added_at": "2026-10-25T18:29:26.694910"
+  },
+  "401856842": {
+    "game_id": "401856842",
+    "date": "2026-10-31",
+    "away": "Arizona Wildcats",
+    "home": "Texas Tech Red Raiders",
+    "away_score": "26",
+    "home_score": "34",
+    "league": "college",
+    "added_at": "2026-11-02T00:10:39.144316"
+  },
+  "401856734": {
+    "game_id": "401856734",
+    "date": "2026-10-31",
+    "away": "Florida Gators",
+    "home": "Georgia Bulldogs",
+    "away_score": "8",
+    "home_score": "27",
+    "league": "college",
+    "added_at": "2026-11-02T00:11:21.417964"
   }
 }
