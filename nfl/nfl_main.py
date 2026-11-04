@@ -279,6 +279,8 @@ def _game_select_loop(games: list, watched: dict, team_name: str, season: str, l
                     "date":       game["game_date"],
                     "away":       game["away_name"],
                     "home":       game["home_name"],
+                    "away_team_id": game.get("away_team_id"),
+                    "home_team_id": game.get("home_team_id"),
                     "away_score": game.get("away_score", ""),
                     "home_score": game.get("home_score", ""),
                     "league":     league["key"],
@@ -390,6 +392,56 @@ def _refresh_missing_scores(watched: dict) -> int:
             updated += 1
 
     if updated:
+        json_store.save_watched(watched)
+    return updated
+
+
+def _refresh_conferences(watched: dict) -> int:
+    pending_by_date: dict[str, list[dict]] = {}
+    for game in watched.values():
+        if game.get("league") == "college" and (
+            not game.get("away_conference") or not game.get("home_conference")
+        ):
+            pending_by_date.setdefault(game["date"], []).append(game)
+
+    updated = 0
+    changed = False
+    for date, pending in pending_by_date.items():
+        fetched_by_id = {}
+        if any(not game.get("away_team_id") or not game.get("home_team_id") for game in pending):
+            try:
+                fetched = espn_cfb.fetch_games_by_date(date)
+                fetched_by_id = {str(game["game_id"]): game for game in fetched}
+            except RuntimeError as e:
+                print(f"  Could not refresh conference data for {date}: {e}")
+        for game in pending:
+            current = fetched_by_id.get(str(game["game_id"]))
+            if current:
+                for side in ("away", "home"):
+                    team_id = current.get(f"{side}_team_id")
+                    if team_id and game.get(f"{side}_team_id") != team_id:
+                        game[f"{side}_team_id"] = team_id
+                        changed = True
+            season = nfl_dates.season_label(game["date"])
+            try:
+                for side in ("away", "home"):
+                    team_id = game.get(f"{side}_team_id")
+                    if not team_id:
+                        continue
+                    conference = espn_cfb.fetch_team_conference(team_id, season)
+                    if conference:
+                        if game.get(f"{side}_conference_id") != conference["id"]:
+                            game[f"{side}_conference_id"] = conference["id"]
+                            changed = True
+                        if game.get(f"{side}_conference") != conference["name"]:
+                            game[f"{side}_conference"] = conference["name"]
+                            changed = True
+                if game.get("away_conference") and game.get("home_conference"):
+                    updated += 1
+            except RuntimeError as e:
+                print(f"  Could not resolve conferences for {game['away']} @ {game['home']}: {e}")
+
+    if changed:
         json_store.save_watched(watched)
     return updated
 
@@ -719,6 +771,7 @@ def summary(watched: dict):
         return
 
     _refresh_missing_scores(watched)
+    _refresh_conferences(watched)
 
     season_filter: str | None = None
     team_filter:   str | None = None
@@ -748,6 +801,27 @@ def summary(watched: dict):
             ht["g"] += 1; ht["ps"] += h; ht["pa"] += a
             if a > h:   at["W"] += 1; ht["L"] += 1
             elif h > a: ht["W"] += 1; at["L"] += 1
+
+        conferences: dict[str, dict] = {}
+        def get_conference(name):
+            if name not in conferences:
+                conferences[name] = {"W": 0, "L": 0, "g": 0}
+            return conferences[name]
+
+        for g in scored:
+            if g.get("league") != "college":
+                continue
+            a = int(g["away_score"]); h = int(g["home_score"])
+            for side, won in (("away", a > h), ("home", h > a)):
+                name = g.get(f"{side}_conference")
+                if not name:
+                    continue
+                conference = get_conference(name)
+                conference["g"] += 1
+                if won:
+                    conference["W"] += 1
+                elif a != h:
+                    conference["L"] += 1
 
         rows = []
         for name, t in teams.items():
@@ -791,6 +865,16 @@ def summary(watched: dict):
                     f"{r['pct']:.3f}", r["ps"], r["pa"],
                     r["g"], f"{r['ppg']:.1f}",
                 ))
+
+            if conferences:
+                print("\n  Conference records (team appearances)")
+                conference_col = "  {:<26}  {:>3}  {:>3}  {:>5}  {:>5}"
+                print(conference_col.format("Conference", "W", "L", "PCT", "G"))
+                print("  " + "-" * 48)
+                for name, record in sorted(conferences.items()):
+                    decisions = record["W"] + record["L"]
+                    pct = record["W"] / decisions if decisions else 0
+                    print(conference_col.format(name[:26], record["W"], record["L"], f"{pct:.3f}", record["g"]))
 
             print("\n" + "-" * 60)
             print(f"  Avg total points/game: {avg_pts:.1f}")

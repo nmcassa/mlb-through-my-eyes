@@ -82,6 +82,8 @@ def parse_schedule_event(
         "game_date": date_converter(event.get("date") or ""),
         "away_name": away.get("team", {}).get("displayName", "?"),
         "home_name": home.get("team", {}).get("displayName", "?"),
+        "away_team_id": away.get("team", {}).get("id"),
+        "home_team_id": home.get("team", {}).get("id"),
         "away_score": score_value(away) if completed else "",
         "home_score": score_value(home) if completed else "",
         "status": status.get("shortDetail") or status.get("description") or "",

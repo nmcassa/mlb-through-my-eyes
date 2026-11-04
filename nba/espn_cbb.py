@@ -36,7 +36,9 @@ except ImportError:
     sys.exit(1)
 
 BASE = "https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball"
+CORE_BASE = "https://sports.core.api.espn.com/v2/sports/basketball/leagues/mens-college-basketball"
 _TIMEOUT = 15
+_CONFERENCE_CACHE: dict[tuple[str, str], dict | None] = {}
 
 # Division I alone is ~360 teams — the default /teams page size is much
 # smaller, so this needs to be requested explicitly to get full results.
@@ -51,6 +53,32 @@ def _get(path: str, **params) -> dict:
         return resp.json()
     except requests.RequestException as e:
         raise RuntimeError(f"ESPN API request failed ({url}): {e}") from e
+
+
+def fetch_team_conference(team_id: str, season: str) -> dict | None:
+    key = (str(team_id), str(season))
+    if key in _CONFERENCE_CACHE:
+        return _CONFERENCE_CACHE[key]
+    team = _get(f"teams/{team_id}").get("team", {})
+    group = team.get("groups") or {}
+    group_id = group.get("id") if group.get("isConference") else None
+    if not group_id:
+        _CONFERENCE_CACHE[key] = None
+        return None
+    ending_year = str(int(str(season).split("-")[0]) + 1)
+    url = f"{CORE_BASE}/seasons/{ending_year}/types/2/groups/{group_id}"
+    try:
+        response = requests.get(url, timeout=_TIMEOUT)
+        response.raise_for_status()
+        data = response.json()
+    except requests.RequestException as e:
+        raise RuntimeError(f"ESPN API request failed ({url}): {e}") from e
+    conference = {
+        "id": str(group_id),
+        "name": data.get("shortName") or data.get("name") or f"Group {group_id}",
+    }
+    _CONFERENCE_CACHE[key] = conference
+    return conference
 
 
 # ── Teams ──────────────────────────────────────────────────────────────────
