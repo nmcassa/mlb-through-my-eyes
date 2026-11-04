@@ -23,9 +23,11 @@ import espn_cfb
 import nfl_dates
 import nfl_player_summary as player_summary
 import nfl_json_store as json_store
+import group_summary
 from player_selection import CANCEL_SELECTION, choose_players
 from player_stats_cache import PLAYER_SUMMARY_KEYS_FIELD
 from season_types import SEASON_TYPE_LABELS, record_type, resolve_record_types
+from watched_games import next_watch_key, watch_count
 
 
 # ── League registry ────────────────────────────────────────────────────────────
@@ -237,7 +239,7 @@ def browse_by_date(watched: dict):
 
 
 def _game_select_loop(games: list, watched: dict, team_name: str, season: str, league: dict):
-    """Paginated game list with toggle-to-watch."""
+    """Paginated game list for logging watched games."""
     page_size   = 15
     page        = 0
     total_pages = (len(games) - 1) // page_size + 1
@@ -252,11 +254,12 @@ def _game_select_loop(games: list, watched: dict, team_name: str, season: str, l
         print(f"\n  Page {page+1}/{total_pages}   ({len(games)} games total)\n")
         for i, game in enumerate(chunk):
             gid  = str(game["game_id"])
-            star = "★" if gid in watched else " "
-            print(f"  [{i+1:>2}] {star}  {game_label(game)}")
+            count = watch_count(watched, gid)
+            marker = f"★ ×{count}" if count else " "
+            print(f"  [{i+1:>2}] {marker:<5}  {game_label(game)}")
 
         print("\n" + "-" * 60)
-        print("  Enter a game number to toggle watched  |  n=next  p=prev  q=quit")
+        print("  Enter a game number to log another watch  |  n=next  p=prev  q=quit")
         cmd = input("\n> ").strip().lower()
 
         if cmd == "q":
@@ -272,34 +275,29 @@ def _game_select_loop(games: list, watched: dict, team_name: str, season: str, l
             if 0 <= idx < len(chunk):
                 game = chunk[idx]
                 gid  = str(game["game_id"])
-                if gid in watched:
-                    del watched[gid]
-                    print(f"\n  ✗ Removed: {game_label(game)}")
-                else:
-                    record = {
-                        "game_id":    game["game_id"],
-                        "date":       game["game_date"],
-                        "away":       game["away_name"],
-                        "home":       game["home_name"],
-                        "away_score": game.get("away_score", ""),
-                        "home_score": game.get("home_score", ""),
-                        "league":     league["key"],
-                        "season_type": game.get("season_type", "unknown"),
-                        "season_type_code": game.get("season_type_code"),
-                        "added_at":   datetime.now().isoformat(),
-                    }
-                    selection = _show_boxscore(game, league, gid, record)
-                    if selection is CANCEL_SELECTION:
-                        input("  Press Enter to continue...")
-                        continue
-                    if selection is not None:
-                        record[PLAYER_SUMMARY_KEYS_FIELD] = selection
-                    watched[gid] = record
-                    json_store.save_watched(watched)
-                    print(f"\n  ★ Added:   {game_label(game)}")
+                record = {
+                    "game_id":    game["game_id"],
+                    "date":       game["game_date"],
+                    "away":       game["away_name"],
+                    "home":       game["home_name"],
+                    "away_team_id": game.get("away_team_id"),
+                    "home_team_id": game.get("home_team_id"),
+                    "away_score": game.get("away_score", ""),
+                    "home_score": game.get("home_score", ""),
+                    "league":     league["key"],
+                    "season_type": game.get("season_type", "unknown"),
+                    "season_type_code": game.get("season_type_code"),
+                    "added_at":   datetime.now().isoformat(),
+                }
+                selection = _show_boxscore(game, league, gid, record)
+                if selection is CANCEL_SELECTION:
                     input("  Press Enter to continue...")
                     continue
+                if selection is not None:
+                    record[PLAYER_SUMMARY_KEYS_FIELD] = selection
+                watched[next_watch_key(watched, gid)] = record
                 json_store.save_watched(watched)
+                print(f"\n  ★ Logged watch #{watch_count(watched, gid)}: {game_label(game)}")
                 input("  Press Enter to continue...")
 
 
@@ -399,6 +397,56 @@ def _refresh_missing_scores(watched: dict) -> int:
     return updated
 
 
+def _refresh_conferences(watched: dict) -> int:
+    pending_by_date: dict[str, list[dict]] = {}
+    for game in watched.values():
+        if game.get("league") == "college" and (
+            not game.get("away_conference") or not game.get("home_conference")
+        ):
+            pending_by_date.setdefault(game["date"], []).append(game)
+
+    updated = 0
+    changed = False
+    for date, pending in pending_by_date.items():
+        fetched_by_id = {}
+        if any(not game.get("away_team_id") or not game.get("home_team_id") for game in pending):
+            try:
+                fetched = espn_cfb.fetch_games_by_date(date)
+                fetched_by_id = {str(game["game_id"]): game for game in fetched}
+            except RuntimeError as e:
+                print(f"  Could not refresh conference data for {date}: {e}")
+        for game in pending:
+            current = fetched_by_id.get(str(game["game_id"]))
+            if current:
+                for side in ("away", "home"):
+                    team_id = current.get(f"{side}_team_id")
+                    if team_id and game.get(f"{side}_team_id") != team_id:
+                        game[f"{side}_team_id"] = team_id
+                        changed = True
+            season = nfl_dates.season_label(game["date"])
+            try:
+                for side in ("away", "home"):
+                    team_id = game.get(f"{side}_team_id")
+                    if not team_id:
+                        continue
+                    conference = espn_cfb.fetch_team_conference(team_id, season)
+                    if conference:
+                        if game.get(f"{side}_conference_id") != conference["id"]:
+                            game[f"{side}_conference_id"] = conference["id"]
+                            changed = True
+                        if game.get(f"{side}_conference") != conference["name"]:
+                            game[f"{side}_conference"] = conference["name"]
+                            changed = True
+                if game.get("away_conference") and game.get("home_conference"):
+                    updated += 1
+            except RuntimeError as e:
+                print(f"  Could not resolve conferences for {game['away']} @ {game['home']}: {e}")
+
+    if changed:
+        json_store.save_watched(watched)
+    return updated
+
+
 def view_watched(watched: dict):
     """List all watched games, grouped by year."""
     clear()
@@ -445,8 +493,8 @@ def remove_watched(watched: dict):
         input("\nPress Enter to continue...")
         return
 
-    games = sorted(watched.values(), key=lambda g: g["date"])
-    for i, g in enumerate(games):
+    games = sorted(watched.items(), key=lambda item: (item[1]["date"], item[1].get("added_at", ""), item[0]))
+    for i, (_, g) in enumerate(games):
         away_s = g.get("away_score", "")
         home_s = g.get("home_score", "")
         score  = f"  {away_s}–{home_s}" if away_s != "" else ""
@@ -461,9 +509,8 @@ def remove_watched(watched: dict):
     if cmd.isdigit():
         idx = int(cmd) - 1
         if 0 <= idx < len(games):
-            g   = games[idx]
-            gid = str(g["game_id"])
-            del watched[gid]
+            watch_key, g = games[idx]
+            del watched[watch_key]
             json_store.save_watched(watched)
             print(f"\n  Removed: {g['date']}  {g['away']} @ {g['home']}")
     input("\nPress Enter to continue...")
@@ -714,6 +761,11 @@ _GAME_SORT_COLS = [
     ("Pts/game",      "ppg",  True),
 ]
 
+_CONFERENCE_SORT_COLS = [
+    ("Conference name", "name", False),
+    *_GAME_SORT_COLS[1:],
+]
+
 
 def summary(watched: dict):
     """Show per-team record and scoring stats across all watched games."""
@@ -830,6 +882,76 @@ def summary(watched: dict):
         if isinstance(result, tuple) and result[0] == "page":
             page += result[1]
             continue
+        if result is False:
+            continue
+        sort_col, sort_rev = result
+        page = 0
+
+
+def conference_summary(watched: dict):
+    if not watched:
+        clear()
+        print_header("Conference Summary")
+        print("\n  No games watched yet. Browse a season to add some!")
+        input("\nPress Enter to continue...")
+        return
+
+    _refresh_missing_scores(watched)
+    _refresh_conferences(watched)
+    try:
+        pro_groups = espn_nfl.fetch_team_conferences()
+    except RuntimeError as e:
+        print(f"  Could not load NFL conferences: {e}")
+        pro_groups = {}
+    season_filter: str | None = None
+    team_filter: str | None = None
+    league_filter: str | None = None
+    season_type_filter: str | None = None
+    sort_col, sort_rev = "pct", True
+    page, page_size = 0, 25
+
+    while True:
+        active = _apply_watched_filters(watched, season_filter, team_filter, league_filter, season_type_filter)
+        scored = [
+            game for game in active.values()
+            if game.get("away_score", "") != "" and game.get("home_score", "") != ""
+        ]
+        rows = group_summary.aggregate(scored, {"nfl": pro_groups}, "nfl")
+        rows = _sort_rows(rows, sort_col, sort_rev)
+        visible, page, total_pages = _paginate(rows, page, page_size)
+
+        clear()
+        print_header("Conference Summary")
+        sort_label = next(label for label, key, _ in _CONFERENCE_SORT_COLS if key == sort_col)
+        fl = _filters_label(season_filter, team_filter, league_filter=league_filter, season_type_filter=season_type_filter)
+        print(f"\n  {len(scored)} game(s)  |  {len(rows)} conferences  |  sorted by {sort_label}  |  {_page_label(page, total_pages)}{fl}\n")
+        if not rows:
+            print("  No completed games with conference data match current filters.")
+        else:
+            col = "{:<26}  {:>3}  {:>3}  {:>5}  {:>6}  {:>6}  {:>5}  {:>6}"
+            print(col.format("Conference", "W", "L", "PCT", "PS", "PA", "G", "PTS/G"))
+            print("  " + "-" * 58)
+            for row in visible:
+                print("  " + col.format(row["name"][:26], row["W"], row["L"], f"{row['pct']:.3f}", row["ps"], row["pa"], row["g"], f"{row['ppg']:.1f}"))
+
+        result = _sort_prompt(_CONFERENCE_SORT_COLS, total_pages)
+        if result is None:
+            return
+        if result == "csv":
+            csv_rows = [{**row, "pct": f"{row['pct']:.3f}", "ppg": f"{row['ppg']:.1f}"} for row in rows]
+            _dump_csv("football_conference_summary.csv", ["Conference", "W", "L", "PCT", "PS", "PA", "G", "PTS/G"], csv_rows, ["name", "W", "L", "pct", "ps", "pa", "g", "ppg"])
+            continue
+        if result == "filter":
+            season_filter, team_filter, _, league_filter, season_type_filter = _filter_prompt(
+                watched, season_filter, team_filter, league_filter=league_filter,
+                season_type_filter=season_type_filter,
+            )
+            page = 0
+            continue
+        if isinstance(result, tuple) and result[0] == "pagesize":
+            page_size = _ask_page_size(page_size); page = 0; continue
+        if isinstance(result, tuple) and result[0] == "page":
+            page += result[1]; continue
         if result is False:
             continue
         sort_col, sort_rev = result
@@ -1212,6 +1334,7 @@ def main():
         print("  [5]  Player Summary")
         print("  [6]  Search Player")
         print("  [7]  Browse by Date")
+        print("  [8]  Conference Summary")
         print("  [q]  Quit\n")
 
         cmd = input("> ").strip().lower()
@@ -1230,6 +1353,8 @@ def main():
             screen_player_search(watched)
         elif cmd == "7":
             browse_by_date(watched)
+        elif cmd == "8":
+            conference_summary(watched)
         elif cmd == "q":
             print("\nGoodbye!")
             break

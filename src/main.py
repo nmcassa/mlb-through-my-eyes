@@ -18,9 +18,11 @@ import mlb
 import player_summary
 import comparison
 import json_store
+import group_summary
 from player_selection import CANCEL_SELECTION, choose_players
 from player_stats_cache import PLAYER_SUMMARY_KEYS_FIELD
 from season_types import SEASON_TYPE_LABELS, record_type, resolve_record_types
+from watched_games import next_watch_key, watch_count
 
 
 # ── Display helpers ───────────────────────────────────────────────────────────
@@ -179,7 +181,7 @@ def browse_by_date(watched: dict):
 
 
 def _game_select_loop(games: list, watched: dict, team_name: str, season: str):
-    """Paginated game list with toggle-to-watch."""
+    """Paginated game list for logging watched games."""
     page_size   = 15
     page        = 0
     total_pages = (len(games) - 1) // page_size + 1
@@ -194,11 +196,12 @@ def _game_select_loop(games: list, watched: dict, team_name: str, season: str):
         print(f"\n  Page {page+1}/{total_pages}   ({len(games)} games total)\n")
         for i, game in enumerate(chunk):
             gid  = str(game["game_id"])
-            star = "★" if gid in watched else " "
-            print(f"  [{i+1:>2}] {star}  {game_label(game)}")
+            count = watch_count(watched, gid)
+            marker = f"★ ×{count}" if count else " "
+            print(f"  [{i+1:>2}] {marker:<5}  {game_label(game)}")
 
         print("\n" + "-" * 60)
-        print("  Enter a game number to toggle watched  |  n=next  p=prev  q=quit")
+        print("  Enter a game number to log another watch  |  n=next  p=prev  q=quit")
         cmd = input("\n> ").strip().lower()
 
         if cmd == "q":
@@ -214,33 +217,28 @@ def _game_select_loop(games: list, watched: dict, team_name: str, season: str):
             if 0 <= idx < len(chunk):
                 game = chunk[idx]
                 gid  = str(game["game_id"])
-                if gid in watched:
-                    del watched[gid]
-                    print(f"\n  ✗ Removed: {game_label(game)}")
-                else:
-                    record = {
-                        "game_id":    game["game_id"],
-                        "date":       game["game_date"],
-                        "away":       game["away_name"],
-                        "home":       game["home_name"],
-                        "away_score": game.get("away_score", ""),
-                        "home_score": game.get("home_score", ""),
-                        "season_type": game.get("season_type", "unknown"),
-                        "season_type_code": game.get("season_type_code"),
-                        "added_at":   datetime.now().isoformat(),
-                    }
-                    selection = _show_boxscore(game, gid, record)
-                    if selection is CANCEL_SELECTION:
-                        input("  Press Enter to continue...")
-                        continue
-                    if selection is not None:
-                        record[PLAYER_SUMMARY_KEYS_FIELD] = selection
-                    watched[gid] = record
-                    json_store.save_watched(watched)
-                    print(f"\n  ★ Added:   {game_label(game)}")
+                record = {
+                    "game_id":    game["game_id"],
+                    "date":       game["game_date"],
+                    "away":       game["away_name"],
+                    "home":       game["home_name"],
+                    "away_team_id": game.get("away_id"),
+                    "home_team_id": game.get("home_id"),
+                    "away_score": game.get("away_score", ""),
+                    "home_score": game.get("home_score", ""),
+                    "season_type": game.get("season_type", "unknown"),
+                    "season_type_code": game.get("season_type_code"),
+                    "added_at":   datetime.now().isoformat(),
+                }
+                selection = _show_boxscore(game, gid, record)
+                if selection is CANCEL_SELECTION:
                     input("  Press Enter to continue...")
                     continue
+                if selection is not None:
+                    record[PLAYER_SUMMARY_KEYS_FIELD] = selection
+                watched[next_watch_key(watched, gid)] = record
                 json_store.save_watched(watched)
+                print(f"\n  ★ Logged watch #{watch_count(watched, gid)}: {game_label(game)}")
                 input("  Press Enter to continue...")
 
 
@@ -337,8 +335,8 @@ def remove_watched(watched: dict):
         input("\nPress Enter to continue...")
         return
 
-    games = sorted(watched.values(), key=lambda g: g["date"])
-    for i, g in enumerate(games):
+    games = sorted(watched.items(), key=lambda item: (item[1]["date"], item[1].get("added_at", ""), item[0]))
+    for i, (_, g) in enumerate(games):
         away_s = g.get("away_score", "")
         home_s = g.get("home_score", "")
         score  = f"  {away_s}–{home_s}" if away_s != "" else ""
@@ -352,9 +350,8 @@ def remove_watched(watched: dict):
     if cmd.isdigit():
         idx = int(cmd) - 1
         if 0 <= idx < len(games):
-            g   = games[idx]
-            gid = str(g["game_id"])
-            del watched[gid]
+            watch_key, g = games[idx]
+            del watched[watch_key]
             json_store.save_watched(watched)
             print(f"\n  Removed: {g['date']}  {g['away']} @ {g['home']}")
     input("\nPress Enter to continue...")
@@ -643,6 +640,17 @@ _GAME_SORT_COLS = [
     ("Runs/game",    "rpg",  True),
 ]
 
+_LEAGUE_SORT_COLS = [
+    ("League name",   "name", False),
+    ("Wins",          "W",    True),
+    ("Losses",        "L",    False),
+    ("Win %",         "pct",  True),
+    ("Runs scored",   "ps",   True),
+    ("Runs allowed",  "pa",   False),
+    ("Games",         "g",    True),
+    ("Runs/game",     "ppg",  True),
+]
+
 
 def summary(watched: dict):
     """Show per-team record and run stats across all watched games."""
@@ -760,6 +768,78 @@ def summary(watched: dict):
         if isinstance(result, tuple) and result[0] == "page":
             page += result[1]
             continue
+        if result is False:
+            continue
+        sort_col, sort_rev = result
+        page = 0
+
+
+def league_summary(watched: dict):
+    if not watched:
+        clear()
+        print_header("League Summary")
+        print("\n  No games watched yet. Browse a season to add some!")
+        input("\nPress Enter to continue...")
+        return
+
+    _refresh_missing_scores(watched)
+    try:
+        league_map = mlb.fetch_team_leagues()
+    except RuntimeError as e:
+        clear()
+        print_header("League Summary")
+        print(f"\n  Could not load MLB leagues: {e}")
+        input("\nPress Enter to continue...")
+        return
+
+    season_filter: str | None = None
+    team_filter: str | None = None
+    season_type_filter: str | None = None
+    sort_col, sort_rev = "pct", True
+    page, page_size = 0, 25
+
+    while True:
+        active = _apply_watched_filters(watched, season_filter, team_filter, season_type_filter)
+        scored = [
+            game for game in active.values()
+            if game.get("away_score", "") != "" and game.get("home_score", "") != ""
+        ]
+        rows = group_summary.aggregate(scored, {"mlb": league_map}, "mlb")
+        rows = _sort_rows(rows, sort_col, sort_rev)
+        visible, page, total_pages = _paginate(rows, page, page_size)
+
+        clear()
+        print_header("League Summary")
+        sort_label = next(label for label, key, _ in _LEAGUE_SORT_COLS if key == sort_col)
+        fl = _filters_label(season_filter, team_filter, season_type_filter)
+        print(f"\n  {len(scored)} game(s)  |  {len(rows)} leagues  |  sorted by {sort_label}  |  {_page_label(page, total_pages)}{fl}\n")
+        if not rows:
+            print("  No completed games with league data match current filters.")
+        else:
+            col = "{:<26}  {:>3}  {:>3}  {:>5}  {:>6}  {:>6}  {:>5}  {:>6}"
+            print(col.format("League", "W", "L", "PCT", "RS", "RA", "G", "R/G"))
+            print("  " + "-" * 58)
+            for row in visible:
+                print("  " + col.format(row["name"][:26], row["W"], row["L"], f"{row['pct']:.3f}", row["ps"], row["pa"], row["g"], f"{row['ppg']:.1f}"))
+
+        result = _sort_prompt(_LEAGUE_SORT_COLS, total_pages)
+        if result is None:
+            return
+        if result == "csv":
+            csv_rows = [{**row, "pct": f"{row['pct']:.3f}", "ppg": f"{row['ppg']:.1f}"} for row in rows]
+            _dump_csv("mlb_league_summary.csv", ["League", "W", "L", "PCT", "RS", "RA", "G", "R/G"], csv_rows, ["name", "W", "L", "pct", "ps", "pa", "g", "ppg"])
+            continue
+        if result == "filter":
+            season_filter, team_filter, _, _, season_type_filter = _filter_prompt(
+                watched, season_filter, team_filter, None, show_ip=False,
+                season_type_filter=season_type_filter,
+            )
+            page = 0
+            continue
+        if isinstance(result, tuple) and result[0] == "pagesize":
+            page_size = _ask_page_size(page_size); page = 0; continue
+        if isinstance(result, tuple) and result[0] == "page":
+            page += result[1]; continue
         if result is False:
             continue
         sort_col, sort_rev = result
@@ -1585,6 +1665,7 @@ def main():
         print("  [6]  My Small Sample")
         print("  [7]  Search Player")
         print("  [8]  Browse by Date")
+        print("  [9]  League Summary")
         print("  [q]  Quit\n")
 
         cmd = input("> ").strip().lower()
@@ -1605,6 +1686,8 @@ def main():
             screen_player_search(watched)
         elif cmd == "8":
             browse_by_date(watched)
+        elif cmd == "9":
+            league_summary(watched)
         elif cmd == "q":
             print("\nBye!\n")
             break

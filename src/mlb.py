@@ -26,6 +26,22 @@ def find_teams(query: str) -> list[dict]:
     return statsapi.lookup_team(query)
 
 
+def fetch_team_leagues() -> dict[str, str]:
+    try:
+        data = statsapi.get("teams", {"sportIds": 1, "hydrate": "league"})
+    except Exception as e:
+        raise RuntimeError(f"Failed to fetch MLB leagues: {e}") from e
+    mapping = {}
+    for team in data.get("teams", []):
+        league = team.get("league", {})
+        name = league.get("abbreviation") or league.get("name")
+        if not name:
+            continue
+        mapping[str(team.get("id"))] = name
+        mapping[team.get("name", "")] = name
+    return mapping
+
+
 # Human-readable labels for MLB game type codes
 GAME_TYPE_LABELS = {
     "S": "Spring Training",

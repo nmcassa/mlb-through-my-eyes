@@ -36,6 +36,21 @@ def find_teams(getter: Callable[..., dict], query: str, limit: int) -> list[dict
     return found
 
 
+def fetch_team_groups(getter: Callable[..., dict]) -> dict[str, str]:
+    mapping = {}
+    for group in getter("groups").get("groups", []):
+        name = group.get("abbreviation") or group.get("name")
+        for child in group.get("children", []):
+            for team in child.get("teams", []):
+                team_id = team.get("id")
+                team_name = team.get("displayName")
+                if team_id:
+                    mapping[str(team_id)] = name
+                if team_name:
+                    mapping[team_name] = name
+    return mapping
+
+
 def score_value(competitor: dict) -> str:
     score = competitor.get("score", "")
     if isinstance(score, dict):
@@ -82,6 +97,8 @@ def parse_schedule_event(
         "game_date": date_converter(event.get("date") or ""),
         "away_name": away.get("team", {}).get("displayName", "?"),
         "home_name": home.get("team", {}).get("displayName", "?"),
+        "away_team_id": away.get("team", {}).get("id"),
+        "home_team_id": home.get("team", {}).get("id"),
         "away_score": score_value(away) if completed else "",
         "home_score": score_value(home) if completed else "",
         "status": status.get("shortDetail") or status.get("description") or "",
