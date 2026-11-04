@@ -6,7 +6,9 @@
     "home": "Philadelphia 76ers",
     "away_score": "121",
     "home_score": "125",
-    "added_at": "2026-07-25T23:29:27.085579"
+    "added_at": "2026-07-25T23:29:27.085579",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401809964": {
     "game_id": "401809964",
@@ -15,7 +17,9 @@
     "home": "Washington Wizards",
     "away_score": "139",
     "home_score": "113",
-    "added_at": "2026-07-25T23:29:29.555867"
+    "added_at": "2026-07-25T23:29:29.555867",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401809993": {
     "game_id": "401809993",
@@ -24,7 +28,9 @@
     "home": "Charlotte Hornets",
     "away_score": "123",
     "home_score": "107",
-    "added_at": "2026-07-25T23:30:24.619192"
+    "added_at": "2026-07-25T23:30:24.619192",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810023": {
     "game_id": "401810023",
@@ -96,7 +102,9 @@
     "home": "Charlotte Hornets",
     "away_score": "131",
     "home_score": "116",
-    "added_at": "2026-07-25T23:31:09.050092"
+    "added_at": "2026-07-25T23:31:09.050092",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810131": {
     "game_id": "401810131",
@@ -105,7 +113,9 @@
     "home": "Atlanta Hawks",
     "away_score": "110",
     "home_score": "113",
-    "added_at": "2026-07-25T23:31:16.142097"
+    "added_at": "2026-07-25T23:31:16.142097",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401809803": {
     "game_id": "401809803",
@@ -132,7 +142,9 @@
     "home": "Charlotte Hornets",
     "away_score": "111",
     "home_score": "118",
-    "added_at": "2026-07-25T23:31:24.210446"
+    "added_at": "2026-07-25T23:31:24.210446",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810167": {
     "game_id": "401810167",
@@ -168,7 +180,9 @@
     "home": "Charlotte Hornets",
     "away_score": "115",
     "home_score": "106",
-    "added_at": "2026-07-25T23:31:41.320989"
+    "added_at": "2026-07-25T23:31:41.320989",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401836750": {
     "game_id": "401836750",
@@ -186,7 +200,9 @@
     "home": "Cleveland Cavaliers",
     "away_score": "119",
     "home_score": "111",
-    "added_at": "2026-07-25T23:31:49.269164"
+    "added_at": "2026-07-25T23:31:49.269164",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810226": {
     "game_id": "401810226",
@@ -231,7 +247,9 @@
     "home": "Charlotte Hornets",
     "away_score": "132",
     "home_score": "125",
-    "added_at": "2026-07-25T23:32:20.521866"
+    "added_at": "2026-07-25T23:32:20.521866",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810344": {
     "game_id": "401810344",
@@ -321,7 +339,9 @@
     "home": "Charlotte Hornets",
     "away_score": "115",
     "home_score": "119",
-    "added_at": "2026-07-25T23:33:08.988891"
+    "added_at": "2026-07-25T23:33:08.988891",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810512": {
     "game_id": "401810512",
@@ -330,7 +350,9 @@
     "home": "Charlotte Hornets",
     "away_score": "93",
     "home_score": "130",
-    "added_at": "2026-07-25T23:33:10.341427"
+    "added_at": "2026-07-25T23:33:10.341427",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810531": {
     "game_id": "401810531",
@@ -357,7 +379,9 @@
     "home": "Charlotte Hornets",
     "away_score": "106",
     "home_score": "111",
-    "added_at": "2026-07-25T23:33:16.394212"
+    "added_at": "2026-07-25T23:33:16.394212",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810567": {
     "game_id": "401810567",
@@ -366,7 +390,9 @@
     "home": "Charlotte Hornets",
     "away_score": "95",
     "home_score": "102",
-    "added_at": "2026-07-25T23:33:21.961651"
+    "added_at": "2026-07-25T23:33:21.961651",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810592": {
     "game_id": "401810592",
@@ -429,7 +455,9 @@
     "home": "Washington Wizards",
     "away_score": "129",
     "home_score": "112",
-    "added_at": "2026-07-25T23:33:39.906506"
+    "added_at": "2026-07-25T23:33:39.906506",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810691": {
     "game_id": "401810691",
@@ -456,7 +484,9 @@
     "home": "Charlotte Hornets",
     "away_score": "93",
     "home_score": "109",
-    "added_at": "2026-07-25T23:33:45.778861"
+    "added_at": "2026-07-25T23:33:45.778861",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810738": {
     "game_id": "401810738",
@@ -519,7 +549,9 @@
     "home": "Charlotte Hornets",
     "away_score": "106",
     "home_score": "136",
-    "added_at": "2026-07-25T23:34:07.659264"
+    "added_at": "2026-07-25T23:34:07.659264",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810902": {
     "game_id": "401810902",
@@ -528,7 +560,9 @@
     "home": "Charlotte Hornets",
     "away_score": "90",
     "home_score": "134",
-    "added_at": "2026-07-25T23:34:14.750538"
+    "added_at": "2026-07-25T23:34:14.750538",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810918": {
     "game_id": "401810918",
@@ -537,7 +571,9 @@
     "home": "Charlotte Hornets",
     "away_score": "103",
     "home_score": "114",
-    "added_at": "2026-07-25T23:34:20.482207"
+    "added_at": "2026-07-25T23:34:20.482207",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810932": {
     "game_id": "401810932",
@@ -546,7 +582,9 @@
     "home": "Charlotte Hornets",
     "away_score": "118",
     "home_score": "114",
-    "added_at": "2026-07-25T23:34:25.709035"
+    "added_at": "2026-07-25T23:34:25.709035",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810940": {
     "game_id": "401810940",
@@ -555,7 +593,9 @@
     "home": "Charlotte Hornets",
     "away_score": "114",
     "home_score": "99",
-    "added_at": "2026-07-25T23:34:28.172142"
+    "added_at": "2026-07-25T23:34:28.172142",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810969": {
     "game_id": "401810969",
@@ -564,7 +604,9 @@
     "home": "Charlotte Hornets",
     "away_score": "107",
     "home_score": "127",
-    "added_at": "2026-07-25T23:34:41.438738"
+    "added_at": "2026-07-25T23:34:41.438738",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810975": {
     "game_id": "401810975",
@@ -573,7 +615,9 @@
     "home": "Charlotte Hornets",
     "away_score": "108",
     "home_score": "129",
-    "added_at": "2026-07-25T23:34:45.747426"
+    "added_at": "2026-07-25T23:34:45.747426",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810992": {
     "game_id": "401810992",
@@ -582,7 +626,9 @@
     "home": "Minnesota Timberwolves",
     "away_score": "122",
     "home_score": "108",
-    "added_at": "2026-07-25T23:34:52.019777"
+    "added_at": "2026-07-25T23:34:52.019777",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401811004": {
     "game_id": "401811004",
@@ -600,7 +646,9 @@
     "home": "Charlotte Hornets",
     "away_score": "118",
     "home_score": "100",
-    "added_at": "2026-07-25T23:34:57.207573"
+    "added_at": "2026-07-25T23:34:57.207573",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401811045": {
     "game_id": "401811045",
@@ -609,7 +657,9 @@
     "home": "New York Knicks",
     "away_score": "110",
     "home_score": "96",
-    "added_at": "2026-07-25T23:35:02.224234"
+    "added_at": "2026-07-25T23:35:02.224234",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810057": {
     "game_id": "401810057",
@@ -780,7 +830,9 @@
     "home": "Portland Trail Blazers",
     "away_score": "114",
     "home_score": "93",
-    "added_at": "2026-07-25T23:48:51.000034"
+    "added_at": "2026-07-25T23:48:51.000034",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401871152": {
     "game_id": "401871152",
@@ -807,7 +859,9 @@
     "home": "Minnesota Timberwolves",
     "away_score": "109",
     "home_score": "114",
-    "added_at": "2026-07-25T23:49:28.612066"
+    "added_at": "2026-07-25T23:49:28.612066",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401871156": {
     "game_id": "401871156",
@@ -915,7 +969,9 @@
     "home": "Charlotte Hornets",
     "away_score": "126",
     "home_score": "127",
-    "added_at": "2026-07-26T09:09:39.692282"
+    "added_at": "2026-07-26T09:09:39.692282",
+    "season_type": "postseason",
+    "season_type_code": "5"
   },
   "401866758": {
     "game_id": "401866758",
@@ -924,7 +980,9 @@
     "home": "Orlando Magic",
     "away_score": "90",
     "home_score": "121",
-    "added_at": "2026-07-26T09:09:41.088613"
+    "added_at": "2026-07-26T09:09:41.088613",
+    "season_type": "postseason",
+    "season_type_code": "5"
   },
   "401810124": {
     "game_id": "401810124",
@@ -933,7 +991,9 @@
     "home": "Orlando Magic",
     "away_score": "121",
     "home_score": "133",
-    "added_at": "2026-07-26T09:10:34.680876"
+    "added_at": "2026-07-26T09:10:34.680876",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401809834": {
     "game_id": "401809834",
@@ -942,7 +1002,9 @@
     "home": "Toronto Raptors",
     "away_score": "117",
     "home_score": "101",
-    "added_at": "2026-07-26T09:10:44.797695"
+    "added_at": "2026-07-26T09:10:44.797695",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401809238": {
     "game_id": "401809238",
@@ -951,7 +1013,9 @@
     "home": "New York Knicks",
     "away_score": "124",
     "home_score": "126",
-    "added_at": "2026-07-26T09:10:52.469893"
+    "added_at": "2026-07-26T09:10:52.469893",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810406": {
     "game_id": "401810406",
@@ -960,7 +1024,9 @@
     "home": "Portland Trail Blazers",
     "away_score": "123",
     "home_score": "114",
-    "added_at": "2026-07-26T09:10:56.959119"
+    "added_at": "2026-07-26T09:10:56.959119",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810545": {
     "game_id": "401810545",
@@ -969,7 +1035,9 @@
     "home": "New York Knicks",
     "away_score": "97",
     "home_score": "127",
-    "added_at": "2026-07-26T09:11:03.090227"
+    "added_at": "2026-07-26T09:11:03.090227",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810563": {
     "game_id": "401810563",
@@ -978,7 +1046,9 @@
     "home": "New York Knicks",
     "away_score": "100",
     "home_score": "112",
-    "added_at": "2026-07-26T09:11:06.821213"
+    "added_at": "2026-07-26T09:11:06.821213",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810581": {
     "game_id": "401810581",
@@ -987,7 +1057,9 @@
     "home": "New York Knicks",
     "away_score": "127",
     "home_score": "134",
-    "added_at": "2026-07-26T09:11:10.011166"
+    "added_at": "2026-07-26T09:11:10.011166",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810597": {
     "game_id": "401810597",
@@ -996,7 +1068,9 @@
     "home": "Detroit Pistons",
     "away_score": "80",
     "home_score": "118",
-    "added_at": "2026-07-26T09:11:14.686210"
+    "added_at": "2026-07-26T09:11:14.686210",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810671": {
     "game_id": "401810671",
@@ -1005,7 +1079,9 @@
     "home": "New York Knicks",
     "away_score": "106",
     "home_score": "108",
-    "added_at": "2026-07-26T09:11:29.079622"
+    "added_at": "2026-07-26T09:11:29.079622",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810944": {
     "game_id": "401810944",
@@ -1014,7 +1090,9 @@
     "home": "Oklahoma City Thunder",
     "away_score": "100",
     "home_score": "111",
-    "added_at": "2026-07-26T09:11:38.110785"
+    "added_at": "2026-07-26T09:11:38.110785",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401769746": {
     "game_id": "401769746",
@@ -1023,7 +1101,9 @@
     "home": "Boston Celtics",
     "away_score": "108",
     "home_score": "105",
-    "added_at": "2026-07-26T09:12:05.536659"
+    "added_at": "2026-07-26T09:12:05.536659",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401869387": {
     "game_id": "401869387",
@@ -1032,7 +1112,9 @@
     "home": "New York Knicks",
     "away_score": "107",
     "home_score": "106",
-    "added_at": "2026-07-26T09:12:26.588896"
+    "added_at": "2026-07-26T09:12:26.588896",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401869391": {
     "game_id": "401869391",
@@ -1041,7 +1123,9 @@
     "home": "Atlanta Hawks",
     "away_score": "114",
     "home_score": "98",
-    "added_at": "2026-07-26T09:12:37.192440"
+    "added_at": "2026-07-26T09:12:37.192440",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401869393": {
     "game_id": "401869393",
@@ -1050,7 +1134,9 @@
     "home": "Atlanta Hawks",
     "away_score": "140",
     "home_score": "89",
-    "added_at": "2026-07-26T09:12:48.307426"
+    "added_at": "2026-07-26T09:12:48.307426",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401871159": {
     "game_id": "401871159",
@@ -1059,7 +1145,9 @@
     "home": "New York Knicks",
     "away_score": "98",
     "home_score": "137",
-    "added_at": "2026-07-26T09:12:54.704700"
+    "added_at": "2026-07-26T09:12:54.704700",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401871160": {
     "game_id": "401871160",
@@ -1068,7 +1156,9 @@
     "home": "New York Knicks",
     "away_score": "102",
     "home_score": "108",
-    "added_at": "2026-07-26T09:12:59.404820"
+    "added_at": "2026-07-26T09:12:59.404820",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401873341": {
     "game_id": "401873341",
@@ -1077,7 +1167,9 @@
     "home": "New York Knicks",
     "away_score": "104",
     "home_score": "115",
-    "added_at": "2026-07-26T09:13:11.706611"
+    "added_at": "2026-07-26T09:13:11.706611",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401873343": {
     "game_id": "401873343",
@@ -1086,7 +1178,9 @@
     "home": "Cleveland Cavaliers",
     "away_score": "121",
     "home_score": "108",
-    "added_at": "2026-07-26T09:13:17.575806"
+    "added_at": "2026-07-26T09:13:17.575806",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401873344": {
     "game_id": "401873344",
@@ -1095,7 +1189,9 @@
     "home": "Cleveland Cavaliers",
     "away_score": "130",
     "home_score": "93",
-    "added_at": "2026-07-26T09:13:20.982018"
+    "added_at": "2026-07-26T09:13:20.982018",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401654756": {
     "game_id": "401654756",
@@ -1104,7 +1200,9 @@
     "home": "New York Knicks",
     "away_score": "104",
     "home_score": "111",
-    "added_at": "2026-07-26T09:13:45.174715"
+    "added_at": "2026-07-26T09:13:45.174715",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401810080": {
     "game_id": "401810080",
@@ -1113,7 +1211,9 @@
     "home": "Cleveland Cavaliers",
     "away_score": "126",
     "home_score": "113",
-    "added_at": "2026-07-26T09:15:40.388727"
+    "added_at": "2026-07-26T09:15:40.388727",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810083": {
     "game_id": "401810083",
@@ -1122,7 +1222,9 @@
     "home": "Cleveland Cavaliers",
     "away_score": "100",
     "home_score": "108",
-    "added_at": "2026-07-26T09:15:44.454583"
+    "added_at": "2026-07-26T09:15:44.454583",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810526": {
     "game_id": "401810526",
@@ -1131,7 +1233,9 @@
     "home": "Cleveland Cavaliers",
     "away_score": "99",
     "home_score": "129",
-    "added_at": "2026-07-26T09:16:04.962748"
+    "added_at": "2026-07-26T09:16:04.962748",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810622": {
     "game_id": "401810622",
@@ -1140,7 +1244,9 @@
     "home": "Denver Nuggets",
     "away_score": "119",
     "home_score": "117",
-    "added_at": "2026-07-26T09:16:19.269459"
+    "added_at": "2026-07-26T09:16:19.269459",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810631": {
     "game_id": "401810631",
@@ -1149,7 +1255,9 @@
     "home": "Cleveland Cavaliers",
     "away_score": "113",
     "home_score": "138",
-    "added_at": "2026-07-26T09:16:23.459316"
+    "added_at": "2026-07-26T09:16:23.459316",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810701": {
     "game_id": "401810701",
@@ -1158,7 +1266,9 @@
     "home": "Milwaukee Bucks",
     "away_score": "116",
     "home_score": "118",
-    "added_at": "2026-07-26T09:16:34.005865"
+    "added_at": "2026-07-26T09:16:34.005865",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810739": {
     "game_id": "401810739",
@@ -1167,7 +1277,9 @@
     "home": "Cleveland Cavaliers",
     "away_score": "109",
     "home_score": "113",
-    "added_at": "2026-07-26T09:16:42.511410"
+    "added_at": "2026-07-26T09:16:42.511410",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810802": {
     "game_id": "401810802",
@@ -1176,7 +1288,9 @@
     "home": "Orlando Magic",
     "away_score": "122",
     "home_score": "128",
-    "added_at": "2026-07-26T09:16:45.390290"
+    "added_at": "2026-07-26T09:16:45.390290",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401812692": {
     "game_id": "401812692",
@@ -1185,7 +1299,9 @@
     "home": "Chicago Bulls",
     "away_score": "112",
     "home_score": "119",
-    "added_at": "2026-07-26T09:17:10.653038"
+    "added_at": "2026-07-26T09:17:10.653038",
+    "season_type": "preseason",
+    "season_type_code": "1"
   },
   "401869369": {
     "game_id": "401869369",
@@ -1194,7 +1310,9 @@
     "home": "Cleveland Cavaliers",
     "away_score": "105",
     "home_score": "115",
-    "added_at": "2026-07-26T09:17:23.169575"
+    "added_at": "2026-07-26T09:17:23.169575",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401869375": {
     "game_id": "401869375",
@@ -1203,7 +1321,9 @@
     "home": "Toronto Raptors",
     "away_score": "104",
     "home_score": "126",
-    "added_at": "2026-07-26T09:17:28.619197"
+    "added_at": "2026-07-26T09:17:28.619197",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401869377": {
     "game_id": "401869377",
@@ -1212,7 +1332,9 @@
     "home": "Toronto Raptors",
     "away_score": "89",
     "home_score": "93",
-    "added_at": "2026-07-26T09:17:33.377048"
+    "added_at": "2026-07-26T09:17:33.377048",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401869380": {
     "game_id": "401869380",
@@ -1221,7 +1343,9 @@
     "home": "Cleveland Cavaliers",
     "away_score": "120",
     "home_score": "125",
-    "added_at": "2026-07-26T09:17:36.427043"
+    "added_at": "2026-07-26T09:17:36.427043",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401869384": {
     "game_id": "401869384",
@@ -1230,7 +1354,9 @@
     "home": "Cleveland Cavaliers",
     "away_score": "102",
     "home_score": "114",
-    "added_at": "2026-07-26T09:17:46.157880"
+    "added_at": "2026-07-26T09:17:46.157880",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401871333": {
     "game_id": "401871333",
@@ -1239,7 +1365,9 @@
     "home": "Detroit Pistons",
     "away_score": "101",
     "home_score": "111",
-    "added_at": "2026-07-26T09:17:52.400911"
+    "added_at": "2026-07-26T09:17:52.400911",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401871339": {
     "game_id": "401871339",
@@ -1248,7 +1376,9 @@
     "home": "Detroit Pistons",
     "away_score": "125",
     "home_score": "94",
-    "added_at": "2026-07-26T09:18:01.579769"
+    "added_at": "2026-07-26T09:18:01.579769",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "400878160": {
     "game_id": "400878160",
@@ -1257,7 +1387,9 @@
     "home": "Golden State Warriors",
     "away_score": "93",
     "home_score": "89",
-    "added_at": "2026-07-26T09:18:30.482966"
+    "added_at": "2026-07-26T09:18:30.482966",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401810021": {
     "game_id": "401810021",
@@ -1266,7 +1398,9 @@
     "home": "Atlanta Hawks",
     "away_score": "112",
     "home_score": "127",
-    "added_at": "2026-07-26T09:18:59.350405"
+    "added_at": "2026-07-26T09:18:59.350405",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810061": {
     "game_id": "401810061",
@@ -1275,7 +1409,9 @@
     "home": "LA Clippers",
     "away_score": "105",
     "home_score": "102",
-    "added_at": "2026-07-26T09:19:04.580032"
+    "added_at": "2026-07-26T09:19:04.580032",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810164": {
     "game_id": "401810164",
@@ -1284,7 +1420,9 @@
     "home": "Detroit Pistons",
     "away_score": "98",
     "home_score": "99",
-    "added_at": "2026-07-26T09:19:13.650328"
+    "added_at": "2026-07-26T09:19:13.650328",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810195": {
     "game_id": "401810195",
@@ -1293,7 +1431,9 @@
     "home": "Atlanta Hawks",
     "away_score": "134",
     "home_score": "133",
-    "added_at": "2026-07-26T09:19:18.550680"
+    "added_at": "2026-07-26T09:19:18.550680",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810411": {
     "game_id": "401810411",
@@ -1302,7 +1442,9 @@
     "home": "Golden State Warriors",
     "away_score": "124",
     "home_score": "111",
-    "added_at": "2026-07-26T09:19:28.671446"
+    "added_at": "2026-07-26T09:19:28.671446",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401809247": {
     "game_id": "401809247",
@@ -1311,7 +1453,9 @@
     "home": "Atlanta Hawks",
     "away_score": "112",
     "home_score": "110",
-    "added_at": "2026-07-26T09:19:35.131725"
+    "added_at": "2026-07-26T09:19:35.131725",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810553": {
     "game_id": "401810553",
@@ -1320,7 +1464,9 @@
     "home": "Indiana Pacers",
     "away_score": "124",
     "home_score": "129",
-    "added_at": "2026-07-26T09:19:42.319478"
+    "added_at": "2026-07-26T09:19:42.319478",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810620": {
     "game_id": "401810620",
@@ -1329,7 +1475,9 @@
     "home": "Minnesota Timberwolves",
     "away_score": "116",
     "home_score": "138",
-    "added_at": "2026-07-26T09:19:51.757967"
+    "added_at": "2026-07-26T09:19:51.757967",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810752": {
     "game_id": "401810752",
@@ -1338,7 +1486,9 @@
     "home": "Milwaukee Bucks",
     "away_score": "131",
     "home_score": "113",
-    "added_at": "2026-07-26T09:20:01.091710"
+    "added_at": "2026-07-26T09:20:01.091710",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810811": {
     "game_id": "401810811",
@@ -1347,7 +1497,9 @@
     "home": "Atlanta Hawks",
     "away_score": "97",
     "home_score": "108",
-    "added_at": "2026-07-26T09:20:04.863517"
+    "added_at": "2026-07-26T09:20:04.863517",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810838": {
     "game_id": "401810838",
@@ -1356,7 +1508,9 @@
     "home": "Atlanta Hawks",
     "away_score": "112",
     "home_score": "124",
-    "added_at": "2026-07-26T09:20:11.649094"
+    "added_at": "2026-07-26T09:20:11.649094",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810922": {
     "game_id": "401810922",
@@ -1365,7 +1519,9 @@
     "home": "Boston Celtics",
     "away_score": "102",
     "home_score": "109",
-    "added_at": "2026-07-26T09:20:15.915135"
+    "added_at": "2026-07-26T09:20:15.915135",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401836803": {
     "game_id": "401836803",
@@ -1374,7 +1530,9 @@
     "home": "Boston Celtics",
     "away_score": "112",
     "home_score": "105",
-    "added_at": "2026-07-26T09:20:53.913562"
+    "added_at": "2026-07-26T09:20:53.913562",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810414": {
     "game_id": "401810414",
@@ -1383,7 +1541,9 @@
     "home": "Indiana Pacers",
     "away_score": "96",
     "home_score": "98",
-    "added_at": "2026-07-26T09:20:59.744684"
+    "added_at": "2026-07-26T09:20:59.744684",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401809250": {
     "game_id": "401809250",
@@ -1392,7 +1552,9 @@
     "home": "Detroit Pistons",
     "away_score": "103",
     "home_score": "104",
-    "added_at": "2026-07-26T09:21:04.572830"
+    "added_at": "2026-07-26T09:21:04.572830",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810557": {
     "game_id": "401810557",
@@ -1401,7 +1563,9 @@
     "home": "Boston Celtics",
     "away_score": "79",
     "home_score": "107",
-    "added_at": "2026-07-26T09:21:11.358802"
+    "added_at": "2026-07-26T09:21:11.358802",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810654": {
     "game_id": "401810654",
@@ -1410,7 +1574,9 @@
     "home": "Golden State Warriors",
     "away_score": "121",
     "home_score": "110",
-    "added_at": "2026-07-26T09:21:37.281035"
+    "added_at": "2026-07-26T09:21:37.281035",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810729": {
     "game_id": "401810729",
@@ -1419,7 +1585,9 @@
     "home": "Boston Celtics",
     "away_score": "98",
     "home_score": "114",
-    "added_at": "2026-07-26T09:21:47.919748"
+    "added_at": "2026-07-26T09:21:47.919748",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810735": {
     "game_id": "401810735",
@@ -1428,7 +1596,9 @@
     "home": "Milwaukee Bucks",
     "away_score": "108",
     "home_score": "81",
-    "added_at": "2026-07-26T09:21:53.982168"
+    "added_at": "2026-07-26T09:21:53.982168",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810961": {
     "game_id": "401810961",
@@ -1437,7 +1607,9 @@
     "home": "Miami Heat",
     "away_score": "147",
     "home_score": "129",
-    "added_at": "2026-07-26T09:22:06.173903"
+    "added_at": "2026-07-26T09:22:06.173903",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810987": {
     "game_id": "401810987",
@@ -1446,7 +1618,9 @@
     "home": "Boston Celtics",
     "away_score": "101",
     "home_score": "115",
-    "added_at": "2026-07-26T09:22:11.421630"
+    "added_at": "2026-07-26T09:22:11.421630",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401811041": {
     "game_id": "401811041",
@@ -1455,7 +1629,9 @@
     "home": "Boston Celtics",
     "away_score": "108",
     "home_score": "113",
-    "added_at": "2026-07-26T09:22:17.856001"
+    "added_at": "2026-07-26T09:22:17.856001",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401869191": {
     "game_id": "401869191",
@@ -1464,7 +1640,9 @@
     "home": "Boston Celtics",
     "away_score": "91",
     "home_score": "123",
-    "added_at": "2026-07-26T09:22:25.980806"
+    "added_at": "2026-07-26T09:22:25.980806",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401869404": {
     "game_id": "401869404",
@@ -1473,7 +1651,9 @@
     "home": "Philadelphia 76ers",
     "away_score": "108",
     "home_score": "100",
-    "added_at": "2026-07-26T09:22:39.501609"
+    "added_at": "2026-07-26T09:22:39.501609",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401869406": {
     "game_id": "401869406",
@@ -1482,7 +1662,9 @@
     "home": "Philadelphia 76ers",
     "away_score": "128",
     "home_score": "96",
-    "added_at": "2026-07-26T09:22:51.091157"
+    "added_at": "2026-07-26T09:22:51.091157",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401869410": {
     "game_id": "401869410",
@@ -1491,7 +1673,9 @@
     "home": "Philadelphia 76ers",
     "away_score": "93",
     "home_score": "106",
-    "added_at": "2026-07-26T09:22:58.649202"
+    "added_at": "2026-07-26T09:22:58.649202",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401869412": {
     "game_id": "401869412",
@@ -1500,7 +1684,9 @@
     "home": "Boston Celtics",
     "away_score": "109",
     "home_score": "100",
-    "added_at": "2026-07-26T09:23:09.784777"
+    "added_at": "2026-07-26T09:23:09.784777",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401810050": {
     "game_id": "401810050",
@@ -1509,7 +1695,9 @@
     "home": "Philadelphia 76ers",
     "away_score": "111",
     "home_score": "108",
-    "added_at": "2026-07-26T09:23:35.109642"
+    "added_at": "2026-07-26T09:23:35.109642",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810208": {
     "game_id": "401810208",
@@ -1518,7 +1706,9 @@
     "home": "Detroit Pistons",
     "away_score": "112",
     "home_score": "124",
-    "added_at": "2026-07-26T09:23:46.752350"
+    "added_at": "2026-07-26T09:23:46.752350",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810571": {
     "game_id": "401810571",
@@ -1527,7 +1717,9 @@
     "home": "Detroit Pistons",
     "away_score": "121",
     "home_score": "124",
-    "added_at": "2026-07-26T09:24:03.504993"
+    "added_at": "2026-07-26T09:24:03.504993",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810588": {
     "game_id": "401810588",
@@ -1536,7 +1728,9 @@
     "home": "Detroit Pistons",
     "away_score": "126",
     "home_score": "117",
-    "added_at": "2026-07-26T09:24:08.395281"
+    "added_at": "2026-07-26T09:24:08.395281",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810893": {
     "game_id": "401810893",
@@ -1545,7 +1739,9 @@
     "home": "Detroit Pistons",
     "away_score": "110",
     "home_score": "113",
-    "added_at": "2026-07-26T09:24:25.221457"
+    "added_at": "2026-07-26T09:24:25.221457",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810986": {
     "game_id": "401810986",
@@ -1554,7 +1750,9 @@
     "home": "Philadelphia 76ers",
     "away_score": "116",
     "home_score": "93",
-    "added_at": "2026-07-26T09:24:33.229567"
+    "added_at": "2026-07-26T09:24:33.229567",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401869193": {
     "game_id": "401869193",
@@ -1563,7 +1761,9 @@
     "home": "Detroit Pistons",
     "away_score": "112",
     "home_score": "101",
-    "added_at": "2026-07-26T09:24:55.451531"
+    "added_at": "2026-07-26T09:24:55.451531",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401869415": {
     "game_id": "401869415",
@@ -1572,7 +1772,9 @@
     "home": "Orlando Magic",
     "away_score": "88",
     "home_score": "94",
-    "added_at": "2026-07-26T09:25:05.477587"
+    "added_at": "2026-07-26T09:25:05.477587",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401869418": {
     "game_id": "401869418",
@@ -1581,7 +1783,9 @@
     "home": "Detroit Pistons",
     "away_score": "94",
     "home_score": "116",
-    "added_at": "2026-07-26T09:25:12.611426"
+    "added_at": "2026-07-26T09:25:12.611426",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401810091": {
     "game_id": "401810091",
@@ -1590,7 +1794,9 @@
     "home": "Houston Rockets",
     "away_score": "113",
     "home_score": "117",
-    "added_at": "2026-07-26T09:25:46.697949"
+    "added_at": "2026-07-26T09:25:46.697949",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810104": {
     "game_id": "401810104",
@@ -1599,7 +1805,9 @@
     "home": "Orlando Magic",
     "away_score": "113",
     "home_score": "121",
-    "added_at": "2026-07-26T09:25:54.064863"
+    "added_at": "2026-07-26T09:25:54.064863",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810632": {
     "game_id": "401810632",
@@ -1608,7 +1816,9 @@
     "home": "Orlando Magic",
     "away_score": "116",
     "home_score": "108",
-    "added_at": "2026-07-26T09:26:13.330080"
+    "added_at": "2026-07-26T09:26:13.330080",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810682": {
     "game_id": "401810682",
@@ -1617,7 +1827,9 @@
     "home": "LA Clippers",
     "away_score": "111",
     "home_score": "109",
-    "added_at": "2026-07-26T09:26:23.519116"
+    "added_at": "2026-07-26T09:26:23.519116",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810707": {
     "game_id": "401810707",
@@ -1626,7 +1838,9 @@
     "home": "Orlando Magic",
     "away_score": "113",
     "home_score": "108",
-    "added_at": "2026-07-26T09:26:27.427866"
+    "added_at": "2026-07-26T09:26:27.427866",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401866757": {
     "game_id": "401866757",
@@ -1635,7 +1849,9 @@
     "home": "Philadelphia 76ers",
     "away_score": "97",
     "home_score": "109",
-    "added_at": "2026-07-26T09:27:00.640628"
+    "added_at": "2026-07-26T09:27:00.640628",
+    "season_type": "postseason",
+    "season_type_code": "5"
   },
   "401810191": {
     "game_id": "401810191",
@@ -1644,7 +1860,9 @@
     "home": "Toronto Raptors",
     "away_score": "123",
     "home_score": "120",
-    "added_at": "2026-07-26T09:27:25.051137"
+    "added_at": "2026-07-26T09:27:25.051137",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810217": {
     "game_id": "401810217",
@@ -1653,7 +1871,9 @@
     "home": "Philadelphia 76ers",
     "away_score": "112",
     "home_score": "108",
-    "added_at": "2026-07-26T09:27:29.355354"
+    "added_at": "2026-07-26T09:27:29.355354",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401809241": {
     "game_id": "401809241",
@@ -1662,7 +1882,9 @@
     "home": "Los Angeles Lakers",
     "away_score": "119",
     "home_score": "96",
-    "added_at": "2026-07-26T09:27:37.668212"
+    "added_at": "2026-07-26T09:27:37.668212",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810472": {
     "game_id": "401810472",
@@ -1671,7 +1893,9 @@
     "home": "Denver Nuggets",
     "away_score": "115",
     "home_score": "107",
-    "added_at": "2026-07-26T09:27:47.468768"
+    "added_at": "2026-07-26T09:27:47.468768",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810503": {
     "game_id": "401810503",
@@ -1680,7 +1904,9 @@
     "home": "Dallas Mavericks",
     "away_score": "116",
     "home_score": "110",
-    "added_at": "2026-07-26T09:27:50.496626"
+    "added_at": "2026-07-26T09:27:50.496626",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810516": {
     "game_id": "401810516",
@@ -1689,7 +1915,9 @@
     "home": "Chicago Bulls",
     "away_score": "129",
     "home_score": "118",
-    "added_at": "2026-07-26T09:27:55.443845"
+    "added_at": "2026-07-26T09:27:55.443845",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810733": {
     "game_id": "401810733",
@@ -1698,7 +1926,9 @@
     "home": "Los Angeles Lakers",
     "away_score": "104",
     "home_score": "128",
-    "added_at": "2026-07-26T09:28:06.972322"
+    "added_at": "2026-07-26T09:28:06.972322",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810844": {
     "game_id": "401810844",
@@ -1707,7 +1937,9 @@
     "home": "Houston Rockets",
     "away_score": "100",
     "home_score": "92",
-    "added_at": "2026-07-26T09:28:14.144448"
+    "added_at": "2026-07-26T09:28:14.144448",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401869190": {
     "game_id": "401869190",
@@ -1716,7 +1948,9 @@
     "home": "Los Angeles Lakers",
     "away_score": "98",
     "home_score": "107",
-    "added_at": "2026-07-26T09:28:31.302262"
+    "added_at": "2026-07-26T09:28:31.302262",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401869400": {
     "game_id": "401869400",
@@ -1725,7 +1959,9 @@
     "home": "Houston Rockets",
     "away_score": "112",
     "home_score": "108",
-    "added_at": "2026-07-26T09:28:39.072703"
+    "added_at": "2026-07-26T09:28:39.072703",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401869405": {
     "game_id": "401869405",
@@ -1734,7 +1970,9 @@
     "home": "Houston Rockets",
     "away_score": "96",
     "home_score": "115",
-    "added_at": "2026-07-26T09:28:42.965321"
+    "added_at": "2026-07-26T09:28:42.965321",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401810145": {
     "game_id": "401810145",
@@ -1743,7 +1981,9 @@
     "home": "Phoenix Suns",
     "away_score": "114",
     "home_score": "92",
-    "added_at": "2026-07-26T09:29:14.568420"
+    "added_at": "2026-07-26T09:29:14.568420",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401836806": {
     "game_id": "401836806",
@@ -1752,7 +1992,9 @@
     "home": "Denver Nuggets",
     "away_score": "125",
     "home_score": "128",
-    "added_at": "2026-07-26T09:29:21.373477"
+    "added_at": "2026-07-26T09:29:21.373477",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810412": {
     "game_id": "401810412",
@@ -1761,7 +2003,9 @@
     "home": "Sacramento Kings",
     "away_score": "98",
     "home_score": "111",
-    "added_at": "2026-07-26T09:29:31.497713"
+    "added_at": "2026-07-26T09:29:31.497713",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810420": {
     "game_id": "401810420",
@@ -1770,7 +2014,9 @@
     "home": "Houston Rockets",
     "away_score": "113",
     "home_score": "119",
-    "added_at": "2026-07-26T09:29:35.063741"
+    "added_at": "2026-07-26T09:29:35.063741",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810556": {
     "game_id": "401810556",
@@ -1779,7 +2025,9 @@
     "home": "Houston Rockets",
     "away_score": "107",
     "home_score": "111",
-    "added_at": "2026-07-26T09:29:42.652847"
+    "added_at": "2026-07-26T09:29:42.652847",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810627": {
     "game_id": "401810627",
@@ -1788,7 +2036,9 @@
     "home": "Houston Rockets",
     "away_score": "95",
     "home_score": "102",
-    "added_at": "2026-07-26T09:29:49.059186"
+    "added_at": "2026-07-26T09:29:49.059186",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810997": {
     "game_id": "401810997",
@@ -1797,7 +2047,9 @@
     "home": "Golden State Warriors",
     "away_score": "117",
     "home_score": "116",
-    "added_at": "2026-07-26T09:30:07.863788"
+    "added_at": "2026-07-26T09:30:07.863788",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810362": {
     "game_id": "401810362",
@@ -1806,7 +2058,9 @@
     "home": "Philadelphia 76ers",
     "away_score": "125",
     "home_score": "124",
-    "added_at": "2026-07-26T09:30:39.918887"
+    "added_at": "2026-07-26T09:30:39.918887",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810579": {
     "game_id": "401810579",
@@ -1815,7 +2069,9 @@
     "home": "Golden State Warriors",
     "away_score": "113",
     "home_score": "94",
-    "added_at": "2026-07-26T09:30:48.110581"
+    "added_at": "2026-07-26T09:30:48.110581",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401809835": {
     "game_id": "401809835",
@@ -1824,7 +2080,9 @@
     "home": "Oklahoma City Thunder",
     "away_score": "89",
     "home_score": "138",
-    "added_at": "2026-07-26T09:34:33.215506"
+    "added_at": "2026-07-26T09:34:33.215506",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401809239": {
     "game_id": "401809239",
@@ -1833,7 +2091,9 @@
     "home": "Oklahoma City Thunder",
     "away_score": "117",
     "home_score": "102",
-    "added_at": "2026-07-26T09:34:40.913559"
+    "added_at": "2026-07-26T09:34:40.913559",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810480": {
     "game_id": "401810480",
@@ -1842,7 +2102,9 @@
     "home": "Milwaukee Bucks",
     "away_score": "122",
     "home_score": "102",
-    "added_at": "2026-07-26T09:34:49.597264"
+    "added_at": "2026-07-26T09:34:49.597264",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810508": {
     "game_id": "401810508",
@@ -1851,7 +2113,9 @@
     "home": "Oklahoma City Thunder",
     "away_score": "103",
     "home_score": "101",
-    "added_at": "2026-07-26T09:34:54.445370"
+    "added_at": "2026-07-26T09:34:54.445370",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810566": {
     "game_id": "401810566",
@@ -1860,7 +2124,9 @@
     "home": "Denver Nuggets",
     "away_score": "121",
     "home_score": "111",
-    "added_at": "2026-07-26T09:34:58.744939"
+    "added_at": "2026-07-26T09:34:58.744939",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401869192": {
     "game_id": "401869192",
@@ -1869,7 +2135,9 @@
     "home": "Oklahoma City Thunder",
     "away_score": "84",
     "home_score": "119",
-    "added_at": "2026-07-26T09:35:14.389223"
+    "added_at": "2026-07-26T09:35:14.389223",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401810170": {
     "game_id": "401810170",
@@ -1878,7 +2146,9 @@
     "home": "Denver Nuggets",
     "away_score": "131",
     "home_score": "121",
-    "added_at": "2026-07-26T09:35:48.870510"
+    "added_at": "2026-07-26T09:35:48.870510",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810270": {
     "game_id": "401810270",
@@ -1887,7 +2157,9 @@
     "home": "Dallas Mavericks",
     "away_score": "130",
     "home_score": "131",
-    "added_at": "2026-07-26T09:35:56.849541"
+    "added_at": "2026-07-26T09:35:56.849541",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810409": {
     "game_id": "401810409",
@@ -1896,7 +2168,9 @@
     "home": "Denver Nuggets",
     "away_score": "104",
     "home_score": "108",
-    "added_at": "2026-07-26T09:36:03.801767"
+    "added_at": "2026-07-26T09:36:03.801767",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810422": {
     "game_id": "401810422",
@@ -1905,7 +2179,9 @@
     "home": "New Orleans Pelicans",
     "away_score": "122",
     "home_score": "116",
-    "added_at": "2026-07-26T09:36:12.695842"
+    "added_at": "2026-07-26T09:36:12.695842",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810656": {
     "game_id": "401810656",
@@ -1914,7 +2190,9 @@
     "home": "LA Clippers",
     "away_score": "114",
     "home_score": "115",
-    "added_at": "2026-07-26T09:36:42.333106"
+    "added_at": "2026-07-26T09:36:42.333106",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810675": {
     "game_id": "401810675",
@@ -1923,7 +2201,9 @@
     "home": "Golden State Warriors",
     "away_score": "117",
     "home_score": "128",
-    "added_at": "2026-07-26T09:36:45.618056"
+    "added_at": "2026-07-26T09:36:45.618056",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401869399": {
     "game_id": "401869399",
@@ -1932,7 +2212,9 @@
     "home": "Minnesota Timberwolves",
     "away_score": "96",
     "home_score": "112",
-    "added_at": "2026-07-26T09:36:56.804321"
+    "added_at": "2026-07-26T09:36:56.804321",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401810582": {
     "game_id": "401810582",
@@ -1941,7 +2223,9 @@
     "home": "Toronto Raptors",
     "away_score": "128",
     "home_score": "126",
-    "added_at": "2026-07-26T09:38:11.346308"
+    "added_at": "2026-07-26T09:38:11.346308",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401809240": {
     "game_id": "401809240",
@@ -1950,7 +2234,9 @@
     "home": "Golden State Warriors",
     "away_score": "116",
     "home_score": "126",
-    "added_at": "2026-07-26T09:38:50.190162"
+    "added_at": "2026-07-26T09:38:50.190162",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810643": {
     "game_id": "401810643",
@@ -1959,7 +2245,9 @@
     "home": "Golden State Warriors",
     "away_score": "126",
     "home_score": "113",
-    "added_at": "2026-07-26T09:39:03.345539"
+    "added_at": "2026-07-26T09:39:03.345539",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401866756": {
     "game_id": "401866756",
@@ -1968,7 +2256,9 @@
     "home": "LA Clippers",
     "away_score": "126",
     "home_score": "121",
-    "added_at": "2026-07-26T09:39:19.863365"
+    "added_at": "2026-07-26T09:39:19.863365",
+    "season_type": "postseason",
+    "season_type_code": "5"
   },
   "401810555": {
     "game_id": "401810555",
@@ -1977,7 +2267,9 @@
     "home": "Memphis Grizzlies",
     "away_score": "131",
     "home_score": "114",
-    "added_at": "2026-07-26T09:39:46.405210"
+    "added_at": "2026-07-26T09:39:46.405210",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810696": {
     "game_id": "401810696",
@@ -1986,7 +2278,9 @@
     "home": "Portland Trail Blazers",
     "away_score": "124",
     "home_score": "121",
-    "added_at": "2026-07-26T09:39:58.593269"
+    "added_at": "2026-07-26T09:39:58.593269",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810712": {
     "game_id": "401810712",
@@ -1995,7 +2289,9 @@
     "home": "LA Clippers",
     "away_score": "94",
     "home_score": "88",
-    "added_at": "2026-07-26T09:40:02.386134"
+    "added_at": "2026-07-26T09:40:02.386134",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810037": {
     "game_id": "401810037",
@@ -2004,7 +2300,9 @@
     "home": "Phoenix Suns",
     "away_score": "102",
     "home_score": "115",
-    "added_at": "2026-07-26T09:40:32.255054"
+    "added_at": "2026-07-26T09:40:32.255054",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810511": {
     "game_id": "401810511",
@@ -2013,7 +2311,9 @@
     "home": "LA Clippers",
     "away_score": "89",
     "home_score": "126",
-    "added_at": "2026-07-26T09:40:44.344330"
+    "added_at": "2026-07-26T09:40:44.344330",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810601": {
     "game_id": "401810601",
@@ -2022,7 +2322,9 @@
     "home": "Sacramento Kings",
     "away_score": "114",
     "home_score": "111",
-    "added_at": "2026-07-26T09:40:51.824985"
+    "added_at": "2026-07-26T09:40:51.824985",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810547": {
     "game_id": "401810547",
@@ -2031,7 +2333,9 @@
     "home": "Miami Heat",
     "away_score": "125",
     "home_score": "118",
-    "added_at": "2026-07-26T09:42:25.622737"
+    "added_at": "2026-07-26T09:42:25.622737",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810756": {
     "game_id": "401810756",
@@ -2040,7 +2344,9 @@
     "home": "Miami Heat",
     "away_score": "110",
     "home_score": "126",
-    "added_at": "2026-07-26T09:43:09.537820"
+    "added_at": "2026-07-26T09:43:09.537820",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401810793": {
     "game_id": "401810793",
@@ -2049,7 +2355,9 @@
     "home": "Miami Heat",
     "away_score": "129",
     "home_score": "150",
-    "added_at": "2026-07-26T09:43:14.187349"
+    "added_at": "2026-07-26T09:43:14.187349",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401705712": {
     "game_id": "401705712",
@@ -2058,7 +2366,9 @@
     "home": "Charlotte Hornets",
     "away_score": "124",
     "home_score": "100",
-    "added_at": "2026-07-26T09:47:18.461363"
+    "added_at": "2026-07-26T09:47:18.461363",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401657188": {
     "game_id": "401657188",
@@ -2067,7 +2377,9 @@
     "home": "Denver Nuggets",
     "away_score": "98",
     "home_score": "90",
-    "added_at": "2026-07-26T23:26:01.775021"
+    "added_at": "2026-07-26T23:26:01.775021",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "400876756": {
     "game_id": "400876756",
@@ -2076,7 +2388,9 @@
     "home": "Golden State Warriors",
     "away_score": "88",
     "home_score": "96",
-    "added_at": "2026-07-27T21:54:56.373938"
+    "added_at": "2026-07-27T21:54:56.373938",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "400876755": {
     "game_id": "400876755",
@@ -2085,7 +2399,9 @@
     "home": "Oklahoma City Thunder",
     "away_score": "108",
     "home_score": "101",
-    "added_at": "2026-07-28T00:34:34.605450"
+    "added_at": "2026-07-28T00:34:34.605450",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401126841": {
     "game_id": "401126841",
@@ -2094,7 +2410,9 @@
     "home": "Portland Trail Blazers",
     "away_score": "99",
     "home_score": "104",
-    "added_at": "2026-07-30T00:07:18.225643"
+    "added_at": "2026-07-30T00:07:18.225643",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401129353": {
     "game_id": "401129353",
@@ -2103,7 +2421,9 @@
     "home": "Golden State Warriors",
     "away_score": "100",
     "home_score": "104",
-    "added_at": "2026-07-30T22:21:48.740267"
+    "added_at": "2026-07-30T22:21:48.740267",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "60420002": {
     "game_id": "60420002",
@@ -2112,7 +2432,9 @@
     "home": "Boston Celtics",
     "away_score": "131",
     "home_score": "135",
-    "added_at": "2026-07-30T22:36:25.995893"
+    "added_at": "2026-07-30T22:36:25.995893",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401131834": {
     "game_id": "401131834",
@@ -2121,7 +2443,9 @@
     "home": "Golden State Warriors",
     "away_score": "111",
     "home_score": "114",
-    "added_at": "2026-07-31T17:39:58.472153"
+    "added_at": "2026-07-31T17:39:58.472153",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401131840": {
     "game_id": "401131840",
@@ -2130,7 +2454,9 @@
     "home": "Milwaukee Bucks",
     "away_score": "100",
     "home_score": "108",
-    "added_at": "2026-07-31T17:56:32.100907"
+    "added_at": "2026-07-31T17:56:32.100907",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "301026002": {
     "game_id": "301026002",
@@ -2139,7 +2465,9 @@
     "home": "Boston Celtics",
     "away_score": "80",
     "home_score": "88",
-    "added_at": "2026-07-31T20:21:57.905789"
+    "added_at": "2026-07-31T20:21:57.905789",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "400829023": {
     "game_id": "400829023",
@@ -2148,7 +2476,9 @@
     "home": "Golden State Warriors",
     "away_score": "109",
     "home_score": "106",
-    "added_at": "2026-07-31T22:19:58.410316"
+    "added_at": "2026-07-31T22:19:58.410316",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401129355": {
     "game_id": "401129355",
@@ -2157,7 +2487,9 @@
     "home": "Houston Rockets",
     "away_score": "121",
     "home_score": "126",
-    "added_at": "2026-08-02T21:25:00.191652"
+    "added_at": "2026-08-02T21:25:00.191652",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401131844": {
     "game_id": "401131844",
@@ -2166,7 +2498,9 @@
     "home": "Milwaukee Bucks",
     "away_score": "105",
     "home_score": "99",
-    "added_at": "2026-08-02T23:53:24.283304"
+    "added_at": "2026-08-02T23:53:24.283304",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "310217004": {
     "game_id": "310217004",
@@ -2175,7 +2509,9 @@
     "home": "Chicago Bulls",
     "away_score": "99",
     "home_score": "109",
-    "added_at": "2026-08-04T22:13:26.533278"
+    "added_at": "2026-08-04T22:13:26.533278",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401656359": {
     "game_id": "401656359",
@@ -2184,7 +2520,9 @@
     "home": "Boston Celtics",
     "away_score": "89",
     "home_score": "107",
-    "added_at": "2026-08-04T22:24:20.842168"
+    "added_at": "2026-08-04T22:24:20.842168",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401656360": {
     "game_id": "401656360",
@@ -2193,7 +2531,9 @@
     "home": "Boston Celtics",
     "away_score": "98",
     "home_score": "105",
-    "added_at": "2026-08-04T22:48:03.601539"
+    "added_at": "2026-08-04T22:48:03.601539",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401817263": {
     "game_id": "401817263",
@@ -2203,7 +2543,9 @@
     "away_score": "74",
     "home_score": "87",
     "league": "college",
-    "added_at": "2026-08-05T18:20:42.396789"
+    "added_at": "2026-08-05T18:20:42.396789",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401817264": {
     "game_id": "401817264",
@@ -2213,7 +2555,9 @@
     "away_score": "74",
     "home_score": "89",
     "league": "college",
-    "added_at": "2026-08-05T18:20:52.509025"
+    "added_at": "2026-08-05T18:20:52.509025",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401817265": {
     "game_id": "401817265",
@@ -2223,7 +2567,9 @@
     "away_score": "53",
     "home_score": "97",
     "league": "college",
-    "added_at": "2026-08-05T18:21:04.681480"
+    "added_at": "2026-08-05T18:21:04.681480",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401817267": {
     "game_id": "401817267",
@@ -2233,7 +2579,9 @@
     "away_score": "74",
     "home_score": "58",
     "league": "college",
-    "added_at": "2026-08-05T18:21:14.099575"
+    "added_at": "2026-08-05T18:21:14.099575",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401806365": {
     "game_id": "401806365",
@@ -2243,7 +2591,9 @@
     "away_score": "67",
     "home_score": "64",
     "league": "college",
-    "added_at": "2026-08-05T18:21:27.936061"
+    "added_at": "2026-08-05T18:21:27.936061",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401820639": {
     "game_id": "401820639",
@@ -2253,7 +2603,9 @@
     "away_score": "66",
     "home_score": "79",
     "league": "college",
-    "added_at": "2026-08-05T18:21:35.320688"
+    "added_at": "2026-08-05T18:21:35.320688",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401820648": {
     "game_id": "401820648",
@@ -2263,7 +2615,9 @@
     "away_score": "83",
     "home_score": "97",
     "league": "college",
-    "added_at": "2026-08-05T18:21:46.937827"
+    "added_at": "2026-08-05T18:21:46.937827",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401820661": {
     "game_id": "401820661",
@@ -2273,7 +2627,9 @@
     "away_score": "84",
     "home_score": "87",
     "league": "college",
-    "added_at": "2026-08-05T18:22:05.655705"
+    "added_at": "2026-08-05T18:22:05.655705",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401820697": {
     "game_id": "401820697",
@@ -2283,7 +2639,9 @@
     "away_score": "85",
     "home_score": "80",
     "league": "college",
-    "added_at": "2026-08-05T18:22:09.656366"
+    "added_at": "2026-08-05T18:22:09.656366",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401820709": {
     "game_id": "401820709",
@@ -2293,7 +2651,9 @@
     "away_score": "91",
     "home_score": "75",
     "league": "college",
-    "added_at": "2026-08-05T18:22:21.384887"
+    "added_at": "2026-08-05T18:22:21.384887",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401820714": {
     "game_id": "401820714",
@@ -2303,7 +2663,9 @@
     "away_score": "77",
     "home_score": "87",
     "league": "college",
-    "added_at": "2026-08-05T18:22:27.119188"
+    "added_at": "2026-08-05T18:22:27.119188",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401820724": {
     "game_id": "401820724",
@@ -2313,7 +2675,9 @@
     "away_score": "68",
     "home_score": "71",
     "league": "college",
-    "added_at": "2026-08-05T18:22:48.330745"
+    "added_at": "2026-08-05T18:22:48.330745",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401820731": {
     "game_id": "401820731",
@@ -2323,7 +2687,9 @@
     "away_score": "66",
     "home_score": "75",
     "league": "college",
-    "added_at": "2026-08-05T18:22:54.666864"
+    "added_at": "2026-08-05T18:22:54.666864",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401820742": {
     "game_id": "401820742",
@@ -2333,7 +2699,9 @@
     "away_score": "65",
     "home_score": "79",
     "league": "college",
-    "added_at": "2026-08-05T18:23:02.731585"
+    "added_at": "2026-08-05T18:23:02.731585",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401820752": {
     "game_id": "401820752",
@@ -2343,7 +2711,9 @@
     "away_score": "58",
     "home_score": "82",
     "league": "college",
-    "added_at": "2026-08-05T18:23:08.372679"
+    "added_at": "2026-08-05T18:23:08.372679",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401820759": {
     "game_id": "401820759",
@@ -2353,7 +2723,9 @@
     "away_score": "77",
     "home_score": "64",
     "league": "college",
-    "added_at": "2026-08-05T18:23:20.833663"
+    "added_at": "2026-08-05T18:23:20.833663",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401820774": {
     "game_id": "401820774",
@@ -2363,7 +2735,9 @@
     "away_score": "82",
     "home_score": "89",
     "league": "college",
-    "added_at": "2026-08-05T18:23:27.173708"
+    "added_at": "2026-08-05T18:23:27.173708",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401820779": {
     "game_id": "401820779",
@@ -2373,7 +2747,9 @@
     "away_score": "63",
     "home_score": "67",
     "league": "college",
-    "added_at": "2026-08-05T18:23:32.965336"
+    "added_at": "2026-08-05T18:23:32.965336",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401851180": {
     "game_id": "401851180",
@@ -2383,7 +2759,9 @@
     "away_score": "80",
     "home_score": "79",
     "league": "college",
-    "added_at": "2026-08-05T18:23:39.609808"
+    "added_at": "2026-08-05T18:23:39.609808",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401856490": {
     "game_id": "401856490",
@@ -2393,7 +2771,9 @@
     "away_score": "82",
     "home_score": "78",
     "league": "college",
-    "added_at": "2026-08-05T18:23:47.789344"
+    "added_at": "2026-08-05T18:23:47.789344",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401638586": {
     "game_id": "401638586",
@@ -2403,7 +2783,9 @@
     "away_score": "62",
     "home_score": "90",
     "league": "college",
-    "added_at": "2026-08-05T18:25:04.411636"
+    "added_at": "2026-08-05T18:25:04.411636",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401638622": {
     "game_id": "401638622",
@@ -2413,7 +2795,9 @@
     "away_score": "69",
     "home_score": "85",
     "league": "college",
-    "added_at": "2026-08-05T18:25:18.967536"
+    "added_at": "2026-08-05T18:25:18.967536",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401638632": {
     "game_id": "401638632",
@@ -2423,7 +2807,9 @@
     "away_score": "89",
     "home_score": "87",
     "league": "college",
-    "added_at": "2026-08-05T18:25:31.980638"
+    "added_at": "2026-08-05T18:25:31.980638",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401817232": {
     "game_id": "401817232",
@@ -2433,7 +2819,9 @@
     "away_score": "66",
     "home_score": "78",
     "league": "college",
-    "added_at": "2026-08-05T18:26:19.394025"
+    "added_at": "2026-08-05T18:26:19.394025",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401806364": {
     "game_id": "401806364",
@@ -2443,7 +2831,9 @@
     "away_score": "66",
     "home_score": "67",
     "league": "college",
-    "added_at": "2026-08-05T18:26:28.566455"
+    "added_at": "2026-08-05T18:26:28.566455",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401817235": {
     "game_id": "401817235",
@@ -2453,7 +2843,9 @@
     "away_score": "66",
     "home_score": "60",
     "league": "college",
-    "added_at": "2026-08-05T18:26:38.144189"
+    "added_at": "2026-08-05T18:26:38.144189",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401820644": {
     "game_id": "401820644",
@@ -2463,7 +2855,9 @@
     "away_score": "91",
     "home_score": "87",
     "league": "college",
-    "added_at": "2026-08-05T18:26:43.013427"
+    "added_at": "2026-08-05T18:26:43.013427",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401820650": {
     "game_id": "401820650",
@@ -2473,7 +2867,9 @@
     "away_score": "84",
     "home_score": "73",
     "league": "college",
-    "added_at": "2026-08-05T18:26:48.645660"
+    "added_at": "2026-08-05T18:26:48.645660",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401820698": {
     "game_id": "401820698",
@@ -2483,7 +2879,9 @@
     "away_score": "52",
     "home_score": "83",
     "league": "college",
-    "added_at": "2026-08-05T18:27:05.217734"
+    "added_at": "2026-08-05T18:27:05.217734",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401820715": {
     "game_id": "401820715",
@@ -2493,7 +2891,9 @@
     "away_score": "49",
     "home_score": "67",
     "league": "college",
-    "added_at": "2026-08-05T18:27:15.563289"
+    "added_at": "2026-08-05T18:27:15.563289",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401820747": {
     "game_id": "401820747",
@@ -2503,7 +2903,9 @@
     "away_score": "64",
     "home_score": "101",
     "league": "college",
-    "added_at": "2026-08-05T18:27:24.319774"
+    "added_at": "2026-08-05T18:27:24.319774",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401817238": {
     "game_id": "401817238",
@@ -2513,7 +2915,9 @@
     "away_score": "63",
     "home_score": "68",
     "league": "college",
-    "added_at": "2026-08-05T18:27:31.931674"
+    "added_at": "2026-08-05T18:27:31.931674",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401820778": {
     "game_id": "401820778",
@@ -2523,7 +2927,9 @@
     "away_score": "93",
     "home_score": "64",
     "league": "college",
-    "added_at": "2026-08-05T18:27:43.017423"
+    "added_at": "2026-08-05T18:27:43.017423",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401856478": {
     "game_id": "401856478",
@@ -2533,7 +2939,9 @@
     "away_score": "65",
     "home_score": "71",
     "league": "college",
-    "added_at": "2026-08-05T18:27:55.608905"
+    "added_at": "2026-08-05T18:27:55.608905",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401856530": {
     "game_id": "401856530",
@@ -2543,7 +2951,9 @@
     "away_score": "58",
     "home_score": "81",
     "league": "college",
-    "added_at": "2026-08-05T18:28:07.674647"
+    "added_at": "2026-08-05T18:28:07.674647",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401856570": {
     "game_id": "401856570",
@@ -2553,7 +2963,9 @@
     "away_score": "75",
     "home_score": "80",
     "league": "college",
-    "added_at": "2026-08-05T18:28:15.531001"
+    "added_at": "2026-08-05T18:28:15.531001",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401856577": {
     "game_id": "401856577",
@@ -2563,7 +2975,9 @@
     "away_score": "73",
     "home_score": "72",
     "league": "college",
-    "added_at": "2026-08-05T18:28:22.125983"
+    "added_at": "2026-08-05T18:28:22.125983",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401806373": {
     "game_id": "401806373",
@@ -2573,7 +2987,9 @@
     "away_score": "73",
     "home_score": "83",
     "league": "college",
-    "added_at": "2026-08-05T18:28:56.551486"
+    "added_at": "2026-08-05T18:28:56.551486",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401817258": {
     "game_id": "401817258",
@@ -2583,7 +2999,9 @@
     "away_score": "45",
     "home_score": "85",
     "league": "college",
-    "added_at": "2026-08-05T18:29:25.705069"
+    "added_at": "2026-08-05T18:29:25.705069",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401817259": {
     "game_id": "401817259",
@@ -2593,7 +3011,9 @@
     "away_score": "77",
     "home_score": "76",
     "league": "college",
-    "added_at": "2026-08-05T18:29:30.712797"
+    "added_at": "2026-08-05T18:29:30.712797",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401820646": {
     "game_id": "401820646",
@@ -2603,7 +3023,9 @@
     "away_score": "76",
     "home_score": "61",
     "league": "college",
-    "added_at": "2026-08-05T18:29:34.298004"
+    "added_at": "2026-08-05T18:29:34.298004",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401820658": {
     "game_id": "401820658",
@@ -2613,7 +3035,9 @@
     "away_score": "113",
     "home_score": "69",
     "league": "college",
-    "added_at": "2026-08-05T18:29:41.815127"
+    "added_at": "2026-08-05T18:29:41.815127",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401820685": {
     "game_id": "401820685",
@@ -2623,7 +3047,9 @@
     "away_score": "80",
     "home_score": "76",
     "league": "college",
-    "added_at": "2026-08-05T18:29:52.736618"
+    "added_at": "2026-08-05T18:29:52.736618",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401820719": {
     "game_id": "401820719",
@@ -2633,7 +3059,9 @@
     "away_score": "84",
     "home_score": "83",
     "league": "college",
-    "added_at": "2026-08-05T18:30:08.499043"
+    "added_at": "2026-08-05T18:30:08.499043",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401851173": {
     "game_id": "401851173",
@@ -2643,7 +3071,9 @@
     "away_score": "88",
     "home_score": "98",
     "league": "college",
-    "added_at": "2026-08-05T18:30:18.941680"
+    "added_at": "2026-08-05T18:30:18.941680",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401851177": {
     "game_id": "401851177",
@@ -2653,7 +3083,9 @@
     "away_score": "74",
     "home_score": "81",
     "league": "college",
-    "added_at": "2026-08-05T18:30:25.152146"
+    "added_at": "2026-08-05T18:30:25.152146",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401856434": {
     "game_id": "401856434",
@@ -2663,7 +3095,9 @@
     "away_score": "68",
     "home_score": "66",
     "league": "college",
-    "added_at": "2026-08-05T18:30:31.911925"
+    "added_at": "2026-08-05T18:30:31.911925",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401820641": {
     "game_id": "401820641",
@@ -2673,7 +3107,9 @@
     "away_score": "85",
     "home_score": "95",
     "league": "college",
-    "added_at": "2026-08-05T18:31:54.457855"
+    "added_at": "2026-08-05T18:31:54.457855",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401820669": {
     "game_id": "401820669",
@@ -2683,7 +3119,9 @@
     "away_score": "79",
     "home_score": "70",
     "league": "college",
-    "added_at": "2026-08-05T18:32:05.861065"
+    "added_at": "2026-08-05T18:32:05.861065",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401820750": {
     "game_id": "401820750",
@@ -2693,7 +3131,9 @@
     "away_score": "94",
     "home_score": "68",
     "league": "college",
-    "added_at": "2026-08-05T18:32:21.563752"
+    "added_at": "2026-08-05T18:32:21.563752",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401820760": {
     "game_id": "401820760",
@@ -2703,7 +3143,9 @@
     "away_score": "83",
     "home_score": "86",
     "league": "college",
-    "added_at": "2026-08-05T18:32:34.244783"
+    "added_at": "2026-08-05T18:32:34.244783",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401856526": {
     "game_id": "401856526",
@@ -2713,7 +3155,9 @@
     "away_score": "73",
     "home_score": "82",
     "league": "college",
-    "added_at": "2026-08-05T18:32:44.908120"
+    "added_at": "2026-08-05T18:32:44.908120",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401856562": {
     "game_id": "401856562",
@@ -2723,7 +3167,9 @@
     "away_score": "79",
     "home_score": "72",
     "league": "college",
-    "added_at": "2026-08-05T18:32:52.951101"
+    "added_at": "2026-08-05T18:32:52.951101",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401638580": {
     "game_id": "401638580",
@@ -2733,7 +3179,9 @@
     "away_score": "67",
     "home_score": "42",
     "league": "college",
-    "added_at": "2026-08-05T18:33:07.516244"
+    "added_at": "2026-08-05T18:33:07.516244",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401812261": {
     "game_id": "401812261",
@@ -2743,7 +3191,9 @@
     "away_score": "103",
     "home_score": "96",
     "league": "college",
-    "added_at": "2026-08-05T18:33:40.978423"
+    "added_at": "2026-08-05T18:33:40.978423",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401812263": {
     "game_id": "401812263",
@@ -2753,7 +3203,9 @@
     "away_score": "95",
     "home_score": "85",
     "league": "college",
-    "added_at": "2026-08-05T18:33:51.437678"
+    "added_at": "2026-08-05T18:33:51.437678",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401812266": {
     "game_id": "401812266",
@@ -2763,7 +3215,9 @@
     "away_score": "96",
     "home_score": "75",
     "league": "college",
-    "added_at": "2026-08-05T18:33:56.765809"
+    "added_at": "2026-08-05T18:33:56.765809",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401808155": {
     "game_id": "401808155",
@@ -2773,7 +3227,9 @@
     "away_score": "90",
     "home_score": "96",
     "league": "college",
-    "added_at": "2026-08-05T18:34:07.701305"
+    "added_at": "2026-08-05T18:34:07.701305",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401808199": {
     "game_id": "401808199",
@@ -2783,7 +3239,9 @@
     "away_score": "79",
     "home_score": "73",
     "league": "college",
-    "added_at": "2026-08-05T18:34:14.722943"
+    "added_at": "2026-08-05T18:34:14.722943",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401808208": {
     "game_id": "401808208",
@@ -2793,7 +3251,9 @@
     "away_score": "77",
     "home_score": "100",
     "league": "college",
-    "added_at": "2026-08-05T18:34:20.247793"
+    "added_at": "2026-08-05T18:34:20.247793",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401808244": {
     "game_id": "401808244",
@@ -2803,7 +3263,9 @@
     "away_score": "115",
     "home_score": "117",
     "league": "college",
-    "added_at": "2026-08-05T18:34:49.410338"
+    "added_at": "2026-08-05T18:34:49.410338",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401808288": {
     "game_id": "401808288",
@@ -2813,7 +3275,9 @@
     "away_score": "84",
     "home_score": "96",
     "league": "college",
-    "added_at": "2026-08-05T18:34:58.242422"
+    "added_at": "2026-08-05T18:34:58.242422",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401812923": {
     "game_id": "401812923",
@@ -2823,7 +3287,9 @@
     "away_score": "64",
     "home_score": "67",
     "league": "college",
-    "added_at": "2026-08-05T18:35:34.374601"
+    "added_at": "2026-08-05T18:35:34.374601",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401820720": {
     "game_id": "401820720",
@@ -2833,7 +3299,9 @@
     "away_score": "66",
     "home_score": "64",
     "league": "college",
-    "added_at": "2026-08-05T18:35:45.846895"
+    "added_at": "2026-08-05T18:35:45.846895",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401820753": {
     "game_id": "401820753",
@@ -2843,7 +3311,9 @@
     "away_score": "77",
     "home_score": "85",
     "league": "college",
-    "added_at": "2026-08-05T18:35:52.178472"
+    "added_at": "2026-08-05T18:35:52.178472",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401856522": {
     "game_id": "401856522",
@@ -2853,7 +3323,9 @@
     "away_score": "67",
     "home_score": "61",
     "league": "college",
-    "added_at": "2026-08-05T18:36:02.403671"
+    "added_at": "2026-08-05T18:36:02.403671",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401820707": {
     "game_id": "401820707",
@@ -2863,7 +3335,9 @@
     "away_score": "52",
     "home_score": "63",
     "league": "college",
-    "added_at": "2026-08-05T18:36:13.477013"
+    "added_at": "2026-08-05T18:36:13.477013",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401826707": {
     "game_id": "401826707",
@@ -2873,7 +3347,9 @@
     "away_score": "76",
     "home_score": "78",
     "league": "college",
-    "added_at": "2026-08-05T18:36:58.077592"
+    "added_at": "2026-08-05T18:36:58.077592",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401808162": {
     "game_id": "401808162",
@@ -2883,7 +3359,9 @@
     "away_score": "67",
     "home_score": "91",
     "league": "college",
-    "added_at": "2026-08-05T18:37:06.007977"
+    "added_at": "2026-08-05T18:37:06.007977",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401808193": {
     "game_id": "401808193",
@@ -2893,7 +3371,9 @@
     "away_score": "76",
     "home_score": "67",
     "league": "college",
-    "added_at": "2026-08-05T18:37:13.717276"
+    "added_at": "2026-08-05T18:37:13.717276",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401808203": {
     "game_id": "401808203",
@@ -2903,7 +3383,9 @@
     "away_score": "95",
     "home_score": "48",
     "league": "college",
-    "added_at": "2026-08-05T18:37:24.189758"
+    "added_at": "2026-08-05T18:37:24.189758",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401856563": {
     "game_id": "401856563",
@@ -2913,7 +3395,9 @@
     "away_score": "73",
     "home_score": "72",
     "league": "college",
-    "added_at": "2026-08-05T18:37:44.939691"
+    "added_at": "2026-08-05T18:37:44.939691",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401820688": {
     "game_id": "401820688",
@@ -2923,7 +3407,9 @@
     "away_score": "76",
     "home_score": "74",
     "league": "college",
-    "added_at": "2026-08-05T18:38:17.106486"
+    "added_at": "2026-08-05T18:38:17.106486",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401820781": {
     "game_id": "401820781",
@@ -2933,7 +3419,9 @@
     "away_score": "62",
     "home_score": "77",
     "league": "college",
-    "added_at": "2026-08-05T18:38:31.231323"
+    "added_at": "2026-08-05T18:38:31.231323",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401851171": {
     "game_id": "401851171",
@@ -2943,7 +3431,9 @@
     "away_score": "69",
     "home_score": "86",
     "league": "college",
-    "added_at": "2026-08-05T18:38:35.803836"
+    "added_at": "2026-08-05T18:38:35.803836",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "290710041": {
     "game_id": "290710041",
@@ -2953,7 +3443,9 @@
     "away_score": "127",
     "home_score": "117",
     "league": "college",
-    "added_at": "2026-08-05T18:40:42.003479"
+    "added_at": "2026-08-05T18:40:42.003479",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401826785": {
     "game_id": "401826785",
@@ -2963,7 +3455,9 @@
     "away_score": "66",
     "home_score": "69",
     "league": "college",
-    "added_at": "2026-08-05T18:41:29.875713"
+    "added_at": "2026-08-05T18:41:29.875713",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401825419": {
     "game_id": "401825419",
@@ -2973,7 +3467,9 @@
     "away_score": "51",
     "home_score": "80",
     "league": "college",
-    "added_at": "2026-08-05T18:41:35.322351"
+    "added_at": "2026-08-05T18:41:35.322351",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401825452": {
     "game_id": "401825452",
@@ -2983,7 +3479,9 @@
     "away_score": "80",
     "home_score": "63",
     "league": "college",
-    "added_at": "2026-08-05T18:41:47.655730"
+    "added_at": "2026-08-05T18:41:47.655730",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401638585": {
     "game_id": "401638585",
@@ -2993,7 +3491,9 @@
     "away_score": "69",
     "home_score": "51",
     "league": "college",
-    "added_at": "2026-08-05T18:42:05.143189"
+    "added_at": "2026-08-05T18:42:05.143189",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401820656": {
     "game_id": "401820656",
@@ -3003,7 +3503,9 @@
     "away_score": "81",
     "home_score": "77",
     "league": "college",
-    "added_at": "2026-08-05T18:42:41.285189"
+    "added_at": "2026-08-05T18:42:41.285189",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401820686": {
     "game_id": "401820686",
@@ -3013,7 +3515,9 @@
     "away_score": "65",
     "home_score": "63",
     "league": "college",
-    "added_at": "2026-08-05T18:42:51.168764"
+    "added_at": "2026-08-05T18:42:51.168764",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401820721": {
     "game_id": "401820721",
@@ -3023,7 +3527,9 @@
     "away_score": "74",
     "home_score": "68",
     "league": "college",
-    "added_at": "2026-08-05T18:42:56.309682"
+    "added_at": "2026-08-05T18:42:56.309682",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401851178": {
     "game_id": "401851178",
@@ -3033,7 +3539,9 @@
     "away_score": "73",
     "home_score": "78",
     "league": "college",
-    "added_at": "2026-08-05T18:43:08.518273"
+    "added_at": "2026-08-05T18:43:08.518273",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401856518": {
     "game_id": "401856518",
@@ -3043,7 +3551,9 @@
     "away_score": "66",
     "home_score": "80",
     "league": "college",
-    "added_at": "2026-08-05T18:43:13.346932"
+    "added_at": "2026-08-05T18:43:13.346932",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401817460": {
     "game_id": "401817460",
@@ -3053,7 +3563,9 @@
     "away_score": "80",
     "home_score": "93",
     "league": "college",
-    "added_at": "2026-08-05T18:43:42.856203"
+    "added_at": "2026-08-05T18:43:42.856203",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401820726": {
     "game_id": "401820726",
@@ -3063,7 +3575,9 @@
     "away_score": "86",
     "home_score": "67",
     "league": "college",
-    "added_at": "2026-08-05T18:43:54.823108"
+    "added_at": "2026-08-05T18:43:54.823108",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401851174": {
     "game_id": "401851174",
@@ -3073,7 +3587,9 @@
     "away_score": "58",
     "home_score": "62",
     "league": "college",
-    "added_at": "2026-08-05T18:44:04.481924"
+    "added_at": "2026-08-05T18:44:04.481924",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401856436": {
     "game_id": "401856436",
@@ -3083,7 +3599,9 @@
     "away_score": "89",
     "home_score": "79",
     "league": "college",
-    "added_at": "2026-08-05T18:44:09.216770"
+    "added_at": "2026-08-05T18:44:09.216770",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401856482": {
     "game_id": "401856482",
@@ -3093,7 +3611,9 @@
     "away_score": "79",
     "home_score": "83",
     "league": "college",
-    "added_at": "2026-08-05T18:45:00.925678"
+    "added_at": "2026-08-05T18:45:00.925678",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401811097": {
     "game_id": "401811097",
@@ -3103,7 +3623,9 @@
     "away_score": "77",
     "home_score": "81",
     "league": "college",
-    "added_at": "2026-08-05T18:45:20.631365"
+    "added_at": "2026-08-05T18:45:20.631365",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401825487": {
     "game_id": "401825487",
@@ -3113,7 +3635,9 @@
     "away_score": "78",
     "home_score": "69",
     "league": "college",
-    "added_at": "2026-08-05T18:45:32.089769"
+    "added_at": "2026-08-05T18:45:32.089769",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401856491": {
     "game_id": "401856491",
@@ -3123,7 +3647,9 @@
     "away_score": "70",
     "home_score": "105",
     "league": "college",
-    "added_at": "2026-08-05T18:45:59.183432"
+    "added_at": "2026-08-05T18:45:59.183432",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401856566": {
     "game_id": "401856566",
@@ -3133,7 +3659,9 @@
     "away_score": "65",
     "home_score": "55",
     "league": "college",
-    "added_at": "2026-08-05T18:46:05.029021"
+    "added_at": "2026-08-05T18:46:05.029021",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401856574": {
     "game_id": "401856574",
@@ -3143,7 +3671,9 @@
     "away_score": "59",
     "home_score": "71",
     "league": "college",
-    "added_at": "2026-08-05T18:46:09.071237"
+    "added_at": "2026-08-05T18:46:09.071237",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401856598": {
     "game_id": "401856598",
@@ -3153,7 +3683,9 @@
     "away_score": "62",
     "home_score": "71",
     "league": "college",
-    "added_at": "2026-08-05T18:46:11.819465"
+    "added_at": "2026-08-05T18:46:11.819465",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401638597": {
     "game_id": "401638597",
@@ -3163,7 +3695,9 @@
     "away_score": "69",
     "home_score": "85",
     "league": "college",
-    "added_at": "2026-08-05T18:46:28.378576"
+    "added_at": "2026-08-05T18:46:28.378576",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401820816": {
     "game_id": "401820816",
@@ -3173,7 +3707,9 @@
     "away_score": "86",
     "home_score": "83",
     "league": "college",
-    "added_at": "2026-08-05T18:48:46.909352"
+    "added_at": "2026-08-05T18:48:46.909352",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401827689": {
     "game_id": "401827689",
@@ -3183,7 +3719,9 @@
     "away_score": "68",
     "home_score": "75",
     "league": "college",
-    "added_at": "2026-08-05T18:48:56.339379"
+    "added_at": "2026-08-05T18:48:56.339379",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401856565": {
     "game_id": "401856565",
@@ -3193,7 +3731,9 @@
     "away_score": "66",
     "home_score": "78",
     "league": "college",
-    "added_at": "2026-08-05T18:49:10.170376"
+    "added_at": "2026-08-05T18:49:10.170376",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401856575": {
     "game_id": "401856575",
@@ -3203,7 +3743,9 @@
     "away_score": "64",
     "home_score": "79",
     "league": "college",
-    "added_at": "2026-08-05T18:49:22.732384"
+    "added_at": "2026-08-05T18:49:22.732384",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401856599": {
     "game_id": "401856599",
@@ -3213,7 +3755,9 @@
     "away_score": "91",
     "home_score": "73",
     "league": "college",
-    "added_at": "2026-08-05T18:49:31.606596"
+    "added_at": "2026-08-05T18:49:31.606596",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401638583": {
     "game_id": "401638583",
@@ -3223,7 +3767,9 @@
     "away_score": "65",
     "home_score": "85",
     "league": "college",
-    "added_at": "2026-08-05T18:49:51.509693"
+    "added_at": "2026-08-05T18:49:51.509693",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401812788": {
     "game_id": "401812788",
@@ -3233,7 +3779,9 @@
     "away_score": "84",
     "home_score": "86",
     "league": "college",
-    "added_at": "2026-08-05T18:51:30.307521"
+    "added_at": "2026-08-05T18:51:30.307521",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401827717": {
     "game_id": "401827717",
@@ -3243,7 +3791,9 @@
     "away_score": "68",
     "home_score": "90",
     "league": "college",
-    "added_at": "2026-08-05T18:51:45.732711"
+    "added_at": "2026-08-05T18:51:45.732711",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401856484": {
     "game_id": "401856484",
@@ -3253,7 +3803,9 @@
     "away_score": "79",
     "home_score": "71",
     "league": "college",
-    "added_at": "2026-08-05T18:51:54.710590"
+    "added_at": "2026-08-05T18:51:54.710590",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401638598": {
     "game_id": "401638598",
@@ -3263,7 +3815,9 @@
     "away_score": "71",
     "home_score": "67",
     "league": "college",
-    "added_at": "2026-08-05T18:52:11.552686"
+    "added_at": "2026-08-05T18:52:11.552686",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401856559": {
     "game_id": "401856559",
@@ -3273,7 +3827,9 @@
     "away_score": "57",
     "home_score": "73",
     "league": "college",
-    "added_at": "2026-08-05T18:52:57.528858"
+    "added_at": "2026-08-05T18:52:57.528858",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401856600": {
     "game_id": "401856600",
@@ -3283,7 +3839,9 @@
     "away_score": "63",
     "home_score": "69",
     "league": "college",
-    "added_at": "2026-08-05T18:53:12.061204"
+    "added_at": "2026-08-05T18:53:12.061204",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401820704": {
     "game_id": "401820704",
@@ -3293,7 +3851,9 @@
     "away_score": "76",
     "home_score": "80",
     "league": "college",
-    "added_at": "2026-08-05T18:53:42.326461"
+    "added_at": "2026-08-05T18:53:42.326461",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401851170": {
     "game_id": "401851170",
@@ -3303,7 +3863,9 @@
     "away_score": "64",
     "home_score": "63",
     "league": "college",
-    "added_at": "2026-08-05T18:53:53.823543"
+    "added_at": "2026-08-05T18:53:53.823543",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401820761": {
     "game_id": "401820761",
@@ -3313,7 +3875,9 @@
     "away_score": "63",
     "home_score": "82",
     "league": "college",
-    "added_at": "2026-08-05T18:54:26.970633"
+    "added_at": "2026-08-05T18:54:26.970633",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401851172": {
     "game_id": "401851172",
@@ -3323,7 +3887,9 @@
     "away_score": "95",
     "home_score": "89",
     "league": "college",
-    "added_at": "2026-08-05T18:54:32.306782"
+    "added_at": "2026-08-05T18:54:32.306782",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401820725": {
     "game_id": "401820725",
@@ -3333,7 +3899,9 @@
     "away_score": "82",
     "home_score": "79",
     "league": "college",
-    "added_at": "2026-08-05T18:55:02.266315"
+    "added_at": "2026-08-05T18:55:02.266315",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401827617": {
     "game_id": "401827617",
@@ -3343,7 +3911,9 @@
     "away_score": "63",
     "home_score": "84",
     "league": "college",
-    "added_at": "2026-08-05T18:55:35.475721"
+    "added_at": "2026-08-05T18:55:35.475721",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401820817": {
     "game_id": "401820817",
@@ -3353,7 +3923,9 @@
     "away_score": "64",
     "home_score": "61",
     "league": "college",
-    "added_at": "2026-08-05T18:55:44.357282"
+    "added_at": "2026-08-05T18:55:44.357282",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401856558": {
     "game_id": "401856558",
@@ -3363,7 +3935,9 @@
     "away_score": "67",
     "home_score": "65",
     "league": "college",
-    "added_at": "2026-08-05T18:56:00.375507"
+    "added_at": "2026-08-05T18:56:00.375507",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401809305": {
     "game_id": "401809305",
@@ -3373,7 +3947,9 @@
     "away_score": "73",
     "home_score": "72",
     "league": "college",
-    "added_at": "2026-08-05T18:56:26.947210"
+    "added_at": "2026-08-05T18:56:26.947210",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401823478": {
     "game_id": "401823478",
@@ -3383,7 +3959,9 @@
     "away_score": "84",
     "home_score": "73",
     "league": "college",
-    "added_at": "2026-08-05T18:56:33.289410"
+    "added_at": "2026-08-05T18:56:33.289410",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401825507": {
     "game_id": "401825507",
@@ -3393,7 +3971,9 @@
     "away_score": "80",
     "home_score": "77",
     "league": "college",
-    "added_at": "2026-08-05T18:57:34.653313"
+    "added_at": "2026-08-05T18:57:34.653313",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401825520": {
     "game_id": "401825520",
@@ -3403,7 +3983,9 @@
     "away_score": "52",
     "home_score": "57",
     "league": "college",
-    "added_at": "2026-08-05T18:57:39.421861"
+    "added_at": "2026-08-05T18:57:39.421861",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401856489": {
     "game_id": "401856489",
@@ -3413,7 +3995,9 @@
     "away_score": "47",
     "home_score": "76",
     "league": "college",
-    "added_at": "2026-08-05T18:57:47.212899"
+    "added_at": "2026-08-05T18:57:47.212899",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401856534": {
     "game_id": "401856534",
@@ -3423,7 +4007,9 @@
     "away_score": "72",
     "home_score": "74",
     "league": "college",
-    "added_at": "2026-08-05T18:57:51.161608"
+    "added_at": "2026-08-05T18:57:51.161608",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401820645": {
     "game_id": "401820645",
@@ -3433,7 +4019,9 @@
     "away_score": "53",
     "home_score": "65",
     "league": "college",
-    "added_at": "2026-08-05T18:58:13.842240"
+    "added_at": "2026-08-05T18:58:13.842240",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401820732": {
     "game_id": "401820732",
@@ -3443,7 +4031,9 @@
     "away_score": "70",
     "home_score": "64",
     "league": "college",
-    "added_at": "2026-08-05T18:58:21.872292"
+    "added_at": "2026-08-05T18:58:21.872292",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401827646": {
     "game_id": "401827646",
@@ -3453,7 +4043,9 @@
     "away_score": "86",
     "home_score": "90",
     "league": "college",
-    "added_at": "2026-08-05T18:58:44.486416"
+    "added_at": "2026-08-05T18:58:44.486416",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401820819": {
     "game_id": "401820819",
@@ -3463,7 +4055,9 @@
     "away_score": "67",
     "home_score": "70",
     "league": "college",
-    "added_at": "2026-08-05T18:58:49.836263"
+    "added_at": "2026-08-05T18:58:49.836263",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401851289": {
     "game_id": "401851289",
@@ -3473,7 +4067,9 @@
     "away_score": "42",
     "home_score": "91",
     "league": "college",
-    "added_at": "2026-08-05T18:59:16.830440"
+    "added_at": "2026-08-05T18:59:16.830440",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401856561": {
     "game_id": "401856561",
@@ -3483,7 +4079,9 @@
     "away_score": "63",
     "home_score": "82",
     "league": "college",
-    "added_at": "2026-08-05T18:59:22.920901"
+    "added_at": "2026-08-05T18:59:22.920901",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401851384": {
     "game_id": "401851384",
@@ -3493,7 +4091,9 @@
     "away_score": "65",
     "home_score": "68",
     "league": "college",
-    "added_at": "2026-08-05T18:59:58.927795"
+    "added_at": "2026-08-05T18:59:58.927795",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401808287": {
     "game_id": "401808287",
@@ -3503,7 +4103,9 @@
     "away_score": "88",
     "home_score": "85",
     "league": "college",
-    "added_at": "2026-08-05T19:01:18.161578"
+    "added_at": "2026-08-05T19:01:18.161578",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401856525": {
     "game_id": "401856525",
@@ -3513,7 +4115,9 @@
     "away_score": "84",
     "home_score": "89",
     "league": "college",
-    "added_at": "2026-08-05T19:02:29.309560"
+    "added_at": "2026-08-05T19:02:29.309560",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401824895": {
     "game_id": "401824895",
@@ -3523,7 +4127,9 @@
     "away_score": "59",
     "home_score": "60",
     "league": "college",
-    "added_at": "2026-08-05T19:03:06.244058"
+    "added_at": "2026-08-05T19:03:06.244058",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401638590": {
     "game_id": "401638590",
@@ -3533,7 +4139,9 @@
     "away_score": "87",
     "home_score": "73",
     "league": "college",
-    "added_at": "2026-08-05T19:03:28.974853"
+    "added_at": "2026-08-05T19:03:28.974853",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401825459": {
     "game_id": "401825459",
@@ -3543,7 +4151,9 @@
     "away_score": "67",
     "home_score": "69",
     "league": "college",
-    "added_at": "2026-08-05T19:04:05.881595"
+    "added_at": "2026-08-05T19:04:05.881595",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401856496": {
     "game_id": "401856496",
@@ -3553,7 +4163,9 @@
     "away_score": "71",
     "home_score": "75",
     "league": "college",
-    "added_at": "2026-08-05T19:04:39.083905"
+    "added_at": "2026-08-05T19:04:39.083905",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401851477": {
     "game_id": "401851477",
@@ -3563,7 +4175,9 @@
     "away_score": "63",
     "home_score": "70",
     "league": "college",
-    "added_at": "2026-08-05T19:05:17.548111"
+    "added_at": "2026-08-05T19:05:17.548111",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401856435": {
     "game_id": "401856435",
@@ -3573,7 +4187,9 @@
     "away_score": "83",
     "home_score": "86",
     "league": "college",
-    "added_at": "2026-08-05T19:05:24.308325"
+    "added_at": "2026-08-05T19:05:24.308325",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401638579": {
     "game_id": "401638579",
@@ -3583,7 +4199,9 @@
     "away_score": "71",
     "home_score": "68",
     "league": "college",
-    "added_at": "2026-08-05T19:05:41.728288"
+    "added_at": "2026-08-05T19:05:41.728288",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401856488": {
     "game_id": "401856488",
@@ -3593,7 +4211,9 @@
     "away_score": "68",
     "home_score": "78",
     "league": "college",
-    "added_at": "2026-08-05T19:06:26.271262"
+    "added_at": "2026-08-05T19:06:26.271262",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401826730": {
     "game_id": "401826730",
@@ -3603,7 +4223,9 @@
     "away_score": "65",
     "home_score": "62",
     "league": "college",
-    "added_at": "2026-08-05T19:06:49.312436"
+    "added_at": "2026-08-05T19:06:49.312436",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401856479": {
     "game_id": "401856479",
@@ -3613,7 +4235,9 @@
     "away_score": "66",
     "home_score": "64",
     "league": "college",
-    "added_at": "2026-08-05T19:07:15.740027"
+    "added_at": "2026-08-05T19:07:15.740027",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401851291": {
     "game_id": "401851291",
@@ -3623,7 +4247,9 @@
     "away_score": "65",
     "home_score": "66",
     "league": "college",
-    "added_at": "2026-08-05T19:07:31.721972"
+    "added_at": "2026-08-05T19:07:31.721972",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401856480": {
     "game_id": "401856480",
@@ -3633,7 +4259,9 @@
     "away_score": "83",
     "home_score": "82",
     "league": "college",
-    "added_at": "2026-08-05T19:07:52.648052"
+    "added_at": "2026-08-05T19:07:52.648052",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401828195": {
     "game_id": "401828195",
@@ -3643,7 +4271,9 @@
     "away_score": "75",
     "home_score": "89",
     "league": "college",
-    "added_at": "2026-08-05T19:08:21.986096"
+    "added_at": "2026-08-05T19:08:21.986096",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401831197": {
     "game_id": "401831197",
@@ -3653,7 +4283,9 @@
     "away_score": "94",
     "home_score": "100",
     "league": "college",
-    "added_at": "2026-08-05T19:08:54.488974"
+    "added_at": "2026-08-05T19:08:54.488974",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401828387": {
     "game_id": "401828387",
@@ -3663,7 +4295,9 @@
     "away_score": "97",
     "home_score": "62",
     "league": "college",
-    "added_at": "2026-08-05T19:09:45.026575"
+    "added_at": "2026-08-05T19:09:45.026575",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401856487": {
     "game_id": "401856487",
@@ -3673,7 +4307,9 @@
     "away_score": "102",
     "home_score": "77",
     "league": "college",
-    "added_at": "2026-08-05T19:09:50.131769"
+    "added_at": "2026-08-05T19:09:50.131769",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401858186": {
     "game_id": "401858186",
@@ -3683,7 +4319,9 @@
     "away_score": "87",
     "home_score": "83",
     "league": "college",
-    "added_at": "2026-08-05T19:10:13.250215"
+    "added_at": "2026-08-05T19:10:13.250215",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401851225": {
     "game_id": "401851225",
@@ -3693,7 +4331,9 @@
     "away_score": "83",
     "home_score": "78",
     "league": "college",
-    "added_at": "2026-08-05T19:11:59.783138"
+    "added_at": "2026-08-05T19:11:59.783138",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401656361": {
     "game_id": "401656361",
@@ -3703,7 +4343,9 @@
     "away_score": "106",
     "home_score": "99",
     "league": "nba",
-    "added_at": "2026-08-05T19:22:50.546042"
+    "added_at": "2026-08-05T19:22:50.546042",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401656362": {
     "game_id": "401656362",
@@ -3713,7 +4355,9 @@
     "away_score": "84",
     "home_score": "122",
     "league": "nba",
-    "added_at": "2026-08-05T19:38:34.877704"
+    "added_at": "2026-08-05T19:38:34.877704",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401656363": {
     "game_id": "401656363",
@@ -3723,7 +4367,9 @@
     "away_score": "88",
     "home_score": "106",
     "league": "nba",
-    "added_at": "2026-08-05T19:44:45.628419"
+    "added_at": "2026-08-05T19:44:45.628419",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401746080": {
     "game_id": "401746080",
@@ -3733,7 +4379,9 @@
     "away_score": "70",
     "home_score": "67",
     "league": "college",
-    "added_at": "2026-08-05T19:58:19.944352"
+    "added_at": "2026-08-05T19:58:19.944352",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401746076": {
     "game_id": "401746076",
@@ -3743,7 +4391,9 @@
     "away_score": "65",
     "home_score": "85",
     "league": "college",
-    "added_at": "2026-08-05T22:25:49.470312"
+    "added_at": "2026-08-05T22:25:49.470312",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401746049": {
     "game_id": "401746049",
@@ -3753,7 +4403,9 @@
     "away_score": "66",
     "home_score": "89",
     "league": "college",
-    "added_at": "2026-08-05T22:59:34.136581"
+    "added_at": "2026-08-05T22:59:34.136581",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401859966": {
     "game_id": "401859966",
@@ -3763,7 +4415,9 @@
     "away_score": "106",
     "home_score": "107",
     "league": "nba",
-    "added_at": "2026-08-05T23:46:32.299087"
+    "added_at": "2026-08-05T23:46:32.299087",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401746061": {
     "game_id": "401746061",
@@ -3773,7 +4427,9 @@
     "away_score": "93",
     "home_score": "100",
     "league": "college",
-    "added_at": "2026-08-06T17:10:52.967557"
+    "added_at": "2026-08-06T17:10:52.967557",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401746003": {
     "game_id": "401746003",
@@ -3783,7 +4439,9 @@
     "away_score": "49",
     "home_score": "93",
     "league": "college",
-    "added_at": "2026-08-06T17:11:29.109875"
+    "added_at": "2026-08-06T17:11:29.109875",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401540754": {
     "game_id": "401540754",
@@ -3793,7 +4451,9 @@
     "away_score": "130",
     "home_score": "117",
     "league": "nba",
-    "added_at": "2026-08-06T17:32:57.626529"
+    "added_at": "2026-08-06T17:32:57.626529",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "400828562": {
     "game_id": "400828562",
@@ -3803,7 +4463,9 @@
     "away_score": "90",
     "home_score": "120",
     "league": "nba",
-    "added_at": "2026-08-06T21:50:01.748737"
+    "added_at": "2026-08-06T21:50:01.748737",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401019997": {
     "game_id": "401019997",
@@ -3813,7 +4475,9 @@
     "away_score": "74",
     "home_score": "69",
     "league": "college",
-    "added_at": "2026-08-06T22:04:24.844894"
+    "added_at": "2026-08-06T22:04:24.844894",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401120705": {
     "game_id": "401120705",
@@ -3823,7 +4487,9 @@
     "away_score": "74",
     "home_score": "73",
     "league": "college",
-    "added_at": "2026-08-06T23:27:59.015771"
+    "added_at": "2026-08-06T23:27:59.015771",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401541171": {
     "game_id": "401541171",
@@ -3833,7 +4499,9 @@
     "away_score": "122",
     "home_score": "138",
     "league": "nba",
-    "added_at": "2026-08-10T00:29:51.614759"
+    "added_at": "2026-08-10T00:29:51.614759",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401541179": {
     "game_id": "401541179",
@@ -3843,7 +4511,9 @@
     "away_score": "99",
     "home_score": "121",
     "league": "nba",
-    "added_at": "2026-08-10T00:38:58.644907"
+    "added_at": "2026-08-10T00:38:58.644907",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401746045": {
     "game_id": "401746045",
@@ -3853,7 +4523,9 @@
     "away_score": "83",
     "home_score": "87",
     "league": "college",
-    "added_at": "2026-08-10T21:20:09.973053"
+    "added_at": "2026-08-10T21:20:09.973053",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401541187": {
     "game_id": "401541187",
@@ -3863,7 +4535,9 @@
     "away_score": "114",
     "home_score": "119",
     "league": "nba",
-    "added_at": "2026-08-10T21:49:10.943678"
+    "added_at": "2026-08-10T21:49:10.943678",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401541240": {
     "game_id": "401541240",
@@ -3873,7 +4547,9 @@
     "away_score": "128",
     "home_score": "126",
     "league": "nba",
-    "added_at": "2026-08-10T21:59:33.988182"
+    "added_at": "2026-08-10T21:59:33.988182",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401810826": {
     "game_id": "401810826",
@@ -3883,7 +4559,9 @@
     "away_score": "100",
     "home_score": "111",
     "league": "nba",
-    "added_at": "2026-08-12T22:43:04.126949"
+    "added_at": "2026-08-12T22:43:04.126949",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "400876750": {
     "game_id": "400876750",
@@ -3893,7 +4571,9 @@
     "away_score": "108",
     "home_score": "102",
     "league": "nba",
-    "added_at": "2026-08-12T22:57:26.507290"
+    "added_at": "2026-08-12T22:57:26.507290",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401827719": {
     "game_id": "401827719",
@@ -3903,7 +4583,9 @@
     "away_score": "73",
     "home_score": "65",
     "league": "college",
-    "added_at": "2026-08-13T19:36:32.388664"
+    "added_at": "2026-08-13T19:36:32.388664",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401585459": {
     "game_id": "401585459",
@@ -3913,7 +4595,9 @@
     "away_score": "121",
     "home_score": "110",
     "league": "nba",
-    "added_at": "2026-08-14T00:30:07.613619"
+    "added_at": "2026-08-14T00:30:07.613619",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401654759": {
     "game_id": "401654759",
@@ -3923,7 +4607,9 @@
     "away_score": "95",
     "home_score": "120",
     "league": "nba",
-    "added_at": "2026-08-14T18:58:34.322003"
+    "added_at": "2026-08-14T18:58:34.322003",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401655088": {
     "game_id": "401655088",
@@ -3933,7 +4619,9 @@
     "away_score": "93",
     "home_score": "105",
     "league": "nba",
-    "added_at": "2026-08-14T19:29:30.526031"
+    "added_at": "2026-08-14T19:29:30.526031",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "400915666": {
     "game_id": "400915666",
@@ -3943,7 +4631,9 @@
     "away_score": "79",
     "home_score": "82",
     "league": "college",
-    "added_at": "2026-08-15T22:23:02.946270"
+    "added_at": "2026-08-15T22:23:02.946270",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "301217018": {
     "game_id": "301217018",
@@ -3953,7 +4643,9 @@
     "away_score": "113",
     "home_score": "91",
     "league": "nba",
-    "added_at": "2026-08-15T23:38:15.414805"
+    "added_at": "2026-08-15T23:38:15.414805",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "400489738": {
     "game_id": "400489738",
@@ -3963,7 +4655,9 @@
     "away_score": "82",
     "home_score": "108",
     "league": "nba",
-    "added_at": "2026-08-22T23:33:11.096979"
+    "added_at": "2026-08-22T23:33:11.096979",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "400278782": {
     "game_id": "400278782",
@@ -3973,7 +4667,9 @@
     "away_score": "97",
     "home_score": "101",
     "league": "nba",
-    "added_at": "2026-08-22T23:45:34.683054"
+    "added_at": "2026-08-22T23:45:34.683054",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401705656": {
     "game_id": "401705656",
@@ -3983,7 +4679,9 @@
     "away_score": "109",
     "home_score": "111",
     "league": "nba",
-    "added_at": "2026-08-24T19:18:15.406222"
+    "added_at": "2026-08-24T19:18:15.406222",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401704884": {
     "game_id": "401704884",
@@ -3993,7 +4691,9 @@
     "away_score": "80",
     "home_score": "109",
     "league": "nba",
-    "added_at": "2026-08-24T19:49:50.521442"
+    "added_at": "2026-08-24T19:49:50.521442",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401704883": {
     "game_id": "401704883",
@@ -4003,7 +4703,9 @@
     "away_score": "102",
     "home_score": "128",
     "league": "nba",
-    "added_at": "2026-08-24T20:12:52.250006"
+    "added_at": "2026-08-24T20:12:52.250006",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401704940": {
     "game_id": "401704940",
@@ -4013,7 +4715,9 @@
     "away_score": "101",
     "home_score": "124",
     "league": "nba",
-    "added_at": "2026-08-24T21:21:00.766995"
+    "added_at": "2026-08-24T21:21:00.766995",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401584866": {
     "game_id": "401584866",
@@ -4023,7 +4727,9 @@
     "away_score": "104",
     "home_score": "101",
     "league": "nba",
-    "added_at": "2026-08-24T23:32:38.513878"
+    "added_at": "2026-08-24T23:32:38.513878",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401616477": {
     "game_id": "401616477",
@@ -4033,7 +4739,9 @@
     "away_score": "121",
     "home_score": "112",
     "league": "nba",
-    "added_at": "2026-08-26T21:48:52.241834"
+    "added_at": "2026-08-26T21:48:52.241834",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401705651": {
     "game_id": "401705651",
@@ -4043,7 +4751,9 @@
     "away_score": "94",
     "home_score": "98",
     "league": "nba",
-    "added_at": "2026-08-26T23:24:20.427107"
+    "added_at": "2026-08-26T23:24:20.427107",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401705654": {
     "game_id": "401705654",
@@ -4053,7 +4763,9 @@
     "away_score": "148",
     "home_score": "109",
     "league": "nba",
-    "added_at": "2026-08-26T23:32:33.170523"
+    "added_at": "2026-08-26T23:32:33.170523",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401705618": {
     "game_id": "401705618",
@@ -4063,7 +4775,9 @@
     "away_score": "121",
     "home_score": "105",
     "league": "nba",
-    "added_at": "2026-08-26T23:44:02.600709"
+    "added_at": "2026-08-26T23:44:02.600709",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "400828804": {
     "game_id": "400828804",
@@ -4073,7 +4787,9 @@
     "away_score": "83",
     "home_score": "108",
     "league": "nba",
-    "added_at": "2026-08-26T23:56:07.033267"
+    "added_at": "2026-08-26T23:56:07.033267",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401585227": {
     "game_id": "401585227",
@@ -4083,7 +4799,9 @@
     "away_score": "102",
     "home_score": "97",
     "league": "nba",
-    "added_at": "2026-08-27T22:23:55.540918"
+    "added_at": "2026-08-27T22:23:55.540918",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401705617": {
     "game_id": "401705617",
@@ -4093,7 +4811,9 @@
     "away_score": "122",
     "home_score": "111",
     "league": "nba",
-    "added_at": "2026-08-30T22:06:20.861719"
+    "added_at": "2026-08-30T22:06:20.861719",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401704817": {
     "game_id": "401704817",
@@ -4103,7 +4823,9 @@
     "away_score": "99",
     "home_score": "102",
     "league": "nba",
-    "added_at": "2026-08-31T19:11:53.313528"
+    "added_at": "2026-08-31T19:11:53.313528",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401704816": {
     "game_id": "401704816",
@@ -4113,7 +4835,9 @@
     "away_score": "109",
     "home_score": "108",
     "league": "nba",
-    "added_at": "2026-08-31T19:32:59.431643"
+    "added_at": "2026-08-31T19:32:59.431643",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401704815": {
     "game_id": "401704815",
@@ -4123,7 +4847,9 @@
     "away_score": "109",
     "home_score": "99",
     "league": "nba",
-    "added_at": "2026-09-02T19:35:39.178833"
+    "added_at": "2026-09-02T19:35:39.178833",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401704811": {
     "game_id": "401704811",
@@ -4133,7 +4859,9 @@
     "away_score": "89",
     "home_score": "106",
     "league": "nba",
-    "added_at": "2026-09-02T21:52:05.118464"
+    "added_at": "2026-09-02T21:52:05.118464",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401704643": {
     "game_id": "401704643",
@@ -4143,7 +4871,9 @@
     "away_score": "101",
     "home_score": "116",
     "league": "nba",
-    "added_at": "2026-09-03T23:44:03.682853"
+    "added_at": "2026-09-03T23:44:03.682853",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401655090": {
     "game_id": "401655090",
@@ -4153,7 +4883,9 @@
     "away_score": "122",
     "home_score": "116",
     "league": "nba",
-    "added_at": "2026-09-04T23:02:15.510683"
+    "added_at": "2026-09-04T23:02:15.510683",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401307416": {
     "game_id": "401307416",
@@ -4163,7 +4895,9 @@
     "away_score": "105",
     "home_score": "116",
     "league": "nba",
-    "added_at": "2026-09-08T21:14:51.906796"
+    "added_at": "2026-09-08T21:14:51.906796",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401265785": {
     "game_id": "401265785",
@@ -4173,7 +4907,9 @@
     "away_score": "90",
     "home_score": "84",
     "league": "nba",
-    "added_at": "2026-09-22T00:19:09.960032"
+    "added_at": "2026-09-22T00:19:09.960032",
+    "season_type": "preseason",
+    "season_type_code": "1"
   },
   "401265788": {
     "game_id": "401265788",
@@ -4183,7 +4919,9 @@
     "away_score": "102",
     "home_score": "127",
     "league": "nba",
-    "added_at": "2026-09-22T00:30:09.225998"
+    "added_at": "2026-09-22T00:30:09.225998",
+    "season_type": "preseason",
+    "season_type_code": "1"
   },
   "401265787": {
     "game_id": "401265787",
@@ -4193,7 +4931,9 @@
     "away_score": "81",
     "home_score": "87",
     "league": "nba",
-    "added_at": "2026-09-22T12:20:24.169036"
+    "added_at": "2026-09-22T12:20:24.169036",
+    "season_type": "preseason",
+    "season_type_code": "1"
   },
   "401705308": {
     "game_id": "401705308",
@@ -4203,7 +4943,9 @@
     "away_score": "117",
     "home_score": "124",
     "league": "nba",
-    "added_at": "2026-09-22T13:39:39.461242"
+    "added_at": "2026-09-22T13:39:39.461242",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401359978": {
     "game_id": "401359978",
@@ -4213,7 +4955,9 @@
     "away_score": "123",
     "home_score": "126",
     "league": "nba",
-    "added_at": "2026-09-22T23:12:44.222379"
+    "added_at": "2026-09-22T23:12:44.222379",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401914102": {
     "game_id": "401914102",
@@ -4223,7 +4967,9 @@
     "away_score": "116",
     "home_score": "97",
     "league": "nba",
-    "added_at": "2026-10-06T13:05:55.144506"
+    "added_at": "2026-10-06T13:05:55.144506",
+    "season_type": "preseason",
+    "season_type_code": "1"
   },
   "401901820": {
     "game_id": "401901820",
@@ -4233,7 +4979,9 @@
     "away_score": "124",
     "home_score": "90",
     "league": "nba",
-    "added_at": "2026-10-06T23:26:15.106310"
+    "added_at": "2026-10-06T23:26:15.106310",
+    "season_type": "preseason",
+    "season_type_code": "1"
   },
   "400277752": {
     "game_id": "400277752",
@@ -4243,7 +4991,9 @@
     "away_score": "95",
     "home_score": "85",
     "league": "nba",
-    "added_at": "2026-10-11T08:13:51.685726"
+    "added_at": "2026-10-11T08:13:51.685726",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "301106030": {
     "game_id": "301106030",
@@ -4253,7 +5003,9 @@
     "away_score": "91",
     "home_score": "88",
     "league": "nba",
-    "added_at": "2026-10-11T08:21:01.835333"
+    "added_at": "2026-10-11T08:21:01.835333",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "300418019": {
     "game_id": "300418019",
@@ -4263,7 +5015,9 @@
     "away_score": "89",
     "home_score": "98",
     "league": "nba",
-    "added_at": "2026-10-11T08:25:28.040657"
+    "added_at": "2026-10-11T08:25:28.040657",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "300421019": {
     "game_id": "300421019",
@@ -4273,7 +5027,9 @@
     "away_score": "77",
     "home_score": "92",
     "league": "nba",
-    "added_at": "2026-10-11T08:35:18.178665"
+    "added_at": "2026-10-11T08:35:18.178665",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "300424030": {
     "game_id": "300424030",
@@ -4283,7 +5039,9 @@
     "away_score": "90",
     "home_score": "86",
     "league": "nba",
-    "added_at": "2026-10-11T08:35:22.198546"
+    "added_at": "2026-10-11T08:35:22.198546",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "300426030": {
     "game_id": "300426030",
@@ -4293,7 +5051,9 @@
     "away_score": "99",
     "home_score": "90",
     "league": "nba",
-    "added_at": "2026-10-11T08:35:25.380478"
+    "added_at": "2026-10-11T08:35:25.380478",
+    "season_type": "postseason",
+    "season_type_code": "3"
   },
   "401901821": {
     "game_id": "401901821",
@@ -4303,7 +5063,9 @@
     "away_score": "90",
     "home_score": "105",
     "league": "nba",
-    "added_at": "2026-10-12T20:40:30.711630"
+    "added_at": "2026-10-12T20:40:30.711630",
+    "season_type": "preseason",
+    "season_type_code": "1"
   },
   "400578711": {
     "game_id": "400578711",
@@ -4313,7 +5075,9 @@
     "away_score": "99",
     "home_score": "91",
     "league": "nba",
-    "added_at": "2026-10-12T23:08:18.452863"
+    "added_at": "2026-10-12T23:08:18.452863",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "400578712": {
     "game_id": "400578712",
@@ -4323,7 +5087,9 @@
     "away_score": "104",
     "home_score": "107",
     "league": "nba",
-    "added_at": "2026-10-12T23:08:31.421499"
+    "added_at": "2026-10-12T23:08:31.421499",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "400975207": {
     "game_id": "400975207",
@@ -4333,7 +5099,9 @@
     "away_score": "90",
     "home_score": "89",
     "league": "nba",
-    "added_at": "2026-10-13T12:17:19.499077"
+    "added_at": "2026-10-13T12:17:19.499077",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401071151": {
     "game_id": "401071151",
@@ -4343,7 +5111,9 @@
     "away_score": "110",
     "home_score": "126",
     "league": "nba",
-    "added_at": "2026-10-13T13:47:09.621914"
+    "added_at": "2026-10-13T13:47:09.621914",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401909088": {
     "game_id": "401909088",
@@ -4353,7 +5123,9 @@
     "away_score": "113",
     "home_score": "121",
     "league": "nba",
-    "added_at": "2026-10-20T17:56:55.383624"
+    "added_at": "2026-10-20T17:56:55.383624",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401909089": {
     "game_id": "401909089",
@@ -4363,27 +5135,33 @@
     "away_score": "106",
     "home_score": "100",
     "league": "nba",
-    "added_at": "2026-10-20T21:01:10.521546"
+    "added_at": "2026-10-20T21:01:10.521546",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401909090": {
     "game_id": "401909090",
     "date": "2026-10-20",
     "away": "Oklahoma City Thunder",
     "home": "San Antonio Spurs",
-    "away_score": "",
-    "home_score": "",
+    "away_score": "116",
+    "home_score": "104",
     "league": "nba",
-    "added_at": "2026-10-20T23:16:36.066864"
+    "added_at": "2026-10-20T23:16:36.066864",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401909836": {
     "game_id": "401909836",
     "date": "2026-10-21",
     "away": "Charlotte Hornets",
     "home": "Brooklyn Nets",
-    "away_score": "",
-    "home_score": "",
+    "away_score": "110",
+    "home_score": "103",
     "league": "nba",
-    "added_at": "2026-10-21T21:12:16.112426"
+    "added_at": "2026-10-21T21:12:16.112426",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401909091": {
     "game_id": "401909091",
@@ -4393,17 +5171,21 @@
     "away_score": "131",
     "home_score": "106",
     "league": "nba",
-    "added_at": "2026-10-21T22:12:14.636974"
+    "added_at": "2026-10-21T22:12:14.636974",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401909841": {
     "game_id": "401909841",
     "date": "2026-10-21",
     "away": "Phoenix Suns",
     "home": "Portland Trail Blazers",
-    "away_score": "",
-    "home_score": "",
+    "away_score": "83",
+    "home_score": "124",
     "league": "nba",
-    "added_at": "2026-10-21T23:06:13.692357"
+    "added_at": "2026-10-21T23:06:13.692357",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401909837": {
     "game_id": "401909837",
@@ -4413,7 +5195,9 @@
     "away_score": "92",
     "home_score": "135",
     "league": "nba",
-    "added_at": "2026-10-22T08:06:37.036542"
+    "added_at": "2026-10-22T08:06:37.036542",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401909838": {
     "game_id": "401909838",
@@ -4423,7 +5207,9 @@
     "away_score": "103",
     "home_score": "123",
     "league": "nba",
-    "added_at": "2026-10-22T16:56:12.198027"
+    "added_at": "2026-10-22T16:56:12.198027",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401909093": {
     "game_id": "401909093",
@@ -4433,17 +5219,21 @@
     "away_score": "106",
     "home_score": "114",
     "league": "nba",
-    "added_at": "2026-10-22T21:38:45.162615"
+    "added_at": "2026-10-22T21:38:45.162615",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401909843": {
     "game_id": "401909843",
     "date": "2026-10-23",
     "away": "Atlanta Hawks",
     "home": "Charlotte Hornets",
-    "away_score": "",
-    "home_score": "",
+    "away_score": "128",
+    "home_score": "81",
     "league": "nba",
-    "added_at": "2026-10-23T20:07:36.054716"
+    "added_at": "2026-10-23T20:07:36.054716",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401909844": {
     "game_id": "401909844",
@@ -4453,7 +5243,9 @@
     "away_score": "121",
     "home_score": "105",
     "league": "nba",
-    "added_at": "2026-10-23T23:09:56.882366"
+    "added_at": "2026-10-23T23:09:56.882366",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401182624": {
     "game_id": "401182624",
@@ -4463,7 +5255,9 @@
     "away_score": "85",
     "home_score": "93",
     "league": "college",
-    "added_at": "2026-10-23T23:46:42.324078"
+    "added_at": "2026-10-23T23:46:42.324078",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401909096": {
     "game_id": "401909096",
@@ -4473,7 +5267,9 @@
     "away_score": "114",
     "home_score": "110",
     "league": "nba",
-    "added_at": "2026-10-24T09:47:52.399240"
+    "added_at": "2026-10-24T09:47:52.399240",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401909850": {
     "game_id": "401909850",
@@ -4483,17 +5279,21 @@
     "away_score": "111",
     "home_score": "108",
     "league": "nba",
-    "added_at": "2026-10-24T10:06:17.445503"
+    "added_at": "2026-10-24T10:06:17.445503",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401909853": {
     "game_id": "401909853",
     "date": "2026-10-24",
     "away": "Miami Heat",
     "home": "Charlotte Hornets",
-    "away_score": "",
-    "home_score": "",
+    "away_score": "110",
+    "home_score": "115",
     "league": "nba",
-    "added_at": "2026-10-24T18:58:28.285137"
+    "added_at": "2026-10-24T18:58:28.285137",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401909857": {
     "game_id": "401909857",
@@ -4503,7 +5303,9 @@
     "away_score": "124",
     "home_score": "120",
     "league": "nba",
-    "added_at": "2026-10-24T23:34:46.961409"
+    "added_at": "2026-10-24T23:34:46.961409",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401909852": {
     "game_id": "401909852",
@@ -4513,7 +5315,9 @@
     "away_score": "128",
     "home_score": "120",
     "league": "nba",
-    "added_at": "2026-10-25T09:55:14.022818"
+    "added_at": "2026-10-25T09:55:14.022818",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401909864": {
     "game_id": "401909864",
@@ -4523,7 +5327,9 @@
     "away_score": "94",
     "home_score": "117",
     "league": "nba",
-    "added_at": "2026-10-26T00:46:24.505935"
+    "added_at": "2026-10-26T00:46:24.505935",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401909866": {
     "game_id": "401909866",
@@ -4533,7 +5339,9 @@
     "away_score": "106",
     "home_score": "93",
     "league": "nba",
-    "added_at": "2026-10-26T01:01:57.664026"
+    "added_at": "2026-10-26T01:01:57.664026",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401909868": {
     "game_id": "401909868",
@@ -4543,7 +5351,9 @@
     "away_score": "103",
     "home_score": "110",
     "league": "nba",
-    "added_at": "2026-10-26T20:26:10.415910"
+    "added_at": "2026-10-26T20:26:10.415910",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401909869": {
     "game_id": "401909869",
@@ -4553,7 +5363,9 @@
     "away_score": "125",
     "home_score": "127",
     "league": "nba",
-    "added_at": "2026-10-26T23:02:05.740861"
+    "added_at": "2026-10-26T23:02:05.740861",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401909872": {
     "game_id": "401909872",
@@ -4563,7 +5375,9 @@
     "away_score": "102",
     "home_score": "110",
     "league": "nba",
-    "added_at": "2026-10-26T23:37:23.080329"
+    "added_at": "2026-10-26T23:37:23.080329",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401909876": {
     "game_id": "401909876",
@@ -4573,7 +5387,9 @@
     "away_score": "134",
     "home_score": "114",
     "league": "nba",
-    "added_at": "2026-10-27T12:15:12.380251"
+    "added_at": "2026-10-27T12:15:12.380251",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401909874": {
     "game_id": "401909874",
@@ -4583,7 +5399,9 @@
     "away_score": "110",
     "home_score": "120",
     "league": "nba",
-    "added_at": "2026-10-27T13:46:11.312638"
+    "added_at": "2026-10-27T13:46:11.312638",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401909878": {
     "game_id": "401909878",
@@ -4593,7 +5411,9 @@
     "away_score": "97",
     "home_score": "111",
     "league": "nba",
-    "added_at": "2026-10-27T23:57:12.431826"
+    "added_at": "2026-10-27T23:57:12.431826",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401909883": {
     "game_id": "401909883",
@@ -4603,7 +5423,9 @@
     "away_score": "89",
     "home_score": "97",
     "league": "nba",
-    "added_at": "2026-10-28T22:29:43.388136"
+    "added_at": "2026-10-28T22:29:43.388136",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401909888": {
     "game_id": "401909888",
@@ -4613,7 +5435,9 @@
     "away_score": "119",
     "home_score": "114",
     "league": "nba",
-    "added_at": "2026-10-28T23:10:31.038071"
+    "added_at": "2026-10-28T23:10:31.038071",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401909882": {
     "game_id": "401909882",
@@ -4623,7 +5447,9 @@
     "away_score": "111",
     "home_score": "121",
     "league": "nba",
-    "added_at": "2026-10-30T08:04:32.439861"
+    "added_at": "2026-10-30T08:04:32.439861",
+    "season_type": "regular",
+    "season_type_code": "2"
   },
   "401920982": {
     "game_id": "401920982",
@@ -4633,6 +5459,225 @@
     "away_score": "74",
     "home_score": "72",
     "league": "college",
-    "added_at": "2026-11-02T00:39:00.944889"
+    "added_at": "2026-11-02T00:39:00.944889",
+    "season_type": "regular",
+    "season_type_code": "2"
+  },
+  "401906769": {
+    "game_id": "401906769",
+    "date": "2026-11-02",
+    "away": "Miami Hurricanes",
+    "home": "Florida Gators",
+    "away_score": "67",
+    "home_score": "77",
+    "league": "college",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-02T19:56:21.738775"
+  },
+  "401909905": {
+    "game_id": "401909905",
+    "date": "2026-11-01",
+    "away": "LA Clippers",
+    "home": "Golden State Warriors",
+    "away_score": "112",
+    "home_score": "124",
+    "league": "nba",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-02T20:00:43.205477",
+    "player_summary_player_keys": [
+      "espn:5175737"
+    ]
+  },
+  "161101020": {
+    "game_id": "161101020",
+    "date": "1996-11-01",
+    "away": "Milwaukee Bucks",
+    "home": "Philadelphia 76ers",
+    "away_score": "111",
+    "home_score": "103",
+    "league": "nba",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-02T20:21:27.565503",
+    "player_summary_player_keys": [
+      "espn:366"
+    ]
+  },
+  "401909901": {
+    "game_id": "401909901",
+    "date": "2026-10-31",
+    "away": "Minnesota Timberwolves",
+    "home": "San Antonio Spurs",
+    "away_score": "111",
+    "home_score": "121",
+    "league": "nba",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-02T20:28:30.549809",
+    "player_summary_player_keys": [
+      "espn:5104157"
+    ]
+  },
+  "401909716": {
+    "game_id": "401909716",
+    "date": "2026-11-02",
+    "away": "New Haven Chargers",
+    "home": "Syracuse Orange",
+    "away_score": "58",
+    "home_score": "74",
+    "league": "college",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-02T20:37:29.574523",
+    "player_summary_player_keys": [
+      "espn:5120280"
+    ]
+  },
+  "401909771": {
+    "game_id": "401909771",
+    "date": "2026-11-02",
+    "away": "Memphis Tigers",
+    "home": "Iowa State Cyclones",
+    "away_score": "80",
+    "home_score": "76",
+    "league": "college",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-02T22:50:47.940775"
+  },
+  "401909908": {
+    "game_id": "401909908",
+    "date": "2026-11-02",
+    "away": "Detroit Pistons",
+    "home": "Charlotte Hornets",
+    "away_score": "124",
+    "home_score": "91",
+    "league": "nba",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-02T23:08:48.883969"
+  },
+  "401909916": {
+    "game_id": "401909916",
+    "date": "2026-11-02",
+    "away": "Boston Celtics",
+    "home": "Houston Rockets",
+    "away_score": "93",
+    "home_score": "109",
+    "league": "nba",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-02T23:24:43.808584"
+  },
+  "401909915": {
+    "game_id": "401909915",
+    "date": "2026-11-02",
+    "away": "Milwaukee Bucks",
+    "home": "Minnesota Timberwolves",
+    "away_score": "100",
+    "home_score": "112",
+    "league": "nba",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-02T23:29:17.314880",
+    "player_summary_player_keys": [
+      "espn:4432816"
+    ]
+  },
+  "401916313": {
+    "game_id": "401916313",
+    "date": "2026-11-02",
+    "away": "Ohio State Buckeyes",
+    "home": "BYU Cougars",
+    "away_score": "83",
+    "home_score": "94",
+    "league": "college",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-02T23:51:42.665158"
+  },
+  "401909738": {
+    "game_id": "401909738",
+    "date": "2026-11-02",
+    "away": "Arizona Wildcats",
+    "home": "UCLA Bruins",
+    "away_score": "75",
+    "home_score": "84",
+    "league": "college",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-03T11:34:38.287127"
+  },
+  "283230201": {
+    "game_id": "283230201",
+    "date": "2008-11-18",
+    "away": "Davidson Wildcats",
+    "home": "Oklahoma Sooners",
+    "away_score": "78",
+    "home_score": "82",
+    "league": "college",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-03T12:07:47.478281"
+  },
+  "280123025": {
+    "game_id": "280123025",
+    "date": "2008-01-23",
+    "away": "Houston Rockets",
+    "home": "Seattle SuperSonics",
+    "away_score": "109",
+    "home_score": "107",
+    "league": "nba",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-03T13:32:42.233249",
+    "player_summary_player_keys": [
+      "espn:3202",
+      "espn:532"
+    ]
+  },
+  "300503021": {
+    "game_id": "300503021",
+    "date": "2010-05-03",
+    "away": "San Antonio Spurs",
+    "home": "Phoenix Suns",
+    "away_score": "102",
+    "home_score": "111",
+    "league": "nba",
+    "season_type": "postseason",
+    "season_type_code": "3",
+    "added_at": "2026-11-03T18:57:41.520941",
+    "player_summary_player_keys": [
+      "espn:592"
+    ]
+  },
+  "401921165": {
+    "game_id": "401921165",
+    "date": "2026-11-03",
+    "away": "Cleveland State Vikings",
+    "home": "Missouri Tigers",
+    "away_score": "50",
+    "home_score": "111",
+    "league": "college",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-03T23:04:23.176230",
+    "player_summary_player_keys": [
+      "espn:5142715"
+    ]
+  },
+  "401909921": {
+    "game_id": "401909921",
+    "date": "2026-11-02",
+    "away": "Miami Heat",
+    "home": "Los Angeles Lakers",
+    "away_score": "117",
+    "home_score": "138",
+    "league": "nba",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-03T23:23:06.806053"
   }
 }

@@ -1688,5 +1688,22 @@
     "home_score": "27",
     "league": "college",
     "added_at": "2026-11-02T00:11:21.417964"
+  },
+  "401873035": {
+    "game_id": "401873035",
+    "date": "2026-11-01",
+    "away": "Philadelphia Eagles",
+    "home": "Washington Commanders",
+    "away_score": "10",
+    "home_score": "27",
+    "league": "nfl",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-02T20:40:54.305029",
+    "player_summary_player_keys": [
+      "espn:2976212",
+      "espn:4360635",
+      "espn:4426348"
+    ]
   }
 }
