@@ -1,5 +1,3 @@
-i would like to by able to log a game as watched twice, the stats would double count in that case (any n number of times)
-
 game summary screen: show details about conference
 	ACC, SEC, B10, etc games watched win percentage...
 

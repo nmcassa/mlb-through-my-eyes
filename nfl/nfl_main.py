@@ -26,6 +26,7 @@ import nfl_json_store as json_store
 from player_selection import CANCEL_SELECTION, choose_players
 from player_stats_cache import PLAYER_SUMMARY_KEYS_FIELD
 from season_types import SEASON_TYPE_LABELS, record_type, resolve_record_types
+from watched_games import next_watch_key, watch_count
 
 
 # ── League registry ────────────────────────────────────────────────────────────
@@ -237,7 +238,7 @@ def browse_by_date(watched: dict):
 
 
 def _game_select_loop(games: list, watched: dict, team_name: str, season: str, league: dict):
-    """Paginated game list with toggle-to-watch."""
+    """Paginated game list for logging watched games."""
     page_size   = 15
     page        = 0
     total_pages = (len(games) - 1) // page_size + 1
@@ -252,11 +253,12 @@ def _game_select_loop(games: list, watched: dict, team_name: str, season: str, l
         print(f"\n  Page {page+1}/{total_pages}   ({len(games)} games total)\n")
         for i, game in enumerate(chunk):
             gid  = str(game["game_id"])
-            star = "★" if gid in watched else " "
-            print(f"  [{i+1:>2}] {star}  {game_label(game)}")
+            count = watch_count(watched, gid)
+            marker = f"★ ×{count}" if count else " "
+            print(f"  [{i+1:>2}] {marker:<5}  {game_label(game)}")
 
         print("\n" + "-" * 60)
-        print("  Enter a game number to toggle watched  |  n=next  p=prev  q=quit")
+        print("  Enter a game number to log another watch  |  n=next  p=prev  q=quit")
         cmd = input("\n> ").strip().lower()
 
         if cmd == "q":
@@ -272,34 +274,27 @@ def _game_select_loop(games: list, watched: dict, team_name: str, season: str, l
             if 0 <= idx < len(chunk):
                 game = chunk[idx]
                 gid  = str(game["game_id"])
-                if gid in watched:
-                    del watched[gid]
-                    print(f"\n  ✗ Removed: {game_label(game)}")
-                else:
-                    record = {
-                        "game_id":    game["game_id"],
-                        "date":       game["game_date"],
-                        "away":       game["away_name"],
-                        "home":       game["home_name"],
-                        "away_score": game.get("away_score", ""),
-                        "home_score": game.get("home_score", ""),
-                        "league":     league["key"],
-                        "season_type": game.get("season_type", "unknown"),
-                        "season_type_code": game.get("season_type_code"),
-                        "added_at":   datetime.now().isoformat(),
-                    }
-                    selection = _show_boxscore(game, league, gid, record)
-                    if selection is CANCEL_SELECTION:
-                        input("  Press Enter to continue...")
-                        continue
-                    if selection is not None:
-                        record[PLAYER_SUMMARY_KEYS_FIELD] = selection
-                    watched[gid] = record
-                    json_store.save_watched(watched)
-                    print(f"\n  ★ Added:   {game_label(game)}")
+                record = {
+                    "game_id":    game["game_id"],
+                    "date":       game["game_date"],
+                    "away":       game["away_name"],
+                    "home":       game["home_name"],
+                    "away_score": game.get("away_score", ""),
+                    "home_score": game.get("home_score", ""),
+                    "league":     league["key"],
+                    "season_type": game.get("season_type", "unknown"),
+                    "season_type_code": game.get("season_type_code"),
+                    "added_at":   datetime.now().isoformat(),
+                }
+                selection = _show_boxscore(game, league, gid, record)
+                if selection is CANCEL_SELECTION:
                     input("  Press Enter to continue...")
                     continue
+                if selection is not None:
+                    record[PLAYER_SUMMARY_KEYS_FIELD] = selection
+                watched[next_watch_key(watched, gid)] = record
                 json_store.save_watched(watched)
+                print(f"\n  ★ Logged watch #{watch_count(watched, gid)}: {game_label(game)}")
                 input("  Press Enter to continue...")
 
 
@@ -445,8 +440,8 @@ def remove_watched(watched: dict):
         input("\nPress Enter to continue...")
         return
 
-    games = sorted(watched.values(), key=lambda g: g["date"])
-    for i, g in enumerate(games):
+    games = sorted(watched.items(), key=lambda item: (item[1]["date"], item[1].get("added_at", ""), item[0]))
+    for i, (_, g) in enumerate(games):
         away_s = g.get("away_score", "")
         home_s = g.get("home_score", "")
         score  = f"  {away_s}–{home_s}" if away_s != "" else ""
@@ -461,9 +456,8 @@ def remove_watched(watched: dict):
     if cmd.isdigit():
         idx = int(cmd) - 1
         if 0 <= idx < len(games):
-            g   = games[idx]
-            gid = str(g["game_id"])
-            del watched[gid]
+            watch_key, g = games[idx]
+            del watched[watch_key]
             json_store.save_watched(watched)
             print(f"\n  Removed: {g['date']}  {g['away']} @ {g['home']}")
     input("\nPress Enter to continue...")
