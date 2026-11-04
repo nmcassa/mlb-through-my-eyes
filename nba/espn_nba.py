@@ -53,6 +53,10 @@ def find_teams(query: str) -> list[dict]:
     return espn_common.find_teams(_get, query, 50)
 
 
+def fetch_team_conferences() -> dict[str, str]:
+    return espn_common.fetch_team_groups(_get)
+
+
 # ── Schedule ───────────────────────────────────────────────────────────────
 
 SEASON_TYPE_LABELS = {

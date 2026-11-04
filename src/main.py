@@ -18,6 +18,7 @@ import mlb
 import player_summary
 import comparison
 import json_store
+import group_summary
 from player_selection import CANCEL_SELECTION, choose_players
 from player_stats_cache import PLAYER_SUMMARY_KEYS_FIELD
 from season_types import SEASON_TYPE_LABELS, record_type, resolve_record_types
@@ -221,6 +222,8 @@ def _game_select_loop(games: list, watched: dict, team_name: str, season: str):
                     "date":       game["game_date"],
                     "away":       game["away_name"],
                     "home":       game["home_name"],
+                    "away_team_id": game.get("away_id"),
+                    "home_team_id": game.get("home_id"),
                     "away_score": game.get("away_score", ""),
                     "home_score": game.get("home_score", ""),
                     "season_type": game.get("season_type", "unknown"),
@@ -637,6 +640,17 @@ _GAME_SORT_COLS = [
     ("Runs/game",    "rpg",  True),
 ]
 
+_LEAGUE_SORT_COLS = [
+    ("League name",   "name", False),
+    ("Wins",          "W",    True),
+    ("Losses",        "L",    False),
+    ("Win %",         "pct",  True),
+    ("Runs scored",   "ps",   True),
+    ("Runs allowed",  "pa",   False),
+    ("Games",         "g",    True),
+    ("Runs/game",     "ppg",  True),
+]
+
 
 def summary(watched: dict):
     """Show per-team record and run stats across all watched games."""
@@ -754,6 +768,78 @@ def summary(watched: dict):
         if isinstance(result, tuple) and result[0] == "page":
             page += result[1]
             continue
+        if result is False:
+            continue
+        sort_col, sort_rev = result
+        page = 0
+
+
+def league_summary(watched: dict):
+    if not watched:
+        clear()
+        print_header("League Summary")
+        print("\n  No games watched yet. Browse a season to add some!")
+        input("\nPress Enter to continue...")
+        return
+
+    _refresh_missing_scores(watched)
+    try:
+        league_map = mlb.fetch_team_leagues()
+    except RuntimeError as e:
+        clear()
+        print_header("League Summary")
+        print(f"\n  Could not load MLB leagues: {e}")
+        input("\nPress Enter to continue...")
+        return
+
+    season_filter: str | None = None
+    team_filter: str | None = None
+    season_type_filter: str | None = None
+    sort_col, sort_rev = "pct", True
+    page, page_size = 0, 25
+
+    while True:
+        active = _apply_watched_filters(watched, season_filter, team_filter, season_type_filter)
+        scored = [
+            game for game in active.values()
+            if game.get("away_score", "") != "" and game.get("home_score", "") != ""
+        ]
+        rows = group_summary.aggregate(scored, {"mlb": league_map}, "mlb")
+        rows = _sort_rows(rows, sort_col, sort_rev)
+        visible, page, total_pages = _paginate(rows, page, page_size)
+
+        clear()
+        print_header("League Summary")
+        sort_label = next(label for label, key, _ in _LEAGUE_SORT_COLS if key == sort_col)
+        fl = _filters_label(season_filter, team_filter, season_type_filter)
+        print(f"\n  {len(scored)} game(s)  |  {len(rows)} leagues  |  sorted by {sort_label}  |  {_page_label(page, total_pages)}{fl}\n")
+        if not rows:
+            print("  No completed games with league data match current filters.")
+        else:
+            col = "{:<26}  {:>3}  {:>3}  {:>5}  {:>6}  {:>6}  {:>5}  {:>6}"
+            print(col.format("League", "W", "L", "PCT", "RS", "RA", "G", "R/G"))
+            print("  " + "-" * 58)
+            for row in visible:
+                print("  " + col.format(row["name"][:26], row["W"], row["L"], f"{row['pct']:.3f}", row["ps"], row["pa"], row["g"], f"{row['ppg']:.1f}"))
+
+        result = _sort_prompt(_LEAGUE_SORT_COLS, total_pages)
+        if result is None:
+            return
+        if result == "csv":
+            csv_rows = [{**row, "pct": f"{row['pct']:.3f}", "ppg": f"{row['ppg']:.1f}"} for row in rows]
+            _dump_csv("mlb_league_summary.csv", ["League", "W", "L", "PCT", "RS", "RA", "G", "R/G"], csv_rows, ["name", "W", "L", "pct", "ps", "pa", "g", "ppg"])
+            continue
+        if result == "filter":
+            season_filter, team_filter, _, _, season_type_filter = _filter_prompt(
+                watched, season_filter, team_filter, None, show_ip=False,
+                season_type_filter=season_type_filter,
+            )
+            page = 0
+            continue
+        if isinstance(result, tuple) and result[0] == "pagesize":
+            page_size = _ask_page_size(page_size); page = 0; continue
+        if isinstance(result, tuple) and result[0] == "page":
+            page += result[1]; continue
         if result is False:
             continue
         sort_col, sort_rev = result
@@ -1579,6 +1665,7 @@ def main():
         print("  [6]  My Small Sample")
         print("  [7]  Search Player")
         print("  [8]  Browse by Date")
+        print("  [9]  League Summary")
         print("  [q]  Quit\n")
 
         cmd = input("> ").strip().lower()
@@ -1599,6 +1686,8 @@ def main():
             screen_player_search(watched)
         elif cmd == "8":
             browse_by_date(watched)
+        elif cmd == "9":
+            league_summary(watched)
         elif cmd == "q":
             print("\nBye!\n")
             break

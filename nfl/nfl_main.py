@@ -23,6 +23,7 @@ import espn_cfb
 import nfl_dates
 import nfl_player_summary as player_summary
 import nfl_json_store as json_store
+import group_summary
 from player_selection import CANCEL_SELECTION, choose_players
 from player_stats_cache import PLAYER_SUMMARY_KEYS_FIELD
 from season_types import SEASON_TYPE_LABELS, record_type, resolve_record_types
@@ -760,6 +761,11 @@ _GAME_SORT_COLS = [
     ("Pts/game",      "ppg",  True),
 ]
 
+_CONFERENCE_SORT_COLS = [
+    ("Conference name", "name", False),
+    *_GAME_SORT_COLS[1:],
+]
+
 
 def summary(watched: dict):
     """Show per-team record and scoring stats across all watched games."""
@@ -771,7 +777,6 @@ def summary(watched: dict):
         return
 
     _refresh_missing_scores(watched)
-    _refresh_conferences(watched)
 
     season_filter: str | None = None
     team_filter:   str | None = None
@@ -801,27 +806,6 @@ def summary(watched: dict):
             ht["g"] += 1; ht["ps"] += h; ht["pa"] += a
             if a > h:   at["W"] += 1; ht["L"] += 1
             elif h > a: ht["W"] += 1; at["L"] += 1
-
-        conferences: dict[str, dict] = {}
-        def get_conference(name):
-            if name not in conferences:
-                conferences[name] = {"W": 0, "L": 0, "g": 0}
-            return conferences[name]
-
-        for g in scored:
-            if g.get("league") != "college":
-                continue
-            a = int(g["away_score"]); h = int(g["home_score"])
-            for side, won in (("away", a > h), ("home", h > a)):
-                name = g.get(f"{side}_conference")
-                if not name:
-                    continue
-                conference = get_conference(name)
-                conference["g"] += 1
-                if won:
-                    conference["W"] += 1
-                elif a != h:
-                    conference["L"] += 1
 
         rows = []
         for name, t in teams.items():
@@ -866,16 +850,6 @@ def summary(watched: dict):
                     r["g"], f"{r['ppg']:.1f}",
                 ))
 
-            if conferences:
-                print("\n  Conference records (team appearances)")
-                conference_col = "  {:<26}  {:>3}  {:>3}  {:>5}  {:>5}"
-                print(conference_col.format("Conference", "W", "L", "PCT", "G"))
-                print("  " + "-" * 48)
-                for name, record in sorted(conferences.items()):
-                    decisions = record["W"] + record["L"]
-                    pct = record["W"] / decisions if decisions else 0
-                    print(conference_col.format(name[:26], record["W"], record["L"], f"{pct:.3f}", record["g"]))
-
             print("\n" + "-" * 60)
             print(f"  Avg total points/game: {avg_pts:.1f}")
             print(f"  🔥 Highest-scoring: {highest['date']}  {highest['away']} @ {highest['home']}  ({highest['away_score']}–{highest['home_score']})")
@@ -908,6 +882,76 @@ def summary(watched: dict):
         if isinstance(result, tuple) and result[0] == "page":
             page += result[1]
             continue
+        if result is False:
+            continue
+        sort_col, sort_rev = result
+        page = 0
+
+
+def conference_summary(watched: dict):
+    if not watched:
+        clear()
+        print_header("Conference Summary")
+        print("\n  No games watched yet. Browse a season to add some!")
+        input("\nPress Enter to continue...")
+        return
+
+    _refresh_missing_scores(watched)
+    _refresh_conferences(watched)
+    try:
+        pro_groups = espn_nfl.fetch_team_conferences()
+    except RuntimeError as e:
+        print(f"  Could not load NFL conferences: {e}")
+        pro_groups = {}
+    season_filter: str | None = None
+    team_filter: str | None = None
+    league_filter: str | None = None
+    season_type_filter: str | None = None
+    sort_col, sort_rev = "pct", True
+    page, page_size = 0, 25
+
+    while True:
+        active = _apply_watched_filters(watched, season_filter, team_filter, league_filter, season_type_filter)
+        scored = [
+            game for game in active.values()
+            if game.get("away_score", "") != "" and game.get("home_score", "") != ""
+        ]
+        rows = group_summary.aggregate(scored, {"nfl": pro_groups}, "nfl")
+        rows = _sort_rows(rows, sort_col, sort_rev)
+        visible, page, total_pages = _paginate(rows, page, page_size)
+
+        clear()
+        print_header("Conference Summary")
+        sort_label = next(label for label, key, _ in _CONFERENCE_SORT_COLS if key == sort_col)
+        fl = _filters_label(season_filter, team_filter, league_filter=league_filter, season_type_filter=season_type_filter)
+        print(f"\n  {len(scored)} game(s)  |  {len(rows)} conferences  |  sorted by {sort_label}  |  {_page_label(page, total_pages)}{fl}\n")
+        if not rows:
+            print("  No completed games with conference data match current filters.")
+        else:
+            col = "{:<26}  {:>3}  {:>3}  {:>5}  {:>6}  {:>6}  {:>5}  {:>6}"
+            print(col.format("Conference", "W", "L", "PCT", "PS", "PA", "G", "PTS/G"))
+            print("  " + "-" * 58)
+            for row in visible:
+                print("  " + col.format(row["name"][:26], row["W"], row["L"], f"{row['pct']:.3f}", row["ps"], row["pa"], row["g"], f"{row['ppg']:.1f}"))
+
+        result = _sort_prompt(_CONFERENCE_SORT_COLS, total_pages)
+        if result is None:
+            return
+        if result == "csv":
+            csv_rows = [{**row, "pct": f"{row['pct']:.3f}", "ppg": f"{row['ppg']:.1f}"} for row in rows]
+            _dump_csv("football_conference_summary.csv", ["Conference", "W", "L", "PCT", "PS", "PA", "G", "PTS/G"], csv_rows, ["name", "W", "L", "pct", "ps", "pa", "g", "ppg"])
+            continue
+        if result == "filter":
+            season_filter, team_filter, _, league_filter, season_type_filter = _filter_prompt(
+                watched, season_filter, team_filter, league_filter=league_filter,
+                season_type_filter=season_type_filter,
+            )
+            page = 0
+            continue
+        if isinstance(result, tuple) and result[0] == "pagesize":
+            page_size = _ask_page_size(page_size); page = 0; continue
+        if isinstance(result, tuple) and result[0] == "page":
+            page += result[1]; continue
         if result is False:
             continue
         sort_col, sort_rev = result
@@ -1290,6 +1334,7 @@ def main():
         print("  [5]  Player Summary")
         print("  [6]  Search Player")
         print("  [7]  Browse by Date")
+        print("  [8]  Conference Summary")
         print("  [q]  Quit\n")
 
         cmd = input("> ").strip().lower()
@@ -1308,6 +1353,8 @@ def main():
             screen_player_search(watched)
         elif cmd == "7":
             browse_by_date(watched)
+        elif cmd == "8":
+            conference_summary(watched)
         elif cmd == "q":
             print("\nGoodbye!")
             break
