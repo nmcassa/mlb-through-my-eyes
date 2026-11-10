@@ -3,3 +3,7 @@ conference summaries use each team's current ESPN conference and may misclassify
 
 	the ability to mark a certain subset of innings or quarters or half (in college basketball) would be nice, i watch partial games sometimes
 	BLOCKED: the current MLB/ESPN box-score APIs only provide full-game player totals. Exact partial-game player stats would require reconstructing statistics from play-by-play data.
+
+after adding a game i would like a screen to show each player logged and their game change "Games: 4 (+1)" and Nick+ change "Nick+: 90 (-2)" for their career
+
+min should be changed to minutes per game in all summary screens. but the filter should still be by total minutes

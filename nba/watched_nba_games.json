@@ -2545,7 +2545,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:20:42.396789",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "2305",
+    "home_team_id": "153",
+    "away_conference_id": "8",
+    "away_conference": "Big 12",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401817264": {
     "game_id": "401817264",
@@ -2557,7 +2563,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:20:52.509025",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "2515",
+    "home_team_id": "153",
+    "away_conference_id": "6",
+    "away_conference": "Big South",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401817265": {
     "game_id": "401817265",
@@ -2569,7 +2581,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:21:04.681480",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "2428",
+    "home_team_id": "153",
+    "away_conference_id": "16",
+    "away_conference": "MEAC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401817267": {
     "game_id": "401817267",
@@ -2581,7 +2599,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:21:14.099575",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "127",
+    "home_team_id": "153",
+    "away_conference_id": "7",
+    "away_conference": "Big Ten",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401806365": {
     "game_id": "401806365",
@@ -2593,7 +2617,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:21:27.936061",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "153",
+    "home_team_id": "96",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "23",
+    "home_conference": "SEC"
   },
   "401820639": {
     "game_id": "401820639",
@@ -2605,7 +2635,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:21:35.320688",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "52",
+    "home_team_id": "153",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401820648": {
     "game_id": "401820648",
@@ -2617,7 +2653,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:21:46.937827",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "153",
+    "home_team_id": "2567",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401820661": {
     "game_id": "401820661",
@@ -2629,7 +2671,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:22:05.655705",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "154",
+    "home_team_id": "153",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401820697": {
     "game_id": "401820697",
@@ -2641,7 +2689,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:22:09.656366",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "153",
+    "home_team_id": "258",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401820709": {
     "game_id": "401820709",
@@ -2653,7 +2707,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:22:21.384887",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "153",
+    "home_team_id": "59",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401820714": {
     "game_id": "401820714",
@@ -2665,7 +2725,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:22:27.119188",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "183",
+    "home_team_id": "153",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401820724": {
     "game_id": "401820724",
@@ -2677,7 +2743,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:22:48.330745",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "150",
+    "home_team_id": "153",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401820731": {
     "game_id": "401820731",
@@ -2689,7 +2761,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:22:54.666864",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "153",
+    "home_team_id": "2390",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401820742": {
     "game_id": "401820742",
@@ -2701,7 +2779,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:23:02.731585",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "221",
+    "home_team_id": "153",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401820752": {
     "game_id": "401820752",
@@ -2713,7 +2797,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:23:08.372679",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "153",
+    "home_team_id": "152",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401820759": {
     "game_id": "401820759",
@@ -2725,7 +2815,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:23:20.833663",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "153",
+    "home_team_id": "183",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401820774": {
     "game_id": "401820774",
@@ -2737,7 +2833,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:23:27.173708",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "259",
+    "home_team_id": "153",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401820779": {
     "game_id": "401820779",
@@ -2749,7 +2851,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:23:32.965336",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "228",
+    "home_team_id": "153",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401851180": {
     "game_id": "401851180",
@@ -2761,7 +2869,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:23:39.609808",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "228",
+    "home_team_id": "153",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401856490": {
     "game_id": "401856490",
@@ -2773,7 +2887,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:23:47.789344",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "2670",
+    "home_team_id": "153",
+    "away_conference_id": "3",
+    "away_conference": "A-10",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401638586": {
     "game_id": "401638586",
@@ -2785,7 +2905,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:25:04.411636",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "2681",
+    "home_team_id": "153",
+    "away_conference_id": "19",
+    "away_conference": "NEC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401638622": {
     "game_id": "401638622",
@@ -2797,7 +2923,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:25:18.967536",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "127",
+    "home_team_id": "153",
+    "away_conference_id": "7",
+    "away_conference": "Big Ten",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401638632": {
     "game_id": "401638632",
@@ -2809,7 +2941,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:25:31.980638",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "333",
+    "home_team_id": "153",
+    "away_conference_id": "23",
+    "away_conference": "SEC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401817232": {
     "game_id": "401817232",
@@ -2821,7 +2959,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:26:19.394025",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "2305",
+    "home_team_id": "150",
+    "away_conference_id": "8",
+    "away_conference": "Big 12",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401806364": {
     "game_id": "401806364",
@@ -2833,7 +2977,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:26:28.566455",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "57",
+    "home_team_id": "150",
+    "away_conference_id": "23",
+    "away_conference": "SEC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401817235": {
     "game_id": "401817235",
@@ -2845,7 +2995,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:26:38.144189",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "150",
+    "home_team_id": "127",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "7",
+    "home_conference": "Big Ten"
   },
   "401820644": {
     "game_id": "401820644",
@@ -2857,7 +3013,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:26:43.013427",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "150",
+    "home_team_id": "52",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401820650": {
     "game_id": "401820650",
@@ -2869,7 +3031,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:26:48.645660",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "150",
+    "home_team_id": "97",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401820698": {
     "game_id": "401820698",
@@ -2881,7 +3049,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:27:05.217734",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "97",
+    "home_team_id": "150",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401820715": {
     "game_id": "401820715",
@@ -2893,7 +3067,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:27:15.563289",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "103",
+    "home_team_id": "150",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401820747": {
     "game_id": "401820747",
@@ -2905,7 +3085,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:27:24.319774",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "183",
+    "home_team_id": "150",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401817238": {
     "game_id": "401817238",
@@ -2917,7 +3103,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:27:31.931674",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "130",
+    "home_team_id": "150",
+    "away_conference_id": "7",
+    "away_conference": "Big Ten",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401820778": {
     "game_id": "401820778",
@@ -2929,7 +3121,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:27:43.017423",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "150",
+    "home_team_id": "152",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401856478": {
     "game_id": "401856478",
@@ -2941,7 +3139,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:27:55.608905",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "2561",
+    "home_team_id": "150",
+    "away_conference_id": "13",
+    "away_conference": "Metro",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401856530": {
     "game_id": "401856530",
@@ -2953,7 +3157,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:28:07.674647",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "2628",
+    "home_team_id": "150",
+    "away_conference_id": "8",
+    "away_conference": "Big 12",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401856570": {
     "game_id": "401856570",
@@ -2965,7 +3175,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:28:15.531001",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "2599",
+    "home_team_id": "150",
+    "away_conference_id": "4",
+    "away_conference": "Big East",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401856577": {
     "game_id": "401856577",
@@ -2977,7 +3193,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:28:22.125983",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "41",
+    "home_team_id": "150",
+    "away_conference_id": "4",
+    "away_conference": "Big East",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401806373": {
     "game_id": "401806373",
@@ -2989,7 +3211,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:28:56.551486",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "152",
+    "home_team_id": "2",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "23",
+    "home_conference": "SEC"
   },
   "401817258": {
     "game_id": "401817258",
@@ -3001,7 +3229,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:29:25.705069",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "2335",
+    "home_team_id": "152",
+    "away_conference_id": "11",
+    "away_conference": "CUSA",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401817259": {
     "game_id": "401817259",
@@ -3013,7 +3247,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:29:30.712797",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "2305",
+    "home_team_id": "152",
+    "away_conference_id": "8",
+    "away_conference": "Big 12",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401820646": {
     "game_id": "401820646",
@@ -3025,7 +3265,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:29:34.298004",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "258",
+    "home_team_id": "152",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401820658": {
     "game_id": "401820658",
@@ -3037,7 +3283,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:29:41.815127",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "152",
+    "home_team_id": "52",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401820685": {
     "game_id": "401820685",
@@ -3049,7 +3301,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:29:52.736618",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "152",
+    "home_team_id": "228",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401820719": {
     "game_id": "401820719",
@@ -3061,7 +3319,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:30:08.499043",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "152",
+    "home_team_id": "2567",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401851173": {
     "game_id": "401851173",
@@ -3073,7 +3337,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:30:18.941680",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "221",
+    "home_team_id": "152",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401851177": {
     "game_id": "401851177",
@@ -3085,7 +3355,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:30:25.152146",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "152",
+    "home_team_id": "258",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401856434": {
     "game_id": "401856434",
@@ -3097,7 +3373,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:30:31.911925",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "251",
+    "home_team_id": "152",
+    "away_conference_id": "23",
+    "away_conference": "SEC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401820641": {
     "game_id": "401820641",
@@ -3109,7 +3391,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:31:54.457855",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "258",
+    "home_team_id": "259",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401820669": {
     "game_id": "401820669",
@@ -3121,7 +3409,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:32:05.861065",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "258",
+    "home_team_id": "97",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401820750": {
     "game_id": "401820750",
@@ -3133,7 +3427,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:32:21.563752",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "258",
+    "home_team_id": "59",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401820760": {
     "game_id": "401820760",
@@ -3145,7 +3445,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:32:34.244783",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "2390",
+    "home_team_id": "258",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401856526": {
     "game_id": "401856526",
@@ -3157,7 +3463,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:32:44.908120",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "2750",
+    "home_team_id": "258",
+    "away_conference_id": "45",
+    "away_conference": "Horizon",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401856562": {
     "game_id": "401856562",
@@ -3169,7 +3481,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:32:52.951101",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "2633",
+    "home_team_id": "258",
+    "away_conference_id": "23",
+    "away_conference": "SEC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401638580": {
     "game_id": "401638580",
@@ -3181,7 +3499,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:33:07.516244",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "36",
+    "home_team_id": "258",
+    "away_conference_id": "21",
+    "away_conference": "Pac-12",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401812261": {
     "game_id": "401812261",
@@ -3193,7 +3517,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:33:40.978423",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "333",
+    "home_team_id": "2599",
+    "away_conference_id": "23",
+    "away_conference": "SEC",
+    "home_conference_id": "4",
+    "home_conference": "Big East"
   },
   "401812263": {
     "game_id": "401812263",
@@ -3205,7 +3535,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:33:51.437678",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "2250",
+    "home_team_id": "333",
+    "away_conference_id": "21",
+    "away_conference": "Pac-12",
+    "home_conference_id": "23",
+    "home_conference": "SEC"
   },
   "401812266": {
     "game_id": "401812266",
@@ -3217,7 +3553,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:33:56.765809",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "12",
+    "home_team_id": "333",
+    "away_conference_id": "8",
+    "away_conference": "Big 12",
+    "home_conference_id": "23",
+    "home_conference": "SEC"
   },
   "401808155": {
     "game_id": "401808155",
@@ -3229,7 +3571,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:34:07.701305",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "333",
+    "home_team_id": "238",
+    "away_conference_id": "23",
+    "away_conference": "SEC",
+    "home_conference_id": "23",
+    "home_conference": "SEC"
   },
   "401808199": {
     "game_id": "401808199",
@@ -3241,7 +3589,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:34:14.722943",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "2633",
+    "home_team_id": "333",
+    "away_conference_id": "23",
+    "away_conference": "SEC",
+    "home_conference_id": "23",
+    "home_conference": "SEC"
   },
   "401808208": {
     "game_id": "401808208",
@@ -3253,7 +3607,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:34:20.247793",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "333",
+    "home_team_id": "57",
+    "away_conference_id": "23",
+    "away_conference": "SEC",
+    "home_conference_id": "23",
+    "home_conference": "SEC"
   },
   "401808244": {
     "game_id": "401808244",
@@ -3265,7 +3625,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:34:49.410338",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "8",
+    "home_team_id": "333",
+    "away_conference_id": "23",
+    "away_conference": "SEC",
+    "home_conference_id": "23",
+    "home_conference": "SEC"
   },
   "401808288": {
     "game_id": "401808288",
@@ -3277,7 +3643,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:34:58.242422",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "2",
+    "home_team_id": "333",
+    "away_conference_id": "23",
+    "away_conference": "SEC",
+    "home_conference_id": "23",
+    "home_conference": "SEC"
   },
   "401812923": {
     "game_id": "401812923",
@@ -3289,7 +3661,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:35:34.374601",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "228",
+    "home_team_id": "252",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "8",
+    "home_conference": "Big 12"
   },
   "401820720": {
     "game_id": "401820720",
@@ -3301,7 +3679,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:35:45.846895",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "228",
+    "home_team_id": "24",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401820753": {
     "game_id": "401820753",
@@ -3313,7 +3697,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:35:52.178472",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "228",
+    "home_team_id": "154",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401856522": {
     "game_id": "401856522",
@@ -3325,7 +3715,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:36:02.403671",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "2294",
+    "home_team_id": "228",
+    "away_conference_id": "7",
+    "away_conference": "Big Ten",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401820707": {
     "game_id": "401820707",
@@ -3337,7 +3733,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:36:13.477013",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "221",
+    "home_team_id": "228",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401826707": {
     "game_id": "401826707",
@@ -3349,7 +3751,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:36:58.077592",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "52",
+    "home_team_id": "57",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "23",
+    "home_conference": "SEC"
   },
   "401808162": {
     "game_id": "401808162",
@@ -3361,7 +3769,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:37:06.007977",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "2633",
+    "home_team_id": "57",
+    "away_conference_id": "23",
+    "away_conference": "SEC",
+    "home_conference_id": "23",
+    "home_conference": "SEC"
   },
   "401808193": {
     "game_id": "401808193",
@@ -3373,7 +3787,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:37:13.717276",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "2",
+    "home_team_id": "57",
+    "away_conference_id": "23",
+    "away_conference": "SEC",
+    "home_conference_id": "23",
+    "home_conference": "SEC"
   },
   "401808203": {
     "game_id": "401808203",
@@ -3385,7 +3805,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:37:24.189758",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "57",
+    "home_team_id": "2579",
+    "away_conference_id": "23",
+    "away_conference": "SEC",
+    "home_conference_id": "23",
+    "home_conference": "SEC"
   },
   "401856563": {
     "game_id": "401856563",
@@ -3397,7 +3823,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:37:44.939691",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "2294",
+    "home_team_id": "57",
+    "away_conference_id": "7",
+    "away_conference": "Big Ten",
+    "home_conference_id": "23",
+    "home_conference": "SEC"
   },
   "401820688": {
     "game_id": "401820688",
@@ -3409,7 +3841,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:38:17.106486",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "259",
+    "home_team_id": "183",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401820781": {
     "game_id": "401820781",
@@ -3421,7 +3859,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:38:31.231323",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "183",
+    "home_team_id": "97",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401851171": {
     "game_id": "401851171",
@@ -3433,7 +3877,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:38:35.803836",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "183",
+    "home_team_id": "2567",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "290710041": {
     "game_id": "290710041",
@@ -3445,7 +3895,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:40:42.003479",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "183",
+    "home_team_id": "41",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "4",
+    "home_conference": "Big East"
   },
   "401826785": {
     "game_id": "401826785",
@@ -3457,7 +3913,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:41:29.875713",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "8",
+    "home_team_id": "127",
+    "away_conference_id": "23",
+    "away_conference": "SEC",
+    "home_conference_id": "7",
+    "home_conference": "Big Ten"
   },
   "401825419": {
     "game_id": "401825419",
@@ -3469,7 +3931,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:41:35.322351",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "30",
+    "home_team_id": "127",
+    "away_conference_id": "7",
+    "away_conference": "Big Ten",
+    "home_conference_id": "7",
+    "home_conference": "Big Ten"
   },
   "401825452": {
     "game_id": "401825452",
@@ -3481,7 +3949,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:41:47.655730",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "127",
+    "home_team_id": "264",
+    "away_conference_id": "7",
+    "away_conference": "Big Ten",
+    "home_conference_id": "7",
+    "home_conference": "Big Ten"
   },
   "401638585": {
     "game_id": "401638585",
@@ -3493,7 +3967,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:42:05.143189",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "127",
+    "home_team_id": "344",
+    "away_conference_id": "7",
+    "away_conference": "Big Ten",
+    "home_conference_id": "23",
+    "home_conference": "SEC"
   },
   "401820656": {
     "game_id": "401820656",
@@ -3505,7 +3985,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:42:41.285189",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "2390",
+    "home_team_id": "154",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401820686": {
     "game_id": "401820686",
@@ -3517,7 +4003,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:42:51.168764",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "52",
+    "home_team_id": "2390",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401820721": {
     "game_id": "401820721",
@@ -3529,7 +4021,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:42:56.309682",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "2390",
+    "home_team_id": "103",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401851178": {
     "game_id": "401851178",
@@ -3541,7 +4039,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:43:08.518273",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "97",
+    "home_team_id": "2390",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401856518": {
     "game_id": "401856518",
@@ -3553,7 +4057,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:43:13.346932",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "142",
+    "home_team_id": "2390",
+    "away_conference_id": "23",
+    "away_conference": "SEC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401817460": {
     "game_id": "401817460",
@@ -3565,7 +4075,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:43:42.856203",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "245",
+    "home_team_id": "2567",
+    "away_conference_id": "23",
+    "away_conference": "SEC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401820726": {
     "game_id": "401820726",
@@ -3577,7 +4093,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:43:54.823108",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "2567",
+    "home_team_id": "221",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401851174": {
     "game_id": "401851174",
@@ -3589,7 +4111,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:44:04.481924",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "2567",
+    "home_team_id": "97",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401856436": {
     "game_id": "401856436",
@@ -3601,7 +4129,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:44:09.216770",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "193",
+    "home_team_id": "2567",
+    "away_conference_id": "14",
+    "away_conference": "MAC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401856482": {
     "game_id": "401856482",
@@ -3613,7 +4147,11 @@
     "league": "college",
     "added_at": "2026-08-05T18:45:00.925678",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "58",
+    "home_team_id": "97",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401811097": {
     "game_id": "401811097",
@@ -3625,7 +4163,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:45:20.631365",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "2641",
+    "home_team_id": "356",
+    "away_conference_id": "8",
+    "away_conference": "Big 12",
+    "home_conference_id": "7",
+    "home_conference": "Big Ten"
   },
   "401825487": {
     "game_id": "401825487",
@@ -3637,7 +4181,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:45:32.089769",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "356",
+    "home_team_id": "158",
+    "away_conference_id": "7",
+    "away_conference": "Big Ten",
+    "home_conference_id": "7",
+    "home_conference": "Big Ten"
   },
   "401856491": {
     "game_id": "401856491",
@@ -3649,7 +4199,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:45:59.183432",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "219",
+    "home_team_id": "356",
+    "away_conference_id": "12",
+    "away_conference": "Ivy",
+    "home_conference_id": "7",
+    "home_conference": "Big Ten"
   },
   "401856566": {
     "game_id": "401856566",
@@ -3661,7 +4217,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:46:05.029021",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "356",
+    "home_team_id": "248",
+    "away_conference_id": "7",
+    "away_conference": "Big Ten",
+    "home_conference_id": "8",
+    "home_conference": "Big 12"
   },
   "401856574": {
     "game_id": "401856574",
@@ -3673,7 +4235,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:46:09.071237",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "2294",
+    "home_team_id": "356",
+    "away_conference_id": "7",
+    "away_conference": "Big Ten",
+    "home_conference_id": "7",
+    "home_conference": "Big Ten"
   },
   "401856598": {
     "game_id": "401856598",
@@ -3685,7 +4253,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:46:11.819465",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "356",
+    "home_team_id": "41",
+    "away_conference_id": "7",
+    "away_conference": "Big Ten",
+    "home_conference_id": "4",
+    "home_conference": "Big East"
   },
   "401638597": {
     "game_id": "401638597",
@@ -3697,7 +4271,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:46:28.378576",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "2413",
+    "home_team_id": "356",
+    "away_conference_id": "20",
+    "away_conference": "OVC",
+    "home_conference_id": "7",
+    "home_conference": "Big Ten"
   },
   "401820816": {
     "game_id": "401820816",
@@ -3709,7 +4289,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:48:46.909352",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "12",
+    "home_team_id": "252",
+    "away_conference_id": "8",
+    "away_conference": "Big 12",
+    "home_conference_id": "8",
+    "home_conference": "Big 12"
   },
   "401827689": {
     "game_id": "401827689",
@@ -3721,7 +4307,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:48:56.339379",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "252",
+    "home_team_id": "12",
+    "away_conference_id": "8",
+    "away_conference": "Big 12",
+    "home_conference_id": "8",
+    "home_conference": "Big 12"
   },
   "401856565": {
     "game_id": "401856565",
@@ -3733,7 +4325,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:49:10.170376",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "328",
+    "home_team_id": "12",
+    "away_conference_id": "21",
+    "away_conference": "Pac-12",
+    "home_conference_id": "8",
+    "home_conference": "Big 12"
   },
   "401856575": {
     "game_id": "401856575",
@@ -3745,7 +4343,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:49:22.732384",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "2509",
+    "home_team_id": "12",
+    "away_conference_id": "7",
+    "away_conference": "Big Ten",
+    "home_conference_id": "8",
+    "home_conference": "Big 12"
   },
   "401856599": {
     "game_id": "401856599",
@@ -3757,7 +4361,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:49:31.606596",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "130",
+    "home_team_id": "12",
+    "away_conference_id": "7",
+    "away_conference": "Big Ten",
+    "home_conference_id": "8",
+    "home_conference": "Big 12"
   },
   "401638583": {
     "game_id": "401638583",
@@ -3769,7 +4379,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:49:51.509693",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "299",
+    "home_team_id": "12",
+    "away_conference_id": "9",
+    "away_conference": "Big West",
+    "home_conference_id": "8",
+    "home_conference": "Big 12"
   },
   "401812788": {
     "game_id": "401812788",
@@ -3781,7 +4397,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:51:30.307521",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "252",
+    "home_team_id": "41",
+    "away_conference_id": "8",
+    "away_conference": "Big 12",
+    "home_conference_id": "4",
+    "home_conference": "Big East"
   },
   "401827717": {
     "game_id": "401827717",
@@ -3793,7 +4415,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:51:45.732711",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "252",
+    "home_team_id": "2132",
+    "away_conference_id": "8",
+    "away_conference": "Big 12",
+    "home_conference_id": "8",
+    "home_conference": "Big 12"
   },
   "401856484": {
     "game_id": "401856484",
@@ -3805,7 +4433,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:51:54.710590",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "251",
+    "home_team_id": "252",
+    "away_conference_id": "23",
+    "away_conference": "SEC",
+    "home_conference_id": "8",
+    "home_conference": "Big 12"
   },
   "401638598": {
     "game_id": "401638598",
@@ -3817,7 +4451,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:52:11.552686",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "2184",
+    "home_team_id": "252",
+    "away_conference_id": "3",
+    "away_conference": "A-10",
+    "home_conference_id": "8",
+    "home_conference": "Big 12"
   },
   "401856559": {
     "game_id": "401856559",
@@ -3829,7 +4469,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:52:57.528858",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "26",
+    "home_team_id": "41",
+    "away_conference_id": "7",
+    "away_conference": "Big Ten",
+    "home_conference_id": "4",
+    "home_conference": "Big East"
   },
   "401856600": {
     "game_id": "401856600",
@@ -3841,7 +4487,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:53:12.061204",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "41",
+    "home_team_id": "130",
+    "away_conference_id": "4",
+    "away_conference": "Big East",
+    "home_conference_id": "7",
+    "home_conference": "Big Ten"
   },
   "401820704": {
     "game_id": "401820704",
@@ -3853,7 +4505,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:53:42.326461",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "154",
+    "home_team_id": "221",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401851170": {
     "game_id": "401851170",
@@ -3865,7 +4523,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:53:53.823543",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "221",
+    "home_team_id": "24",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401820761": {
     "game_id": "401820761",
@@ -3877,7 +4541,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:54:26.970633",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "154",
+    "home_team_id": "259",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401851172": {
     "game_id": "401851172",
@@ -3889,7 +4559,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:54:32.306782",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "154",
+    "home_team_id": "259",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401820725": {
     "game_id": "401820725",
@@ -3901,7 +4577,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:55:02.266315",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "52",
+    "home_team_id": "87",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401827617": {
     "game_id": "401827617",
@@ -3913,7 +4595,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:55:35.475721",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "66",
+    "home_team_id": "2305",
+    "away_conference_id": "8",
+    "away_conference": "Big 12",
+    "home_conference_id": "8",
+    "home_conference": "Big 12"
   },
   "401820817": {
     "game_id": "401820817",
@@ -3925,7 +4613,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:55:44.357282",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "2305",
+    "home_team_id": "2641",
+    "away_conference_id": "8",
+    "away_conference": "Big 12",
+    "home_conference_id": "8",
+    "home_conference": "Big 12"
   },
   "401856558": {
     "game_id": "401856558",
@@ -3937,7 +4631,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:56:00.375507",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "2599",
+    "home_team_id": "2305",
+    "away_conference_id": "4",
+    "away_conference": "Big East",
+    "home_conference_id": "8",
+    "home_conference": "Big 12"
   },
   "401809305": {
     "game_id": "401809305",
@@ -3949,7 +4649,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:56:26.947210",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "248",
+    "home_team_id": "2",
+    "away_conference_id": "8",
+    "away_conference": "Big 12",
+    "home_conference_id": "23",
+    "home_conference": "SEC"
   },
   "401823478": {
     "game_id": "401823478",
@@ -3961,7 +4667,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:56:33.289410",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "2",
+    "home_team_id": "2483",
+    "away_conference_id": "23",
+    "away_conference": "SEC",
+    "home_conference_id": "7",
+    "home_conference": "Big Ten"
   },
   "401825507": {
     "game_id": "401825507",
@@ -3973,7 +4685,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:57:34.653313",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "2509",
+    "home_team_id": "158",
+    "away_conference_id": "7",
+    "away_conference": "Big Ten",
+    "home_conference_id": "7",
+    "home_conference": "Big Ten"
   },
   "401825520": {
     "game_id": "401825520",
@@ -3985,7 +4703,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:57:39.421861",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "158",
+    "home_team_id": "2294",
+    "away_conference_id": "7",
+    "away_conference": "Big Ten",
+    "home_conference_id": "7",
+    "home_conference": "Big Ten"
   },
   "401856489": {
     "game_id": "401856489",
@@ -3997,7 +4721,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:57:47.212899",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "2653",
+    "home_team_id": "158",
+    "away_conference_id": "27",
+    "away_conference": "Sun Belt",
+    "home_conference_id": "7",
+    "home_conference": "Big Ten"
   },
   "401856534": {
     "game_id": "401856534",
@@ -4009,7 +4739,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:57:51.161608",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "238",
+    "home_team_id": "158",
+    "away_conference_id": "23",
+    "away_conference": "SEC",
+    "home_conference_id": "7",
+    "home_conference": "Big Ten"
   },
   "401820645": {
     "game_id": "401820645",
@@ -4021,7 +4757,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:58:13.842240",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "103",
+    "home_team_id": "59",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401820732": {
     "game_id": "401820732",
@@ -4033,7 +4775,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:58:21.872292",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "24",
+    "home_team_id": "103",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401827646": {
     "game_id": "401827646",
@@ -4045,7 +4793,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:58:44.486416",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "248",
+    "home_team_id": "2641",
+    "away_conference_id": "8",
+    "away_conference": "Big 12",
+    "home_conference_id": "8",
+    "home_conference": "Big 12"
   },
   "401820819": {
     "game_id": "401820819",
@@ -4057,7 +4811,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:58:49.836263",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "248",
+    "home_team_id": "66",
+    "away_conference_id": "8",
+    "away_conference": "Big 12",
+    "home_conference_id": "8",
+    "home_conference": "Big 12"
   },
   "401851289": {
     "game_id": "401851289",
@@ -4069,7 +4829,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:59:16.830440",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "9",
+    "home_team_id": "66",
+    "away_conference_id": "8",
+    "away_conference": "Big 12",
+    "home_conference_id": "8",
+    "home_conference": "Big 12"
   },
   "401856561": {
     "game_id": "401856561",
@@ -4081,7 +4847,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:59:22.920901",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "96",
+    "home_team_id": "66",
+    "away_conference_id": "23",
+    "away_conference": "SEC",
+    "home_conference_id": "8",
+    "home_conference": "Big 12"
   },
   "401851384": {
     "game_id": "401851384",
@@ -4093,7 +4865,13 @@
     "league": "college",
     "added_at": "2026-08-05T18:59:58.927795",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "275",
+    "home_team_id": "130",
+    "away_conference_id": "7",
+    "away_conference": "Big Ten",
+    "home_conference_id": "7",
+    "home_conference": "Big Ten"
   },
   "401808287": {
     "game_id": "401808287",
@@ -4105,7 +4883,13 @@
     "league": "college",
     "added_at": "2026-08-05T19:01:18.161578",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "201",
+    "home_team_id": "251",
+    "away_conference_id": "23",
+    "away_conference": "SEC",
+    "home_conference_id": "23",
+    "home_conference": "SEC"
   },
   "401856525": {
     "game_id": "401856525",
@@ -4117,7 +4901,13 @@
     "league": "college",
     "added_at": "2026-08-05T19:02:29.309560",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "2541",
+    "home_team_id": "96",
+    "away_conference_id": "29",
+    "away_conference": "WCC",
+    "home_conference_id": "23",
+    "home_conference": "SEC"
   },
   "401824895": {
     "game_id": "401824895",
@@ -4129,7 +4919,13 @@
     "league": "college",
     "added_at": "2026-08-05T19:03:06.244058",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "62",
+    "home_team_id": "2483",
+    "away_conference_id": "44",
+    "away_conference": "Mountain West",
+    "home_conference_id": "7",
+    "home_conference": "Big Ten"
   },
   "401638590": {
     "game_id": "401638590",
@@ -4141,7 +4937,13 @@
     "league": "college",
     "added_at": "2026-08-05T19:03:28.974853",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "2483",
+    "home_team_id": "2579",
+    "away_conference_id": "7",
+    "away_conference": "Big Ten",
+    "home_conference_id": "23",
+    "home_conference": "SEC"
   },
   "401825459": {
     "game_id": "401825459",
@@ -4153,7 +4955,13 @@
     "league": "college",
     "added_at": "2026-08-05T19:04:05.881595",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "2509",
+    "home_team_id": "26",
+    "away_conference_id": "7",
+    "away_conference": "Big Ten",
+    "home_conference_id": "7",
+    "home_conference": "Big Ten"
   },
   "401856496": {
     "game_id": "401856496",
@@ -4165,7 +4973,13 @@
     "league": "college",
     "added_at": "2026-08-05T19:04:39.083905",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "2116",
+    "home_team_id": "26",
+    "away_conference_id": "8",
+    "away_conference": "Big 12",
+    "home_conference_id": "7",
+    "home_conference": "Big Ten"
   },
   "401851477": {
     "game_id": "401851477",
@@ -4177,7 +4991,13 @@
     "league": "college",
     "added_at": "2026-08-05T19:05:17.548111",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "2428",
+    "home_team_id": "47",
+    "away_conference_id": "16",
+    "away_conference": "MEAC",
+    "home_conference_id": "16",
+    "home_conference": "MEAC"
   },
   "401856435": {
     "game_id": "401856435",
@@ -4189,7 +5009,13 @@
     "league": "college",
     "added_at": "2026-08-05T19:05:24.308325",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "2378",
+    "home_team_id": "47",
+    "away_conference_id": "1",
+    "away_conference": "Am. East",
+    "home_conference_id": "16",
+    "home_conference": "MEAC"
   },
   "401638579": {
     "game_id": "401638579",
@@ -4201,7 +5027,13 @@
     "league": "college",
     "added_at": "2026-08-05T19:05:41.728288",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "2681",
+    "home_team_id": "47",
+    "away_conference_id": "19",
+    "away_conference": "NEC",
+    "home_conference_id": "16",
+    "home_conference": "MEAC"
   },
   "401856488": {
     "game_id": "401856488",
@@ -4213,7 +5045,13 @@
     "league": "college",
     "added_at": "2026-08-05T19:06:26.271262",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "2377",
+    "home_team_id": "238",
+    "away_conference_id": "25",
+    "away_conference": "Southland",
+    "home_conference_id": "23",
+    "home_conference": "SEC"
   },
   "401826730": {
     "game_id": "401826730",
@@ -4225,7 +5063,13 @@
     "league": "college",
     "added_at": "2026-08-05T19:06:49.312436",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "2539",
+    "home_team_id": "344",
+    "away_conference_id": "29",
+    "away_conference": "WCC",
+    "home_conference_id": "23",
+    "home_conference": "SEC"
   },
   "401856479": {
     "game_id": "401856479",
@@ -4237,7 +5081,13 @@
     "league": "college",
     "added_at": "2026-08-05T19:07:15.740027",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "2628",
+    "home_team_id": "194",
+    "away_conference_id": "8",
+    "away_conference": "Big 12",
+    "home_conference_id": "7",
+    "home_conference": "Big Ten"
   },
   "401851291": {
     "game_id": "401851291",
@@ -4249,7 +5099,13 @@
     "league": "college",
     "added_at": "2026-08-05T19:07:31.721972",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "2132",
+    "home_team_id": "2116",
+    "away_conference_id": "8",
+    "away_conference": "Big 12",
+    "home_conference_id": "8",
+    "home_conference": "Big 12"
   },
   "401856480": {
     "game_id": "401856480",
@@ -4261,7 +5117,13 @@
     "league": "college",
     "added_at": "2026-08-05T19:07:52.648052",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "2272",
+    "home_team_id": "275",
+    "away_conference_id": "6",
+    "away_conference": "Big South",
+    "home_conference_id": "7",
+    "home_conference": "Big Ten"
   },
   "401828195": {
     "game_id": "401828195",
@@ -4273,7 +5135,9 @@
     "league": "college",
     "added_at": "2026-08-05T19:08:21.986096",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "2226",
+    "home_team_id": "58"
   },
   "401831197": {
     "game_id": "401831197",
@@ -4285,7 +5149,13 @@
     "league": "college",
     "added_at": "2026-08-05T19:08:54.488974",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "265",
+    "home_team_id": "9",
+    "away_conference_id": "21",
+    "away_conference": "Pac-12",
+    "home_conference_id": "8",
+    "home_conference": "Big 12"
   },
   "401828387": {
     "game_id": "401828387",
@@ -4297,7 +5167,13 @@
     "league": "college",
     "added_at": "2026-08-05T19:09:45.026575",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "139",
+    "home_team_id": "179",
+    "away_conference_id": "3",
+    "away_conference": "A-10",
+    "home_conference_id": "3",
+    "home_conference": "A-10"
   },
   "401856487": {
     "game_id": "401856487",
@@ -4309,7 +5185,13 @@
     "league": "college",
     "added_at": "2026-08-05T19:09:50.131769",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "139",
+    "home_team_id": "61",
+    "away_conference_id": "3",
+    "away_conference": "A-10",
+    "home_conference_id": "23",
+    "home_conference": "SEC"
   },
   "401858186": {
     "game_id": "401858186",
@@ -4321,7 +5203,13 @@
     "league": "college",
     "added_at": "2026-08-05T19:10:13.250215",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "113",
+    "home_team_id": "193",
+    "away_conference_id": "14",
+    "away_conference": "MAC",
+    "home_conference_id": "14",
+    "home_conference": "MAC"
   },
   "401851225": {
     "game_id": "401851225",
@@ -4333,7 +5221,9 @@
     "league": "college",
     "added_at": "2026-08-05T19:11:59.783138",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "2429",
+    "home_team_id": "5"
   },
   "401656361": {
     "game_id": "401656361",
@@ -4381,7 +5271,13 @@
     "league": "college",
     "added_at": "2026-08-05T19:58:19.944352",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "248",
+    "home_team_id": "150",
+    "away_conference_id": "8",
+    "away_conference": "Big 12",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401746076": {
     "game_id": "401746076",
@@ -4393,7 +5289,13 @@
     "league": "college",
     "added_at": "2026-08-05T22:25:49.470312",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "333",
+    "home_team_id": "150",
+    "away_conference_id": "23",
+    "away_conference": "SEC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401746049": {
     "game_id": "401746049",
@@ -4405,7 +5307,13 @@
     "league": "college",
     "added_at": "2026-08-05T22:59:34.136581",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "239",
+    "home_team_id": "150",
+    "away_conference_id": "8",
+    "away_conference": "Big 12",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401859966": {
     "game_id": "401859966",
@@ -4429,7 +5337,13 @@
     "league": "college",
     "added_at": "2026-08-06T17:10:52.967557",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "12",
+    "home_team_id": "150",
+    "away_conference_id": "8",
+    "away_conference": "Big 12",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401746003": {
     "game_id": "401746003",
@@ -4441,7 +5355,13 @@
     "league": "college",
     "added_at": "2026-08-06T17:11:29.109875",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "116",
+    "home_team_id": "150",
+    "away_conference_id": "13",
+    "away_conference": "Metro",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401540754": {
     "game_id": "401540754",
@@ -4477,7 +5397,13 @@
     "league": "college",
     "added_at": "2026-08-06T22:04:24.844894",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "153",
+    "home_team_id": "150",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401120705": {
     "game_id": "401120705",
@@ -4489,7 +5415,13 @@
     "league": "college",
     "added_at": "2026-08-06T23:27:59.015771",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "150",
+    "home_team_id": "153",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401541171": {
     "game_id": "401541171",
@@ -4525,7 +5457,13 @@
     "league": "college",
     "added_at": "2026-08-10T21:20:09.973053",
     "season_type": "postseason",
-    "season_type_code": "3"
+    "season_type_code": "3",
+    "away_team_id": "2483",
+    "home_team_id": "12",
+    "away_conference_id": "7",
+    "away_conference": "Big Ten",
+    "home_conference_id": "8",
+    "home_conference": "Big 12"
   },
   "401541187": {
     "game_id": "401541187",
@@ -4585,7 +5523,13 @@
     "league": "college",
     "added_at": "2026-08-13T19:36:32.388664",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "2628",
+    "home_team_id": "2641",
+    "away_conference_id": "8",
+    "away_conference": "Big 12",
+    "home_conference_id": "8",
+    "home_conference": "Big 12"
   },
   "401585459": {
     "game_id": "401585459",
@@ -4633,7 +5577,13 @@
     "league": "college",
     "added_at": "2026-08-15T22:23:02.946270",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "2483",
+    "home_team_id": "26",
+    "away_conference_id": "7",
+    "away_conference": "Big Ten",
+    "home_conference_id": "7",
+    "home_conference": "Big Ten"
   },
   "301217018": {
     "game_id": "301217018",
@@ -5257,7 +6207,13 @@
     "league": "college",
     "added_at": "2026-10-23T23:46:42.324078",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "61",
+    "home_team_id": "127",
+    "away_conference_id": "23",
+    "away_conference": "SEC",
+    "home_conference_id": "7",
+    "home_conference": "Big Ten"
   },
   "401909096": {
     "game_id": "401909096",
@@ -5461,7 +6417,13 @@
     "league": "college",
     "added_at": "2026-11-02T00:39:00.944889",
     "season_type": "regular",
-    "season_type_code": "2"
+    "season_type_code": "2",
+    "away_team_id": "87",
+    "home_team_id": "222",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "4",
+    "home_conference": "Big East"
   },
   "401906769": {
     "game_id": "401906769",
@@ -5473,7 +6435,13 @@
     "league": "college",
     "season_type": "regular",
     "season_type_code": "2",
-    "added_at": "2026-11-02T19:56:21.738775"
+    "added_at": "2026-11-02T19:56:21.738775",
+    "away_team_id": "2390",
+    "home_team_id": "57",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "23",
+    "home_conference": "SEC"
   },
   "401909905": {
     "game_id": "401909905",
@@ -5533,7 +6501,13 @@
     "added_at": "2026-11-02T20:37:29.574523",
     "player_summary_player_keys": [
       "espn:5120280"
-    ]
+    ],
+    "away_team_id": "2441",
+    "home_team_id": "183",
+    "away_conference_id": "19",
+    "away_conference": "NEC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
   },
   "401909771": {
     "game_id": "401909771",
@@ -5545,7 +6519,11 @@
     "league": "college",
     "season_type": "regular",
     "season_type_code": "2",
-    "added_at": "2026-11-02T22:50:47.940775"
+    "added_at": "2026-11-02T22:50:47.940775",
+    "away_team_id": "235",
+    "home_team_id": "66",
+    "home_conference_id": "8",
+    "home_conference": "Big 12"
   },
   "401909908": {
     "game_id": "401909908",
@@ -5596,7 +6574,13 @@
     "league": "college",
     "season_type": "regular",
     "season_type_code": "2",
-    "added_at": "2026-11-02T23:51:42.665158"
+    "added_at": "2026-11-02T23:51:42.665158",
+    "away_team_id": "194",
+    "home_team_id": "252",
+    "away_conference_id": "7",
+    "away_conference": "Big Ten",
+    "home_conference_id": "8",
+    "home_conference": "Big 12"
   },
   "401909738": {
     "game_id": "401909738",
@@ -5608,7 +6592,13 @@
     "league": "college",
     "season_type": "regular",
     "season_type_code": "2",
-    "added_at": "2026-11-03T11:34:38.287127"
+    "added_at": "2026-11-03T11:34:38.287127",
+    "away_team_id": "12",
+    "home_team_id": "26",
+    "away_conference_id": "8",
+    "away_conference": "Big 12",
+    "home_conference_id": "7",
+    "home_conference": "Big Ten"
   },
   "283230201": {
     "game_id": "283230201",
@@ -5620,7 +6610,13 @@
     "league": "college",
     "season_type": "regular",
     "season_type_code": "2",
-    "added_at": "2026-11-03T12:07:47.478281"
+    "added_at": "2026-11-03T12:07:47.478281",
+    "away_team_id": "2166",
+    "home_team_id": "201",
+    "away_conference_id": "3",
+    "away_conference": "A-10",
+    "home_conference_id": "23",
+    "home_conference": "SEC"
   },
   "280123025": {
     "game_id": "280123025",
@@ -5666,7 +6662,13 @@
     "added_at": "2026-11-03T23:04:23.176230",
     "player_summary_player_keys": [
       "espn:5142715"
-    ]
+    ],
+    "away_team_id": "325",
+    "home_team_id": "142",
+    "away_conference_id": "45",
+    "away_conference": "Horizon",
+    "home_conference_id": "23",
+    "home_conference": "SEC"
   },
   "401909921": {
     "game_id": "401909921",
@@ -5679,5 +6681,422 @@
     "season_type": "regular",
     "season_type_code": "2",
     "added_at": "2026-11-03T23:23:06.806053"
+  },
+  "400875765": {
+    "game_id": "400875765",
+    "date": "2016-05-02",
+    "away": "Atlanta Hawks",
+    "home": "Cleveland Cavaliers",
+    "away_team_id": "1",
+    "home_team_id": "5",
+    "away_score": "93",
+    "home_score": "104",
+    "league": "nba",
+    "season_type": "postseason",
+    "season_type_code": "3",
+    "added_at": "2026-11-04T17:24:33.154553"
+  },
+  "401909925": {
+    "game_id": "401909925",
+    "date": "2026-11-04",
+    "away": "Charlotte Hornets",
+    "home": "Brooklyn Nets",
+    "away_team_id": "30",
+    "home_team_id": "17",
+    "away_score": "104",
+    "home_score": "114",
+    "league": "nba",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-04T21:58:16.835857"
+  },
+  "401909926": {
+    "game_id": "401909926",
+    "date": "2026-11-04",
+    "away": "Chicago Bulls",
+    "home": "New York Knicks",
+    "away_team_id": "4",
+    "home_team_id": "18",
+    "away_score": "105",
+    "home_score": "135",
+    "league": "nba",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-04T23:21:09.914012",
+    "player_summary_player_keys": [
+      "espn:4897943"
+    ]
+  },
+  "401909930": {
+    "game_id": "401909930",
+    "date": "2026-11-04",
+    "away": "Minnesota Timberwolves",
+    "home": "Houston Rockets",
+    "away_team_id": "16",
+    "home_team_id": "10",
+    "away_score": "117",
+    "home_score": "107",
+    "league": "nba",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-04T23:41:21.745512"
+  },
+  "401909726": {
+    "game_id": "401909726",
+    "date": "2026-11-05",
+    "away": "Wake Forest Demon Deacons",
+    "home": "Vanderbilt Commodores",
+    "away_team_id": "154",
+    "home_team_id": "238",
+    "away_score": "51",
+    "home_score": "74",
+    "league": "college",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-05T18:52:47.423753",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "23",
+    "home_conference": "SEC"
+  },
+  "401919804": {
+    "game_id": "401919804",
+    "date": "2026-11-05",
+    "away": "Long Island University Sharks",
+    "home": "Seton Hall Pirates",
+    "away_team_id": "112358",
+    "home_team_id": "2550",
+    "away_score": "60",
+    "home_score": "67",
+    "league": "college",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-05T23:56:03.209932",
+    "away_conference_id": "19",
+    "away_conference": "NEC",
+    "home_conference_id": "4",
+    "home_conference": "Big East"
+  },
+  "401909288": {
+    "game_id": "401909288",
+    "date": "2026-11-06",
+    "away": "Boston Celtics",
+    "home": "Charlotte Hornets",
+    "away_team_id": "2",
+    "home_team_id": "30",
+    "away_score": "119",
+    "home_score": "80",
+    "league": "nba",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-06T19:50:41.163159"
+  },
+  "401912208": {
+    "game_id": "401912208",
+    "date": "2026-11-06",
+    "away": "American University Eagles",
+    "home": "Clemson Tigers",
+    "away_team_id": "44",
+    "home_team_id": "228",
+    "away_score": "73",
+    "home_score": "82",
+    "league": "college",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-06T23:47:57.837784",
+    "away_conference_id": "22",
+    "away_conference": "Patriot",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
+  },
+  "401913100": {
+    "game_id": "401913100",
+    "date": "2026-11-06",
+    "away": "Wofford Terriers",
+    "home": "North Carolina Tar Heels",
+    "away_team_id": "2747",
+    "home_team_id": "153",
+    "away_score": "70",
+    "home_score": "109",
+    "league": "college",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-06T23:55:36.953482",
+    "away_conference_id": "24",
+    "away_conference": "SoCon",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
+  },
+  "401920685": {
+    "game_id": "401920685",
+    "date": "2026-11-06",
+    "away": "UConn Huskies",
+    "home": "Michigan Wolverines",
+    "away_team_id": "41",
+    "home_team_id": "130",
+    "away_score": "85",
+    "home_score": "77",
+    "league": "college",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-07T00:07:56.706357",
+    "away_conference_id": "4",
+    "away_conference": "Big East",
+    "home_conference_id": "7",
+    "home_conference": "Big Ten"
+  },
+  "401909294": {
+    "game_id": "401909294",
+    "date": "2026-11-06",
+    "away": "Portland Trail Blazers",
+    "home": "Los Angeles Lakers",
+    "away_team_id": "22",
+    "home_team_id": "13",
+    "away_score": "118",
+    "home_score": "124",
+    "league": "nba",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-07T23:41:11.724160"
+  },
+  "280114025": {
+    "game_id": "280114025",
+    "date": "2008-01-14",
+    "away": "Los Angeles Lakers",
+    "home": "Seattle SuperSonics",
+    "away_team_id": "13",
+    "home_team_id": "25",
+    "away_score": "123",
+    "home_score": "121",
+    "league": "nba",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-08T09:16:13.294564",
+    "player_summary_player_keys": [
+      "espn:110",
+      "espn:3202"
+    ]
+  },
+  "401909707": {
+    "game_id": "401909707",
+    "date": "2026-11-08",
+    "away": "Pittsburgh Panthers",
+    "home": "Penn State Nittany Lions",
+    "away_team_id": "221",
+    "home_team_id": "213",
+    "away_score": "82",
+    "home_score": "76",
+    "league": "college",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-08T21:27:24.760293",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "7",
+    "home_conference": "Big Ten"
+  },
+  "401909940": {
+    "game_id": "401909940",
+    "date": "2026-11-07",
+    "away": "New York Knicks",
+    "home": "Cleveland Cavaliers",
+    "away_team_id": "18",
+    "home_team_id": "5",
+    "away_score": "109",
+    "home_score": "97",
+    "league": "nba",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-08T22:06:28.348346"
+  },
+  "401920424": {
+    "game_id": "401920424",
+    "date": "2026-11-08",
+    "away": "Arkansas Razorbacks",
+    "home": "Virginia Cavaliers",
+    "away_team_id": "8",
+    "home_team_id": "258",
+    "away_score": "72",
+    "home_score": "91",
+    "league": "college",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-08T22:19:40.263127",
+    "away_conference_id": "23",
+    "away_conference": "SEC",
+    "home_conference_id": "2",
+    "home_conference": "ACC"
+  },
+  "401918053": {
+    "game_id": "401918053",
+    "date": "2026-11-08",
+    "away": "California Golden Bears",
+    "home": "Houston Cougars",
+    "away_team_id": "25",
+    "home_team_id": "248",
+    "away_score": "68",
+    "home_score": "86",
+    "league": "college",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-08T22:25:24.968188",
+    "away_conference_id": "2",
+    "away_conference": "ACC",
+    "home_conference_id": "8",
+    "home_conference": "Big 12"
+  },
+  "401909945": {
+    "game_id": "401909945",
+    "date": "2026-11-08",
+    "away": "Philadelphia 76ers",
+    "home": "Chicago Bulls",
+    "away_team_id": "20",
+    "home_team_id": "4",
+    "away_score": "127",
+    "home_score": "121",
+    "league": "nba",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-08T22:43:41.829598"
+  },
+  "401909953": {
+    "game_id": "401909953",
+    "date": "2026-11-09",
+    "away": "Cleveland Cavaliers",
+    "home": "Charlotte Hornets",
+    "away_team_id": "5",
+    "home_team_id": "30",
+    "away_score": "",
+    "home_score": "",
+    "league": "nba",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-09T20:18:58.972480"
+  },
+  "401909957": {
+    "game_id": "401909957",
+    "date": "2026-11-09",
+    "away": "Denver Nuggets",
+    "home": "Houston Rockets",
+    "away_team_id": "7",
+    "home_team_id": "10",
+    "away_score": "100",
+    "home_score": "110",
+    "league": "nba",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-09T22:32:58.942929"
+  },
+  "401918074": {
+    "game_id": "401918074",
+    "date": "2026-11-09",
+    "away": "North Dakota Fighting Hawks",
+    "home": "Clemson Tigers",
+    "away_team_id": "155",
+    "home_team_id": "228",
+    "away_score": "77",
+    "home_score": "92",
+    "league": "college",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-09T22:41:00.716757"
+  },
+  "401909950": {
+    "game_id": "401909950",
+    "date": "2026-11-08",
+    "away": "New Orleans Pelicans",
+    "home": "LA Clippers",
+    "away_team_id": "3",
+    "home_team_id": "12",
+    "away_score": "123",
+    "home_score": "139",
+    "league": "nba",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-09T23:17:44.235338"
+  },
+  "401909955": {
+    "game_id": "401909955",
+    "date": "2026-11-09",
+    "away": "Memphis Grizzlies",
+    "home": "Toronto Raptors",
+    "away_team_id": "29",
+    "home_team_id": "28",
+    "away_score": "118",
+    "home_score": "102",
+    "league": "nba",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-09T23:40:02.120143"
+  },
+  "401909952": {
+    "game_id": "401909952",
+    "date": "2026-11-09",
+    "away": "Los Angeles Lakers",
+    "home": "Atlanta Hawks",
+    "away_team_id": "13",
+    "home_team_id": "1",
+    "away_score": "124",
+    "home_score": "114",
+    "league": "nba",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-10T11:28:44.956585"
+  },
+  "401909718": {
+    "game_id": "401909718",
+    "date": "2026-11-09",
+    "away": "Syracuse Orange",
+    "home": "Indiana Hoosiers",
+    "away_team_id": "183",
+    "home_team_id": "84",
+    "away_score": "80",
+    "home_score": "83",
+    "league": "college",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-10T12:55:58.131149"
+  },
+  "401909956": {
+    "game_id": "401909956",
+    "date": "2026-11-09",
+    "away": "Indiana Pacers",
+    "home": "Dallas Mavericks",
+    "away_team_id": "11",
+    "home_team_id": "6",
+    "away_score": "122",
+    "home_score": "125",
+    "league": "nba",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-10T13:13:11.162952"
+  },
+  "401920887": {
+    "game_id": "401920887",
+    "date": "2026-11-09",
+    "away": "Seton Hall Pirates",
+    "home": "Charlotte 49ers",
+    "away_team_id": "2550",
+    "home_team_id": "2429",
+    "away_score": "68",
+    "home_score": "62",
+    "league": "college",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-10T13:24:00.704021"
+  },
+  "401906865": {
+    "game_id": "401906865",
+    "date": "2026-11-09",
+    "away": "Grambling Tigers",
+    "home": "Texas Longhorns",
+    "away_team_id": "2755",
+    "home_team_id": "251",
+    "away_score": "62",
+    "home_score": "93",
+    "league": "college",
+    "season_type": "regular",
+    "season_type_code": "2",
+    "added_at": "2026-11-10T13:32:30.139887"
   }
 }
