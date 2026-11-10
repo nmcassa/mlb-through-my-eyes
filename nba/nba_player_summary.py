@@ -440,3 +440,50 @@ def annotate_nick_plus(rows: list[dict], pool_rows: list[dict] | None = None) ->
         r["nickplus"] = n
         r["nick+"] = str(n) if n is not None else "—"
     return rows
+
+
+def _career_snapshot(watched: dict) -> dict[str, dict]:
+    players = collect_player_game_stats(watched)
+    players_raw = filter_and_aggregate(players)
+    pool_rows = player_leaderboard(players_raw)
+    baseline = compute_pool_baseline(pool_rows)
+    snapshot = {}
+    for player_key, raw in players_raw.items():
+        row = calc_player_stats(raw.get("name", player_key), raw)
+        if row:
+            snapshot[player_key] = {
+                "name": row["name"],
+                "games": row["app"],
+                "nick_plus": nick_plus(row, baseline),
+            }
+    return snapshot
+
+
+def game_player_career_changes(
+    before_watched: dict,
+    after_watched: dict,
+    logged_player_keys: set[str],
+) -> list[dict]:
+    before = _career_snapshot(before_watched)
+    after = _career_snapshot(after_watched)
+    changes = []
+    for player_key in logged_player_keys:
+        current = after.get(player_key)
+        if current is None:
+            continue
+        previous = before.get(player_key)
+        previous_games = previous["games"] if previous else 0
+        previous_nick_plus = previous["nick_plus"] if previous else None
+        current_nick_plus = current["nick_plus"]
+        changes.append({
+            "name": current["name"],
+            "games": current["games"],
+            "games_change": current["games"] - previous_games,
+            "nick_plus": current_nick_plus,
+            "nick_plus_change": (
+                current_nick_plus - previous_nick_plus
+                if current_nick_plus is not None and previous_nick_plus is not None
+                else None
+            ),
+        })
+    return sorted(changes, key=lambda change: change["name"])
