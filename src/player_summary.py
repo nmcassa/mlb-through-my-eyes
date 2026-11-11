@@ -549,3 +549,67 @@ def annotate_nick_plus_batting(rows: list[dict], pool_rows: list[dict] | None = 
         r["nickplus"] = n
         r["nick+"] = str(n) if n is not None else "—"
     return rows
+
+
+def _career_snapshot(watched: dict) -> dict[tuple[str, str], dict]:
+    pitchers, batters = collect_player_game_stats(watched)
+    pitchers_raw, batters_raw = filter_and_aggregate(pitchers, batters)
+    pitcher_rows = pitching_leaderboard(pitchers_raw)
+    batter_rows = batting_leaderboard(batters_raw)
+    pitcher_baseline = compute_pitcher_pool_baseline(pitcher_rows)
+    batter_baseline = compute_batter_pool_baseline(batter_rows)
+    snapshot = {}
+
+    for player_key, raw in pitchers_raw.items():
+        row = calc_pitching_stats(raw.get("name", player_key), raw)
+        snapshot[(player_key, "Pitcher")] = {
+            "name": row["name"],
+            "games": row["app"],
+            "nick_plus": nick_plus_pitcher(row, pitcher_baseline),
+        }
+    for player_key, raw in batters_raw.items():
+        row = calc_batting_stats(raw.get("name", player_key), raw)
+        snapshot[(player_key, "Batter")] = {
+            "name": row["name"],
+            "games": row["app"],
+            "nick_plus": nick_plus_batter(row, batter_baseline),
+        }
+    return snapshot
+
+
+def game_player_career_changes(
+    before_watched: dict,
+    after_watched: dict,
+    logged_player_keys: set[str],
+) -> list[dict]:
+    before = _career_snapshot(before_watched)
+    after = _career_snapshot(after_watched)
+    changes = []
+    player_roles = {
+        identity for identity in after
+        if identity[0] in logged_player_keys
+    }
+    roles_by_player: dict[str, int] = {}
+    for player_key, _ in player_roles:
+        roles_by_player[player_key] = roles_by_player.get(player_key, 0) + 1
+
+    for identity in player_roles:
+        player_key, role = identity
+        current = after[identity]
+        previous = before.get(identity)
+        previous_games = previous["games"] if previous else 0
+        previous_nick_plus = previous["nick_plus"] if previous else None
+        current_nick_plus = current["nick_plus"]
+        changes.append({
+            "name": current["name"],
+            "role": role if roles_by_player[player_key] > 1 else "",
+            "games": current["games"],
+            "games_change": current["games"] - previous_games,
+            "nick_plus": current_nick_plus,
+            "nick_plus_change": (
+                current_nick_plus - previous_nick_plus
+                if current_nick_plus is not None and previous_nick_plus is not None
+                else None
+            ),
+        })
+    return sorted(changes, key=lambda change: (change["name"], change["role"]))

@@ -230,19 +230,28 @@ def _game_select_loop(games: list, watched: dict, team_name: str, season: str):
                     "season_type_code": game.get("season_type_code"),
                     "added_at":   datetime.now().isoformat(),
                 }
-                selection = _show_boxscore(game, gid, record)
+                selection, player_options = _show_boxscore(game, gid, record)
                 if selection is CANCEL_SELECTION:
                     input("  Press Enter to continue...")
                     continue
                 if selection is not None:
                     record[PLAYER_SUMMARY_KEYS_FIELD] = selection
+                logged_player_keys = set(selection) if selection is not None else {
+                    option["key"] for option in player_options
+                }
+                before_watched = dict(watched)
                 watched[next_watch_key(watched, gid)] = record
                 json_store.save_watched(watched)
-                print(f"\n  ★ Logged watch #{watch_count(watched, gid)}: {game_label(game)}")
-                input("  Press Enter to continue...")
+                _show_game_player_changes(
+                    game,
+                    watch_count(watched, gid),
+                    before_watched,
+                    watched,
+                    logged_player_keys,
+                )
 
 
-def _show_boxscore(game: dict, gid: str, record: dict) -> list[str] | None | object:
+def _show_boxscore(game: dict, gid: str, record: dict) -> tuple[list[str] | None | object, list[dict]]:
     """Fetch and print the boxscore for a just-added game."""
     clear()
     print_header(game_label(game))
@@ -252,9 +261,52 @@ def _show_boxscore(game: dict, gid: str, record: dict) -> list[str] | None | obj
         data = mlb.fetch_boxscore_data(game["game_id"])
     except RuntimeError as e:
         print(f"  Could not load boxscore: {e}")
-        return None
+        return None, []
     options = player_summary.prepare_game_player_options(gid, record, data)
-    return choose_players(options)
+    return choose_players(options), options
+
+
+def _show_game_player_changes(
+    game: dict,
+    occurrence: int,
+    before_watched: dict,
+    after_watched: dict,
+    logged_player_keys: set[str],
+):
+    clear()
+    print_header("Career Changes")
+    print(f"\n  ★ Logged watch #{occurrence}: {game_label(game)}")
+    print("\n  Loading career changes...\n")
+    try:
+        changes = player_summary.game_player_career_changes(
+            before_watched,
+            after_watched,
+            logged_player_keys,
+        )
+    except Exception as e:
+        print(f"  Could not calculate player changes: {e}")
+        input("\n  Press Enter to continue...")
+        return
+
+    clear()
+    print_header("Career Changes")
+    print(f"\n  ★ Logged watch #{occurrence}: {game_label(game)}\n")
+    if not changes:
+        print("  No players were logged for this game.")
+    else:
+        for change in changes:
+            role = f" ({change['role']})" if change["role"] else ""
+            print(f"  {change['name']}{role}")
+            print(f"    Games: {change['games']} ({change['games_change']:+d})")
+            nick_change = change["nick_plus_change"]
+            if change["nick_plus"] is None:
+                nick_display = "—"
+            elif nick_change is None:
+                nick_display = f"{change['nick_plus']} (new)"
+            else:
+                nick_display = f"{change['nick_plus']} ({nick_change:+d})"
+            print(f"    Nick+: {nick_display}")
+    input("\n  Press Enter to continue...")
 
 
 # ── Screen: View Watched ──────────────────────────────────────────────────────

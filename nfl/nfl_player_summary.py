@@ -507,3 +507,55 @@ def player_season_rows(name: str, games: list[dict], category: str, athlete_id=N
             rows.append(total_row)
 
     return rows
+
+
+def _career_snapshot(watched: dict) -> dict[tuple[str, str], dict]:
+    pools = collect_player_game_stats(watched)
+    snapshot = {}
+    for category in _CATEGORIES:
+        pool_raw = filter_and_aggregate(pools[category], category=category)
+        pool_rows = player_leaderboard(pool_raw, category)
+        baseline = compute_pool_baseline(category, pool_rows)
+        calc = _CALCULATORS[category]
+        for player_key, raw in pool_raw.items():
+            row = calc(raw.get("name", player_key), raw)
+            if row:
+                snapshot[(player_key, category)] = {
+                    "name": row["name"],
+                    "games": row["app"],
+                    "plus": plus_score(category, row, baseline),
+                }
+    return snapshot
+
+
+def game_player_career_changes(
+    before_watched: dict,
+    after_watched: dict,
+    logged_player_keys: set[str],
+) -> list[dict]:
+    before = _career_snapshot(before_watched)
+    after = _career_snapshot(after_watched)
+    role_labels = {"qb": "QB", "rushing": "Rushing", "receiving": "Receiving"}
+    changes = []
+    for identity, current in after.items():
+        player_key, category = identity
+        if player_key not in logged_player_keys:
+            continue
+        previous = before.get(identity)
+        previous_games = previous["games"] if previous else 0
+        previous_plus = previous["plus"] if previous else None
+        current_plus = current["plus"]
+        changes.append({
+            "name": current["name"],
+            "role": role_labels[category],
+            "plus_label": _PLUS_LABEL[category],
+            "games": current["games"],
+            "games_change": current["games"] - previous_games,
+            "plus": current_plus,
+            "plus_change": (
+                current_plus - previous_plus
+                if current_plus is not None and previous_plus is not None
+                else None
+            ),
+        })
+    return sorted(changes, key=lambda change: (change["name"], change["role"]))
